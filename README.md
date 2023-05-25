@@ -4,3 +4,4 @@
 Miles Berman  
 Finn DePuy  
 Jackson Nadler-Block
+Nicholas Schetman
