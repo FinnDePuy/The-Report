@@ -3,5 +3,5 @@
 # Members: <br/>
 Miles Berman  
 Finn DePuy  
-Jackson Nadler-Block
+Jackson Nadler-Block  
 Nicholas Schetman
