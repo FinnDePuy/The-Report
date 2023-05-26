@@ -6,6 +6,7 @@ class Start extends GameLevel {
     preload() {
         this.load.image('player', 'assets/player.png');
         this.load.image('speechBubble', 'assets/speechBubble.png');
+        this.load.image('hide', 'assets/Cabinet.png')
         this.load.spritesheet('icon', 'assets/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
         this.load.json('map', 'map.json');
     }
@@ -15,14 +16,25 @@ class Start extends GameLevel {
         //console.log(room.Doors);
         //console.log(this.location);
         this.chase(0);
-
+        
         this.initializeDoors();
         this.setCollision();
+
+        if (this.location.r === 3 && this.location.c === 1) { // if the player is in the safe room
+            this.cabinet = this.physics.add.image(this.w * 0.3, this.h * 0.2, 'hide');
+            // this.physics.add.overlap(this.player, this.cabinet, () => {
+            //     this.player.setAlpha(0)
+            // })
+        }
+
+        // if(this.isHidden()){
+        //     this.player.setAlpha(0);            
+        // }
 
         this.checkMonsterWarning();
 
         // inputs
-        const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C} = Phaser.Input.Keyboard.KeyCodes;
+        const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E} = Phaser.Input.Keyboard.KeyCodes;
         this.keys = this.input.keyboard.addKeys({
             left: LEFT,
             right: RIGHT,
@@ -32,7 +44,8 @@ class Start extends GameLevel {
             a: A,
             s: S,
             d: D,
-            c: C
+            c: C,
+            e: E
         });
     }
 
@@ -45,7 +58,7 @@ class Start extends GameLevel {
                 this.updateMonsterLocation();
             }
         }
-        
+
         const {keys} = this; // this.keys
         
         this.player.setVelocity(0);
@@ -67,6 +80,15 @@ class Start extends GameLevel {
         if(keys.c.isDown) {
             this.chase(1);
         } 
+
+        if(this.player.alpha === 0){
+            if(!this.isOverlap(this.player, this.cabinet)){
+                this.player.setAlpha(1);
+            }
+        }
+        if(this.isOverlap(this.player, this.cabinet) && keys.e.isDown){
+            this.player.setAlpha(0);
+        }
     }
 
     setCollision() {

@@ -246,6 +246,20 @@ class GameLevel extends Phaser.Scene {
         }
     }
 
+    //checks if item1 and item2 are overlapping
+    isOverlap(item1, item2){
+        var bound1 = item1.getBounds();
+        var bound2 = item2.getBounds();
+        //the bound increase below is for a fix hitbox increase
+        bound2.width += 300;
+        bound2.height += 300;
+        return Phaser.Geom.Intersects.RectangleToRectangle(bound1, bound2);
+    }
+
+    // isClose(item1, item2){
+    //     var bound1 = item1.getBounds() 
+    // }
+
     onEnter() {
         console.warn('This GameScene did not implement onEnter():', this.constructor.name);
     }
