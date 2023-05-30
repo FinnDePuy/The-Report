@@ -260,6 +260,12 @@ class Start extends GameLevel {
                     this.player.setAlpha(1);
                     this.cameras.main.setBackgroundColor('#444');
                 }
+
+                //fixing the out of hiding bug
+                if (object.hSprite.alpha === 0){
+                    this.player.setAlpha(1);
+                    this.cameras.main.setBackgroundColor('#444');
+                }
             }
         }
         return false;
