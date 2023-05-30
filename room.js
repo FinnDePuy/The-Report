@@ -279,6 +279,12 @@ class Start extends GameLevel {
                     object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
                     this.hTween.stop(); // stop hSprite tween bounce
                 }
+
+                //fixing the out of hiding bug
+                if (object.hSprite.alpha === 0){
+                    this.player.setAlpha(1);
+                    this.cameras.main.setBackgroundColor('#444');
+                }
             }
         }
         return false;
