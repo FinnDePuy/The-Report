@@ -7,13 +7,14 @@ class Start extends GameLevel {
     }
 
     preload() {
-        this.load.image('floor1', 'assets/green.png');
+        //this.load.image('floor1', 'assets/green.png');
         this.load.image('cabinetZone', 'assets/RedZone.png');
         this.load.image('hSprite', 'assets/hSprite.png');
         this.load.image('eSprite', 'assets/eSprite.png');
         this.load.image('player', 'assets/player.png');
         this.load.image('speechBubble', 'assets/speechBubble.png');
-        this.load.image('cabinet', 'assets/Cabinet.png')
+        this.load.image('cabinet', 'assets/Cabinet.png');
+        this.load.image('cabinet2', 'assets/Cabinet2.png');
         this.load.spritesheet('icon', 'assets/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
         this.load.json('map', 'map.json');
     }
@@ -124,6 +125,7 @@ class Start extends GameLevel {
     setCollision() {
         this.sceneChanged = false; // makes sure scene only changes once
         
+        // Miles
         this.physics.add.collider(this.NWall, this.player);
         this.physics.add.collider(this.WWall, this.player);
         this.physics.add.collider(this.EWall, this.player);
@@ -184,6 +186,7 @@ class Start extends GameLevel {
     }
 
     createWalls() {
+        // Miles
         // Creates North West East and South walls
         this.NW = this.add.rectangle(0, 0, this.w, this.h * 0.05)
             .setOrigin(0,0)
@@ -297,6 +300,7 @@ class Start extends GameLevel {
             if(this.checkHideable()) {
                 if(this.player.alpha == 0) {
                     this.player.setAlpha(1);
+                    // Miles (WHEN HIDING MAKE BACKGROUND DARKER)
                     this.cameras.main.setBackgroundColor('#444');
                 }
                 else {
@@ -314,51 +318,102 @@ class Start extends GameLevel {
         var bound2 = zone.getBounds();
         return Phaser.Geom.Intersects.RectangleToRectangle(bound1, bound2);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //list of items
+    //paper, scribbles on ground, photos,
+    //items have the following parameters x, y, name
+    //12 items total
+
+
+
+    createItem(object, x, y) {
+        let picture = this.add.image(x, y, object); //maybe change scale
+        let iName = "note1";
+        return { 
+            itemImage : picture,
+            itemName : iName
+        };
+    }
+
+    //makes an inventory to store items in
+    createInventory() {
+
+    }
+
+    //to be done by Wednesday
+    //makes the cabinet and and allows items to be put into
+    createItemCabinet() {
+        let Files = this.map.Levels[3][1].File;
+        this.physics.add.collider(this.physics.add.existing(Files, true), this.player);
+    }
+
+    //makes the item in backpack alpha .5 to show its in the desk
+    inFileCabinet() {
+
+    }
+
+    //shows the items icons
+    showBackpack() {
+
+    }
+
+    //boolean check if you have a certain item
+    hasItem() {
+
+    }
+
+    //grabs the item and shows the data about the item
+    pickUpItem() {
+
+    }
+
+    //shows the name and icon of the item after pickup
+    displayItem() {
+
+    }
+
+    //spawns the items into the roomsl potentially random spawning
+    spawnItems() {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -379,6 +434,7 @@ const game = new Phaser.Game({
         default: 'arcade',
         //arcade: { debug: true }
     },
+    // Miles (UPDATE BACKGROUND)
     backgroundColor: 0x212121,
     scene: [Start],
     title: "Chase",

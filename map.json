@@ -135,7 +135,7 @@
                     "E": 0,
                     "S": 0
                 },
-                "Cabinets" : [
+                "File" : [
                     {
                         "x" : 140,
                         "y" : 122,
@@ -146,7 +146,13 @@
                         "y" : 122,
                         "scale" : 1
                     }
-                ]
+                ],
+                "Item" : {
+                    "x" : 100,
+                    "y" : 100,
+                    "name" : "Note1",
+                    "description" : "Basic description of a note for testing purposes"
+                }
             },
             {
                 "r" : 3,
