@@ -23,6 +23,8 @@ class GameLevel extends Phaser.Scene {
 
         this.speed = 500;
         this.hideableObjects = [];
+        this.findableObjects = [];
+        this.inventory = [];
 
         this.cameras.main.setBackgroundColor('#444');
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);

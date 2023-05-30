@@ -9,6 +9,7 @@ class Start extends GameLevel {
     preload() {
         //this.load.image('floor1', 'assets/green.png');
         this.load.image('cabinetZone', 'assets/RedZone.png');
+        this.load.image('note', 'assets/Note.png');
         this.load.image('hSprite', 'assets/hSprite.png');
         this.load.image('eSprite', 'assets/eSprite.png');
         this.load.image('player', 'assets/player.png');
@@ -32,6 +33,21 @@ class Start extends GameLevel {
         this.initializeCabinet();
 
         this.checkMonsterWarning();
+
+
+        //super basic implementation
+        //creates an intem adds to the inventory instantly then displays what you have collected
+        let note = this.createItem('note', 175, 200, 'The First Note');
+        //adds the created item into the findableobjects list to be tracked for collision later
+        this.findableObjects.push(note);
+        //prints to make sure we got the item
+        console.log(this.findableObjects[0].itemName);
+        //adds the item to the player inventory at this.inventory
+        this.pickUpItem(note);
+        //displays the item with the characters face at the bottom
+        this.displayItem(note);
+
+
 
         // inputs
         const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H} = Phaser.Input.Keyboard.KeyCodes;
@@ -94,6 +110,10 @@ class Start extends GameLevel {
         if(keys.c.isDown) {
             this.chase(1);
         } 
+
+        // if(this.isOverlap(this.player, note1)){
+        //     this.pickUpItem(note1);
+        // }
     }
 
 
@@ -346,9 +366,9 @@ class Start extends GameLevel {
 
 
 
-    createItem(object, x, y) {
+    createItem(object, x, y, name) {
         let picture = this.add.image(x, y, object); //maybe change scale
-        let iName = "note1";
+        let iName = name;
         return { 
             itemImage : picture,
             itemName : iName
@@ -356,9 +376,6 @@ class Start extends GameLevel {
     }
 
     //makes an inventory to store items in
-    createInventory() {
-
-    }
 
     //to be done by Wednesday
     //makes the cabinet and and allows items to be put into
@@ -378,21 +395,27 @@ class Start extends GameLevel {
     }
 
     //boolean check if you have a certain item
-    hasItem() {
-
+    hasItem(item) {
+        if(this.inventory.includes(item)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //grabs the item and shows the data about the item
-    pickUpItem() {
-
+    pickUpItem(item) {
+        this.inventory.push(item);
+        console.log(this.inventory[0].itemName);
+        item.itemImage.setAlpha(0);//hide the note when its picked up
     }
 
     //shows the name and icon of the item after pickup
-    displayItem() {
-
+    displayItem(item) {
+        this.showTextBox("Congrats you have found " + item.itemName, 50, 0);
     }
 
-    //spawns the items into the roomsl potentially random spawning
+    //spawns the items into the rooms potentially random spawning
     spawnItems() {
 
     }
