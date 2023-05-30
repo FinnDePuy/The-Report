@@ -22,6 +22,7 @@ class GameLevel extends Phaser.Scene {
         this.s = this.game.config.width * 0.01;
 
         this.speed = 500;
+        this.hideableObjects = [];
 
         this.cameras.main.setBackgroundColor('#444');
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);
@@ -244,16 +245,6 @@ class GameLevel extends Phaser.Scene {
         else if (this.monsterLocation.c > this.location.c) {
             this.monsterLocation.c--;
         }
-    }
-
-    //checks if item1 and item2 are overlapping
-    isOverlap(item1, item2){
-        var bound1 = item1.getBounds();
-        var bound2 = item2.getBounds();
-        //the bound increase below is for a fix hitbox increase
-        bound2.width += 300;
-        bound2.height += 300;
-        return Phaser.Geom.Intersects.RectangleToRectangle(bound1, bound2);
     }
 
     // isClose(item1, item2){

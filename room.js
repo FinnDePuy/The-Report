@@ -1,12 +1,19 @@
+//import { hide } from "./hide.js";
+
+
 class Start extends GameLevel {
     constructor() {
         super('start', 'Level');
     }
 
     preload() {
+        this.load.image('floor1', 'assets/green.png');
+        this.load.image('cabinetZone', 'assets/RedZone.png');
+        this.load.image('hSprite', 'assets/hSprite.png');
+        this.load.image('eSprite', 'assets/eSprite.png');
         this.load.image('player', 'assets/player.png');
         this.load.image('speechBubble', 'assets/speechBubble.png');
-        this.load.image('hide', 'assets/Cabinet.png')
+        this.load.image('cabinet', 'assets/Cabinet.png')
         this.load.spritesheet('icon', 'assets/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
         this.load.json('map', 'map.json');
     }
@@ -20,12 +27,15 @@ class Start extends GameLevel {
         this.initializeDoors();
         this.setCollision();
 
-        if (this.location.r === 3 && this.location.c === 1) { // if the player is in the safe room
-            this.cabinet = this.physics.add.image(this.w * 0.3, this.h * 0.2, 'hide');
-            // this.physics.add.overlap(this.player, this.cabinet, () => {
-            //     this.player.setAlpha(0)
-            // })
-        }
+        //hide.hideableObjects = [];
+        this.initializeCabinet();
+
+        // if (this.location.r === 3 && this.location.c === 1) { // if the player is in the safe room
+        //     this.cabinet = this.physics.add.image(this.w * 0.3, this.h * 0.2, 'cabinet');
+        //     // this.physics.add.overlap(this.player, this.cabinet, () => {
+        //     //     this.player.setAlpha(0)
+        //     // })
+        // }
 
         // if(this.isHidden()){
         //     this.player.setAlpha(0);            
@@ -34,7 +44,7 @@ class Start extends GameLevel {
         this.checkMonsterWarning();
 
         // inputs
-        const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E} = Phaser.Input.Keyboard.KeyCodes;
+        const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H} = Phaser.Input.Keyboard.KeyCodes;
         this.keys = this.input.keyboard.addKeys({
             left: LEFT,
             right: RIGHT,
@@ -45,7 +55,8 @@ class Start extends GameLevel {
             s: S,
             d: D,
             c: C,
-            e: E
+            e: E,
+            h: H
         });
     }
 
@@ -63,33 +74,75 @@ class Start extends GameLevel {
         
         this.player.setVelocity(0);
         // movement
-        if(keys.left.isDown || keys.a.isDown) {
-            this.player.setVelocityX(-this.speed);
+        if (this.player.alpha == 1) { // if player is not hiding
+            if(keys.left.isDown || keys.a.isDown) {
+                this.player.setVelocityX(-this.speed);
+            }
+            if(keys.right.isDown || keys.d.isDown) {
+                this.player.setVelocityX(this.speed);
+            }
+            if(keys.up.isDown || keys.w.isDown) {
+                this.player.setVelocityY(-this.speed);
+            } 
+            if(keys.down.isDown || keys.s.isDown) {
+                this.player.setVelocityY(this.speed);
+            } 
         }
-        if(keys.right.isDown || keys.d.isDown) {
-            this.player.setVelocityX(this.speed);
-        }
-        if(keys.up.isDown || keys.w.isDown) {
-            this.player.setVelocityY(-this.speed);
-        } 
-        if(keys.down.isDown || keys.s.isDown) {
-            this.player.setVelocityY(this.speed);
-        } 
 
         // lets the player get chased again
         if(keys.c.isDown) {
             this.chase(1);
         } 
 
-        if(this.player.alpha === 0){
-            if(!this.isOverlap(this.player, this.cabinet)){
-                this.player.setAlpha(1);
-            }
-        }
-        if(this.isOverlap(this.player, this.cabinet) && keys.e.isDown){
-            this.player.setAlpha(0);
-        }
+        //changed THIS TO HIDE BECAUSE OF THE NEW FILE NAME
+        // if(this.player.alpha === 0){
+        //     if(!hide.isOverlap(this.player, this.cabinet)){
+        //         this.player.setAlpha(1);
+        //     }
+        // }
+        // if(hide.isOverlap(this.player, this.cabinet) && keys.e.isDown){
+        //     this.player.setAlpha(0);
+        // }
+
+        // checks if interaction is available
+        this.checkHideable();
+        // if(this.checkHideable()){
+        //     console.log('hiding');
+        //     if(keys.h.isDown){
+        //         this.player.setAlpha(0);
+        //     }
+        // } else {
+        //     if(keys.h.isDown){
+        //         this.player.setAlpha(1);
+        //     }
+        // }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     setCollision() {
         this.sceneChanged = false; // makes sure scene only changes once
@@ -179,7 +232,154 @@ class Start extends GameLevel {
             .setFillStyle(0x42280E);
         return r;
     }
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    checkHideable() {
+        for (let i = 0; i < this.hideableObjects.length; i++) {
+            let object = this.hideableObjects[i];
+            if (this.isOverlap(this.player, object.zoneObject)) {
+                if (object.hSprite.alpha === 0) {
+                    object.hSprite.setAlpha(1);
+                    console.log("overlap");
+                    
+                    // start tween
+                    this.hTween = this.tweens.add({
+                        targets: object.hSprite,
+                        y: '-=10', // move up 10 pixels
+                        ease: 'Power1',
+                        duration: 500,
+                        repeat: -1, // Repeat forever
+                        repeatDelay: 500,
+                        yoyo: true 
+                    });
+                }
+                return true;
+            }
+            else {
+                if (object.hSprite.alpha === 1) {
+                    object.hSprite.setAlpha(0); // hSprite disappears
+                    object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
+                    this.hTween.stop(); // stop hSprite tween bounce
+                }
+            }
+        }
+        return false;
+    }
+
+    createHideableObject(object, zone, h, x, y) {
+        let hidingO = this.add.image(x, y, object).setScale(2);
+        let zoneO = this.add.image(x, y + 100, zone).setAlpha(0).setScale(0.8, 1);
+        let hSpr = this.add.image(x + 150, y, h).setAlpha(0);
+        if(x > this.w * 0.8){
+            hSpr.x -= 290;
+        }
+        return { 
+            hidingObject : hidingO, // object asset
+            zoneObject : zoneO, // zone around object in which players can interact
+            hSprite : hSpr // shows player they can press h when in the zone
+        };
+    }
+
+    initializeCabinet() {
+        let cabinet = this.map.Levels[this.location.r][this.location.c].Cabinets;
+        if (cabinet) {
+            for (let i = 0; i < cabinet.length; i++) {
+                this.hideableObjects.push(this.createHideableObject('cabinet', 'cabinetZone', 'hSprite', cabinet[i].x, cabinet[i].y));
+                this.physics.add.collider(this.physics.add.existing(this.hideableObjects[i].hidingObject, true), this.player);
+            }
+        }
+        this.input.keyboard.on('keydown-' + 'H', () => { 
+            if(this.checkHideable()) {
+                if(this.player.alpha == 0) {
+                    this.player.setAlpha(1);
+                    this.cameras.main.setBackgroundColor('#444');
+                }
+                else {
+                    this.player.setAlpha(0);
+                    this.cameras.main.setBackgroundColor('#212121');
+                }
+            }
+        });
+    }
+
+
+    //checks if player and zone are overlapping
+    isOverlap(player, zone){
+        var bound1 = player.getBounds();
+        var bound2 = zone.getBounds();
+        return Phaser.Geom.Intersects.RectangleToRectangle(bound1, bound2);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const game = new Phaser.Game({
     scale: {
