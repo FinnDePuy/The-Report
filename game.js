@@ -135,28 +135,46 @@ class GameLevel extends Phaser.Scene {
         this.checkMonsterWarning();
     }
 
+    notCaught() {
+        this.blackedOut.setAlpha(0);
+        this.playerChased = false;
+        this.caught = false;
+        this.warning.setAlpha(0);
+        this.warningTween.stop();
+    }
+
     checkMonsterWarning() {
         // if you escape when cross
         if(this.playerChased && this.caught && (this.monsterLocation.r != this.location.r || this.monsterLocation.c != this.location.c)) { // if the player was caught but got away
             this.playerChased = !this.playerChased;
             this.caught = !this.caught;
-            //console.log("No longer being chased");
         }
         
-        if (this.playerChased) {
+        if (this.playerChased && !this.caught) {
             if (this.monsterLocation.r == this.location.r && this.monsterLocation.c == this.location.c) {
+                this.timeSinceCaught = 0;
+                
                 this.blackedOut = this.add.rectangle(0, 0, this.w, this.h)
                     .setOrigin(0,0)
                     .setFillStyle(0x000000);
                 this.caught = !this.caught;
-                let warning = this.add.text(this.w * 0.5, this.h * 0.3, "Get out now!", { color: '#ffffff', fontSize: 150, fontStyle: 'bold' })
+                let warningText = '';
+                if (this.player.alpha == 1) {
+                    warningText = 'Get Out Now';
+                }
+                else {
+                    warningText = 'Something is here.\nStay hidden!';
+                }
+                this.warning = this.add.text(this.w * 0.5, this.h * 0.3, warningText, { color: '#ffffff', fontSize: 150, fontStyle: 'bold' })
                     .setOrigin(0.5, 0.5)
                     .setAlign('center')
                     .setStroke(0x000000, 5);
-                this.tweens.add({
-                    targets: warning,
+                this.warningTween = this.tweens.add({
+                    targets: this.warning,
                     alpha: 0,
                     ease: "Linear",
+                    repeat: -1,
+                    yoyo: true,
                     duration: 3000, 
                 });
             }

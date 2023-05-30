@@ -30,17 +30,6 @@ class Start extends GameLevel {
         //hide.hideableObjects = [];
         this.initializeCabinet();
 
-        // if (this.location.r === 3 && this.location.c === 1) { // if the player is in the safe room
-        //     this.cabinet = this.physics.add.image(this.w * 0.3, this.h * 0.2, 'cabinet');
-        //     // this.physics.add.overlap(this.player, this.cabinet, () => {
-        //     //     this.player.setAlpha(0)
-        //     // })
-        // }
-
-        // if(this.isHidden()){
-        //     this.player.setAlpha(0);            
-        // }
-
         this.checkMonsterWarning();
 
         // inputs
@@ -62,6 +51,8 @@ class Start extends GameLevel {
 
     update(time, delta) {
 
+        const {keys} = this; // this.keys
+
         if (this.playerChased) {
             this.chaseTime += delta;
             if (this.chaseTime > 5000) { // every 5 seconds of chasing, the monster will get closer
@@ -70,7 +61,16 @@ class Start extends GameLevel {
             }
         }
 
-        const {keys} = this; // this.keys
+        if (this.caught && this.player.alpha == 0) {
+            this.timeSinceCaught += delta;
+            if (this.timeSinceCaught > 5000) { // every 5 seconds of chasing, the monster will get closer
+                this.notCaught();
+            }
+        }
+        else {
+            // checks if interaction is available
+            this.checkHideable();
+        }
         
         this.player.setVelocity(0);
         // movement
@@ -93,29 +93,6 @@ class Start extends GameLevel {
         if(keys.c.isDown) {
             this.chase(1);
         } 
-
-        //changed THIS TO HIDE BECAUSE OF THE NEW FILE NAME
-        // if(this.player.alpha === 0){
-        //     if(!hide.isOverlap(this.player, this.cabinet)){
-        //         this.player.setAlpha(1);
-        //     }
-        // }
-        // if(hide.isOverlap(this.player, this.cabinet) && keys.e.isDown){
-        //     this.player.setAlpha(0);
-        // }
-
-        // checks if interaction is available
-        this.checkHideable();
-        // if(this.checkHideable()){
-        //     console.log('hiding');
-        //     if(keys.h.isDown){
-        //         this.player.setAlpha(0);
-        //     }
-        // } else {
-        //     if(keys.h.isDown){
-        //         this.player.setAlpha(1);
-        //     }
-        // }
     }
 
 
@@ -226,7 +203,7 @@ class Start extends GameLevel {
         this.SWall = this.physics.add.existing(this.SW, true);
     }
 
-    createDoor(x1, y1, x2, y2, row_change, location_change) {
+    createDoor(x1, y1, x2, y2/*, row_change, location_change*/) {
         let r = this.add.rectangle(x1, y1, x2, y2)
             .setOrigin(0, 0)
             .setFillStyle(0x42280E);
@@ -258,7 +235,6 @@ class Start extends GameLevel {
             if (this.isOverlap(this.player, object.zoneObject)) {
                 if (object.hSprite.alpha === 0) {
                     object.hSprite.setAlpha(1);
-                    console.log("overlap");
                     
                     // start tween
                     this.hTween = this.tweens.add({
@@ -278,6 +254,11 @@ class Start extends GameLevel {
                     object.hSprite.setAlpha(0); // hSprite disappears
                     object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
                     this.hTween.stop(); // stop hSprite tween bounce
+                } 
+                //fixing the out of hiding bug
+                if (object.hSprite.alpha === 0){
+                    this.player.setAlpha(1);
+                    this.cameras.main.setBackgroundColor('#444');
                 }
             }
         }
