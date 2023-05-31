@@ -11,6 +11,8 @@ class GameLevel extends Phaser.Scene {
         this.inventoryImages = data.inventoryImages || [];
         this.inventoryDisplaying = data.inventoryDisplaying || false;
         this.itemLocations = data.itemLocations || [];
+        this.fileLocations = data.fileLocations || [];
+        this.fileItems = data.fileItems || [];
     }
 
     constructor(key, name) {
@@ -19,13 +21,14 @@ class GameLevel extends Phaser.Scene {
     }
 
     create() {
-        this.transitionDuration = 500;
+        this.transitionDuration = 250;
 
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
 
-        this.speed = 500;
+        this.speed = 1500; // should be 500
+        this.paused = false;
         this.hideableObjects = [];
 
         this.cameras.main.setBackgroundColor('#444');
@@ -73,7 +76,8 @@ class GameLevel extends Phaser.Scene {
 
     initializePlayer() {
         this.player = this.physics.add.image(this.playerLocation.x, this.playerLocation.y, 'player')
-            .setOrigin(0, 0);
+            .setOrigin(0, 0)
+            .setScale(0.3);
     }
 
     gotoScene(key) {

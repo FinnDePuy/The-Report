@@ -8,21 +8,27 @@ class Start extends GameLevel {
 
     preload() {
         //this.load.image('floor1', 'assets/green.png');
-        this.load.image('cabinetZone', 'assets/RedZone.png');
-        this.load.image('picture', 'assets/Picture.png');
-        this.load.image('phone', 'assets/Phone.png');
-        this.load.image('note', 'assets/Note.png');
-        this.load.image('hSprite', 'assets/hSprite.png');
-        this.load.image('eSprite', 'assets/eSprite.png');
-        this.load.image('player', 'assets/player.png');
-        this.load.image('speechBubble', 'assets/speechBubble.png');
-        this.load.image('cabinet', 'assets/Cabinet.png');
-        this.load.image('cabinet2', 'assets/Cabinet2.png');
-        this.load.spritesheet('icon', 'assets/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
-        this.load.json('map', 'map.json');
-        this.load.image('floor1', 'assets/BG_FLOOR_1.png');
-        this.load.image('floor2', 'assets/blue.png');
-        this.load.image('border1', 'assets/BG_BORDER_1.png');
+        this.load.image('cabinetZone', 'assets/images/RedZone.png');
+        this.load.image('fileCabinet', 'assets/images/File_Cabinet.png');
+        this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
+        this.load.image('picture', 'assets/images/Picture.png');
+        this.load.image('phone', 'assets/images/Phone.png');
+        this.load.image('note', 'assets/images/Note.png');
+        this.load.image('hSprite', 'assets/images/hSprite.png');
+        this.load.image('eSprite', 'assets/images/eSprite.png');
+        this.load.image('player', 'assets/images/alexfront.png');
+        this.load.image('speechBubble', 'assets/images/speechBubble.png');
+        this.load.image('cabinet', 'assets/images/Cabinet.png');
+        this.load.spritesheet('icon', 'assets/images/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
+        this.load.json('map', 'assets/json/map.json');
+        this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
+        this.load.image('floor2', 'assets/images/blue.png');
+        this.load.image('border1', 'assets/images/BG_BORDER_1.png');
+
+        this.load.audio('doorOpen', "assets/audio/Door_Open.mp3");
+        this.load.audio('doorClose', "assets/audio/Door_Close.mp3");
+        this.load.audio('fileOpen', "assets/audio/fileOpen.mp3");
+        this.load.audio('fileClose', "assets/audio/fileClose.mp3");
     }
 
     onEnter() {
@@ -41,6 +47,13 @@ class Start extends GameLevel {
         this.displayInventory();
 
         this.checkMonsterWarning();
+        this.initializeFile();
+
+        this.doorOpenSound = this.sound.add('doorOpen');
+        this.doorCloseSound = this.sound.add('doorClose');
+
+        this.fileOpenSound = this.sound.add('fileOpen');
+        this.fileCloseSound = this.sound.add('fileClose');
 
         // //super basic implementation
         // //creates an intem adds to the inventory instantly then displays what you have collected
@@ -74,59 +87,60 @@ class Start extends GameLevel {
     }
 
     update(time, delta) {
+        if (!this.paused) {
+            const {keys} = this; // this.keys
 
-        const {keys} = this; // this.keys
+            if (this.playerChased) {
+                this.chaseTime += delta;
+                if (this.chaseTime > 5000) { // every 5 seconds of chasing, the monster will get closer
+                    this.chaseTime -= 5000;
+                    this.updateMonsterLocation();
+                }
+            }
 
-        if (this.playerChased) {
-            this.chaseTime += delta;
-            if (this.chaseTime > 5000) { // every 5 seconds of chasing, the monster will get closer
-                this.chaseTime -= 5000;
-                this.updateMonsterLocation();
+            if (this.caught && this.player.alpha == 0) {
+                this.timeSinceCaught += delta;
+                if (this.timeSinceCaught > 5000) { // every 5 seconds of chasing, the monster will get closer
+                    this.notCaught();
+                }
             }
-        }
+            else {
+                // checks if interaction is available
+                this.checkHideable();
+            }
+            
+            this.player.setVelocity(0);
+            // movement
+            if (this.player.alpha == 1) { // if player is not hiding
+                if(keys.left.isDown || keys.a.isDown) {
+                    this.player.setVelocityX(-this.speed);
+                }
+                if(keys.right.isDown || keys.d.isDown) {
+                    this.player.setVelocityX(this.speed);
+                }
+                if(keys.up.isDown || keys.w.isDown) {
+                    this.player.setVelocityY(-this.speed);
+                } 
+                if(keys.down.isDown || keys.s.isDown) {
+                    this.player.setVelocityY(this.speed);
+                } 
+            }
 
-        if (this.caught && this.player.alpha == 0) {
-            this.timeSinceCaught += delta;
-            if (this.timeSinceCaught > 5000) { // every 5 seconds of chasing, the monster will get closer
-                this.notCaught();
-            }
-        }
-        else {
-            // checks if interaction is available
-            this.checkHideable();
-        }
-        
-        this.player.setVelocity(0);
-        // movement
-        if (this.player.alpha == 1) { // if player is not hiding
-            if(keys.left.isDown || keys.a.isDown) {
-                this.player.setVelocityX(-this.speed);
-            }
-            if(keys.right.isDown || keys.d.isDown) {
-                this.player.setVelocityX(this.speed);
-            }
-            if(keys.up.isDown || keys.w.isDown) {
-                this.player.setVelocityY(-this.speed);
+            // lets the player get chased again
+            if(keys.c.isDown) {
+                this.chase(1);
             } 
-            if(keys.down.isDown || keys.s.isDown) {
-                this.player.setVelocityY(this.speed);
-            } 
-        }
 
-        // lets the player get chased again
-        if(keys.c.isDown) {
-            this.chase(1);
-        } 
+            if(this.item != null) {
+                if(this.item.itemImage.alpha == 1) {
+                    this.checkPickup();
+                }
+            }
 
-        if(this.item != null) {
-            if(this.item.itemImage.alpha == 1) {
-                this.checkPickup();
+            if(this.location.r === 3 && this.location.c === 1) {
+                this.checkInteractable();
             }
         }
-
-        // if(this.isOverlap(this.player, note1)){
-        //     this.pickUpItem(note1);
-        // }
     }
 
 
@@ -165,7 +179,7 @@ class Start extends GameLevel {
         this.physics.add.collider(this.SWall, this.player);
 
         if(this.NDoor) {
-            this.physics.add.collider(this.NDoor, this.player, () => {this.gotoDoor(true, -1, 912, this.h * 0.8);}, null, this);
+            this.physics.add.collider(this.NDoor, this.player, () => {this.gotoDoor(true, -1, 912, this.h * 0.7);}, null, this);
         }
         if(this.SDoor) {
             this.physics.add.collider(this.SDoor, this.player, () => {this.gotoDoor(true, 1, 912, this.h * 0.12);}, null, this);
@@ -345,12 +359,21 @@ class Start extends GameLevel {
                         this.hidingFloor.destroy();
                         this.hidingFloor = null;
                     }
-                    //this.cameras.main.setBackgroundColor('#444');
+                    
+                    this.doorCloseSound.stop();
+                    this.doorOpenSound.stop();
+
+                    this.doorCloseSound.play();
+
                 }
                 else {
                     this.player.setAlpha(0);
+
+                    this.doorCloseSound.stop();
+                    this.doorOpenSound.stop();
+                    this.doorOpenSound.play();
+
                     this.hidingFloor = this.add.image(0, 0, 'floor2').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
-                    //this.cameras.main.setBackgroundColor('#212121');
                 }
             }
         });
@@ -394,10 +417,10 @@ class Start extends GameLevel {
         var bound1 = player.getBounds();
         var bound2 = item.getBounds();
         // increase hitbox around items to allow interaction
-        bound2.width += 300;
-        bound2.x -= 150;
-        bound2.height += 300;
-        bound2.y -= 150;
+        bound2.width += 250;
+        bound2.x -= 125;
+        bound2.height += 250;
+        bound2.y -= 125;
         return Phaser.Geom.Intersects.RectangleToRectangle(bound1, bound2);
     }
 
@@ -519,9 +542,78 @@ class Start extends GameLevel {
 
     // to be done by Wednesday
     // makes the cabinet and and allows items to be put into
-    createItemCabinet() {
-        let Files = this.map.Levels[3][1].File;
-        this.physics.add.collider(this.physics.add.existing(Files, true), this.player);
+
+
+
+    checkInteractable(){
+        for(let i = 0; i < this.fileLocations.length; i++) {
+           let object = this.fileLocations[i];//this is the line
+            if(this.isItemOverlap(this.player, object.zoneObject)) {
+                if(object.eSprite.alpha === 0) {
+                    object.eSprite.setAlpha(1);
+
+                    this.eTween = this.tweens.add({
+                        targets: object.eSprite,
+                        y: '-=10', // move up 10 pixels
+                        ease: 'Power1',
+                        duration: 500,
+                        repeat: -1, // Repeat forever
+                        repeatDelay: 500,
+                        yoyo: true 
+                    });
+                }
+                return true;
+            }
+            else {
+                if (object.eSprite.alpha === 1) {
+                    object.eSprite.setAlpha(0); // eSprite disappears
+                    object.eSprite.y = object.fileObject.y;  // return eSprite to starting location
+                    this.eTween.stop(); // stop eSprite tween bounce
+                } 
+            }
+        }
+        return false;
+    }
+
+
+
+    createFileCabinet(object, zone, e, x, y) {
+        let fileO = this.add.image(x, y, object).setScale(1);
+        let zoneO = this.add.image(x, y + 100, zone).setAlpha(0).setScale(0.8, 1);
+        let eSpr = this.add.image(x + 200, y, e).setAlpha(0);
+
+        if(x > this.w * 0.8){
+            eSpr.x -= 400;
+        }
+
+        return {
+            fileObject : fileO,
+            zoneObject : zoneO,
+            eSprite : eSpr
+        };
+    }
+
+    initializeFile(){
+        if(this.location.r === 3 && this.location.c === 1){
+            let Files = this.map.Levels[3][1].File;
+            if(Files){
+                for (let i = 0; i <= 1 ; i++){
+                    let fileCabinetName = i === 1 ? 'fileCabinet1' : 'fileCabinet';
+                    this.fileLocations.push(this.createFileCabinet(fileCabinetName, 'cabinetZone', 'eSprite', Files[i].x, Files[i].y));
+                    this.physics.add.collider(this.physics.add.existing(this.fileLocations[i].fileObject, true), this.player);
+                }
+            }
+            this.input.keyboard.on('keydown-' + 'E', () => {
+                if(this.checkInteractable()){
+                    console.log("worked");
+
+                    this.fileOpenSound.stop();
+                    this.fileCloseSound.stop();
+
+                    this.fileOpenSound.play();
+                }
+            });
+        }
     }
 
     // makes the item in backpack alpha .5 to show its in the desk
@@ -529,6 +621,12 @@ class Start extends GameLevel {
 
     }
 
+    //opens the file cabinet and 
+    openFileCabinet() {
+
+    }
+
+    
     // shows the items icons
     showBackpack() {
 
@@ -559,12 +657,6 @@ class Start extends GameLevel {
     displayItem(item) {
         this.showTextBox("Congrats you have found " + item.itemName, 50, 0);
     }
-
-    // spawns the items into the rooms potentially random spawning
-    spawnItems() {
-
-    }
-
 }
 
 
