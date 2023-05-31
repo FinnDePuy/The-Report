@@ -7,6 +7,10 @@ class GameLevel extends Phaser.Scene {
         this.chaseTime = data.chaseTime || 0;
         this.caught = data.caught || false;
         this.everChased = data.everChased || false;
+        this.inventory = data.inventory || [];
+        this.inventoryImages = data.inventoryImages || [];
+        this.inventoryDisplaying = data.inventoryDisplaying || false;
+        this.itemLocations = data.itemLocations || [];
     }
 
     constructor(key, name) {
@@ -23,8 +27,6 @@ class GameLevel extends Phaser.Scene {
 
         this.speed = 500;
         this.hideableObjects = [];
-        this.findableObjects = [];
-        this.inventory = [];
 
         this.cameras.main.setBackgroundColor('#444');
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);
@@ -85,7 +87,11 @@ class GameLevel extends Phaser.Scene {
                 chaseTime: this.chaseTime,
                 monsterLocation: this.monsterLocation,
                 caught: this.caught,
-                everChased: this.everChased
+                everChased: this.everChased,
+                inventory: this.inventory,
+                inventoryImages: this.inventoryImages,
+                inventoryDisplaying: this.inventoryDisplaying,
+                itemLocations: this.itemLocations
             });
         });
     }
@@ -266,10 +272,6 @@ class GameLevel extends Phaser.Scene {
             this.monsterLocation.c--;
         }
     }
-
-    // isClose(item1, item2){
-    //     var bound1 = item1.getBounds() 
-    // }
 
     onEnter() {
         console.warn('This GameScene did not implement onEnter():', this.constructor.name);

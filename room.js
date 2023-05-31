@@ -9,6 +9,8 @@ class Start extends GameLevel {
     preload() {
         //this.load.image('floor1', 'assets/green.png');
         this.load.image('cabinetZone', 'assets/RedZone.png');
+        this.load.image('picture', 'assets/Picture.png');
+        this.load.image('phone', 'assets/Phone.png');
         this.load.image('note', 'assets/Note.png');
         this.load.image('hSprite', 'assets/hSprite.png');
         this.load.image('eSprite', 'assets/eSprite.png');
@@ -18,6 +20,9 @@ class Start extends GameLevel {
         this.load.image('cabinet2', 'assets/Cabinet2.png');
         this.load.spritesheet('icon', 'assets/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
         this.load.json('map', 'map.json');
+        this.load.image('floor1', 'assets/BG_FLOOR_1.png');
+        this.load.image('floor2', 'assets/blue.png');
+        this.load.image('border1', 'assets/BG_BORDER_1.png');
     }
 
     onEnter() {
@@ -29,23 +34,25 @@ class Start extends GameLevel {
         this.initializeDoors();
         this.setCollision();
 
-        //hide.hideableObjects = [];
         this.initializeCabinet();
+
+        this.initializeItemLocations();
+        this.initializeItem();
+        this.displayInventory();
 
         this.checkMonsterWarning();
 
-
-        //super basic implementation
-        //creates an intem adds to the inventory instantly then displays what you have collected
-        let note = this.createItem('note', 175, 200, 'The First Note');
-        //adds the created item into the findableobjects list to be tracked for collision later
-        this.findableObjects.push(note);
-        //prints to make sure we got the item
-        console.log(this.findableObjects[0].itemName);
-        //adds the item to the player inventory at this.inventory
-        this.pickUpItem(note);
-        //displays the item with the characters face at the bottom
-        this.displayItem(note);
+        // //super basic implementation
+        // //creates an intem adds to the inventory instantly then displays what you have collected
+        // let note = this.createItem('note', 175, 200, 'The First Note');
+        // //adds the created item into the findableobjects list to be tracked for collision later
+        // this.findableObjects.push(note);
+        // //prints to make sure we got the item
+        // console.log(this.findableObjects[0].itemName);
+        // //adds the item to the player inventory at this.inventory
+        // this.pickUpItem(note);
+        // //displays the item with the characters face at the bottom
+        // this.displayItem(note);
 
 
 
@@ -110,6 +117,12 @@ class Start extends GameLevel {
         if(keys.c.isDown) {
             this.chase(1);
         } 
+
+        if(this.item != null) {
+            if(this.item.itemImage.alpha == 1) {
+                this.checkPickup();
+            }
+        }
 
         // if(this.isOverlap(this.player, note1)){
         //     this.pickUpItem(note1);
@@ -208,25 +221,33 @@ class Start extends GameLevel {
     createWalls() {
         // Miles
         // Creates North West East and South walls
-        this.NW = this.add.rectangle(0, 0, this.w, this.h * 0.05)
+        this.add.image(0, 0, 'floor1').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
+
+        this.NW = this.add.rectangle(0, 0, this.w, this.h * 0.04)
             .setOrigin(0,0)
-            .setFillStyle(0x323232);
+            .setFillStyle(0x323232)
+            .setVisible(false);
         this.WW = this.add.rectangle(0, 0, this.w * 0.025, this.h)
             .setOrigin(0,0)
-            .setFillStyle(0x323232);
+            .setFillStyle(0x323232)
+            .setVisible(false);
         this.EW = this.add.rectangle(this.w * 0.975, 0, this.w * 0.025, this.h)
             .setOrigin(0,0)
-            .setFillStyle(0x323232);
-        this.SW = this.add.rectangle(0, this.h * 0.95, this.w, this.h * 0.05)
+            .setFillStyle(0x323232)
+            .setVisible(false);
+        this.SW = this.add.rectangle(0, this.h * 0.963, this.w, this.h * .05)
             .setOrigin(0,0)
-            .setFillStyle(0x323232);
+            .setFillStyle(0x323232)
+            .setVisible(false);
         this.NWall = this.physics.add.existing(this.NW, true);
         this.WWall = this.physics.add.existing(this.WW, true);
         this.EWall = this.physics.add.existing(this.EW, true);
         this.SWall = this.physics.add.existing(this.SW, true);
+
+        this.add.image(0, 0, 'border1').setOrigin(0, 0).setDisplaySize(this.w, this.h);
     }
 
-    createDoor(x1, y1, x2, y2/*, row_change, location_change*/) {
+    createDoor(x1, y1, x2, y2) {
         let r = this.add.rectangle(x1, y1, x2, y2)
             .setOrigin(0, 0)
             .setFillStyle(0x42280E);
@@ -278,16 +299,16 @@ class Start extends GameLevel {
                     object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
                     this.hTween.stop(); // stop hSprite tween bounce
                 } 
-                //fixing the out of hiding bug
-                if (object.hSprite.alpha === 0){
-                    this.player.setAlpha(1);
-                    this.cameras.main.setBackgroundColor('#444');
-                }
-
-                //fixing the out of hiding bug
-                if (object.hSprite.alpha === 0){
-                    this.player.setAlpha(1);
-                    this.cameras.main.setBackgroundColor('#444');
+                if (i == this.hideableObjects.length - 1) {
+                    //fixing the out of hiding bug
+                    if (object.hSprite.alpha === 0){
+                        this.player.setAlpha(1);
+                        if (this.hidingFloor) {
+                            this.hidingFloor.destroy();
+                            this.hidingFloor = null;
+                        }
+                        //this.cameras.main.setBackgroundColor('#444');
+                    }
                 }
             }
         }
@@ -320,12 +341,16 @@ class Start extends GameLevel {
             if(this.checkHideable()) {
                 if(this.player.alpha == 0) {
                     this.player.setAlpha(1);
-                    // Miles (WHEN HIDING MAKE BACKGROUND DARKER)
-                    this.cameras.main.setBackgroundColor('#444');
+                    if (this.hidingFloor) {
+                        this.hidingFloor.destroy();
+                        this.hidingFloor = null;
+                    }
+                    //this.cameras.main.setBackgroundColor('#444');
                 }
                 else {
                     this.player.setAlpha(0);
-                    this.cameras.main.setBackgroundColor('#212121');
+                    this.hidingFloor = this.add.image(0, 0, 'floor2').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
+                    //this.cameras.main.setBackgroundColor('#212121');
                 }
             }
         });
@@ -364,10 +389,125 @@ class Start extends GameLevel {
     //items have the following parameters x, y, name
     //12 items total
 
+    //checks if player and item are overlapping
+    isItemOverlap(player, item){
+        var bound1 = player.getBounds();
+        var bound2 = item.getBounds();
+        // increase hitbox around items to allow interaction
+        bound2.width += 300;
+        bound2.x -= 150;
+        bound2.height += 300;
+        bound2.y -= 150;
+        return Phaser.Geom.Intersects.RectangleToRectangle(bound1, bound2);
+    }
 
+    toggleInventory() {
+        if(this.inventoryDisplaying) {
+            for(let i = 0; i < this.inventoryImages.length; i++) {
+                this.inventoryImages[i].setAlpha(0);
+            }
+        }
+        else {
+            for(let i = 0; i < this.inventoryImages.length; i++) {
+                this.inventoryImages[i].setAlpha(1);
+            }
+        }
+        this.inventoryDisplaying = !this.inventoryDisplaying;
+    }
+
+    displayInventory() {
+        // redraws inventory items at start of scene
+        for(let i = 0; i < this.inventoryImages.length; i++) {
+            // this.inventoryImages[i].setAlpha(1).setDepth(1).setVisible(true).setActive(true);
+            // this.inventoryImages[i].scene = Start;
+            this.inventoryImages[i] = this.add.image(this.inventoryImages[i].x, this.inventoryImages[i].y, this.inventoryImages[i].name).setScale(this.inventoryImages[i].scale).setName(this.inventoryImages[i].name);
+        }
+    }
+
+    checkPickup() {
+        let item = this.item.itemImage;
+        if (item.alpha == 1) {
+            if (this.isItemOverlap(this.player, item)) {
+                if (this.eSpr.alpha == 0) {
+                    this.eSpr.setAlpha(1);
+                    this.eTween = this.tweens.add({
+                        targets: this.eSpr,
+                        y: '-=10', // move up 10 pixels
+                        ease: 'Power1',
+                        duration: 500,
+                        repeat: -1, // Repeat forever
+                        repeatDelay: 500,
+                        yoyo: true 
+                    });
+                }
+                return true;
+            }
+            else {
+                if (this.eSpr.alpha == 1) {
+                    this.eSpr.setAlpha(0);  
+                    this.eTween.stop();
+                }
+            }
+        }
+        return false;
+    }
+
+    initializeItem() {
+        let item = this.roomHasItem();
+        this.item = null; // if room doesn't have item, this.item will be null
+        if (item != null) {
+            this.item = this.createItem(item.name, this.w * 0.5, this.h * 0.5, item.name);
+            //this.physics.add.collider(this.physics.add.existing(this.item.itemImage, true), this.player);
+            this.eSpr = this.add.image(this.item.itemImage.x + 150, this.item.itemImage.y, 'eSprite').setAlpha(0);
+            this.input.keyboard.on('keydown-' + 'E', () => { 
+                if(this.checkPickup()) {
+                    this.pickUpItem(this.item);
+                }
+            });
+        }
+    }
+
+    roomHasItem() {
+        for(let i = 0; i < this.itemLocations.length; i++) {
+            if (this.itemLocations[i].r == this.location.r && this.itemLocations[i].c == this.location.c && !this.hasItem(this.itemLocations[i].name)) {
+                return this.itemLocations[i];
+            }
+        }
+        return null;
+    }
+
+    initializeItemLocations() {
+        if(this.itemLocations.length == 0) { // if item locations hasn't been initialized yet
+            let itemNames = ['note', 'phone', 'picture'];
+            let existingLocations = [];
+            let itemLocation;
+            for (let i = 0; i < itemNames.length; i++) { // gives all items a random location
+                itemLocation = {
+                    r: Phaser.Math.Between(0, 2),
+                    c: Phaser.Math.Between(0, 2)
+                }
+                while(existingLocations.find(l => l.r === itemLocation.r && l.c === itemLocation.c)) { // while the random location already has an item
+                    itemLocation = {
+                        r: Phaser.Math.Between(0, 2),
+                        c: Phaser.Math.Between(0, 2)
+                    }
+                }
+                existingLocations.push(itemLocation);
+                let item = {
+                    name: itemNames[i],
+                    r: itemLocation.r,
+                    c: itemLocation.c,
+                    obtained: false
+                }
+                //console.log(item.name + ' location: ' + item.r + ' ' + item.c);
+                this.itemLocations.push(item);
+            }
+        }
+    }
 
     createItem(object, x, y, name) {
-        let picture = this.add.image(x, y, object); //maybe change scale
+        let scale = name === 'phone' ? 0.6 : 0.4;
+        let picture = this.add.image(x, y, object).setScale(scale).setDepth(-1); //maybe change scale
         let iName = name;
         return { 
             itemImage : picture,
@@ -375,66 +515,55 @@ class Start extends GameLevel {
         };
     }
 
-    //makes an inventory to store items in
+    // makes an inventory to store items in
 
-    //to be done by Wednesday
-    //makes the cabinet and and allows items to be put into
+    // to be done by Wednesday
+    // makes the cabinet and and allows items to be put into
     createItemCabinet() {
         let Files = this.map.Levels[3][1].File;
         this.physics.add.collider(this.physics.add.existing(Files, true), this.player);
     }
 
-    //makes the item in backpack alpha .5 to show its in the desk
+    // makes the item in backpack alpha .5 to show its in the desk
     inFileCabinet() {
 
     }
 
-    //shows the items icons
+    // shows the items icons
     showBackpack() {
 
     }
 
-    //boolean check if you have a certain item
-    hasItem(item) {
-        if(this.inventory.includes(item)){
-            return true;
-        } else {
-            return false;
-        }
+    // boolean check if you have a certain item by name
+    hasItem(iName) {
+        return this.inventory.some(i => i.itemName === iName);
     }
 
-    //grabs the item and shows the data about the item
+    // grabs the item and shows the data about the item
     pickUpItem(item) {
-        this.inventory.push(item);
-        console.log(this.inventory[0].itemName);
-        item.itemImage.setAlpha(0);//hide the note when its picked up
+        let i = item;
+        item.itemImage.setAlpha(0);
+        //item.itemImage.destroy(); // destroys the old note image and collider
+        this.inventory.push(i);
+        let scale = i.itemName === 'phone' ? 0.3 : 0.2;
+        let image = this.add.image(this.w * 0.9 - 100 * this.inventoryImages.length, this.h * 0.9, i.itemName).setScale(scale).setAlpha(0);
+        if(!this.inventoryDisplay) {
+            image.setAlpha(1);
+        }
+        image.name = i.itemName;
+        this.inventoryImages.push(image);
+        this.eSpr.setAlpha(0);
     }
 
-    //shows the name and icon of the item after pickup
+    // shows the name and icon of the item after pickup
     displayItem(item) {
         this.showTextBox("Congrats you have found " + item.itemName, 50, 0);
     }
 
-    //spawns the items into the rooms potentially random spawning
+    // spawns the items into the rooms potentially random spawning
     spawnItems() {
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 
