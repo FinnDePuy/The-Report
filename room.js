@@ -624,19 +624,19 @@ class Start extends GameLevel {
             this.input.keyboard.on('keydown-' + 'E', () => {
                 if(this.checkInteractable() && !this.paused){
                     if(this.inventory.length > 0) {
-                        console.log("worked");
+                        //console.log("worked");
                         this.openFileCabinet();
-                        this.fileOpenSound.stop();
-                        this.fileCloseSound.stop();
-
-                        this.fileOpenSound.play();
+                    }
+                    else {
+                        this.showTextBox("I wonder what I should put in here.", 50, 1);
+                        this.time.delayedCall(5000, () => { this.hideTextBox(); });
                     }
                 }
             });
         }
     }
 
-    // makes the item in backpack alpha .5 to show its in the desk
+    // makes the item in backpack alpha .5 to show its in the file cabinet
     inFileCabinet() {
         let size = this.inventory.length;
         for(let i = 0; i < size; i++){
@@ -648,9 +648,19 @@ class Start extends GameLevel {
 
 
     //displays the file inside the file cabinet 
-    //THIS IS NOT DONE IT DOES NOT WORK FOR FILE IT DOES FOR ITEM
-    displayFile(item) {
-        // redraws inventory items at start of scene
+    displayFile(item) {   
+        this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
+    }
+
+    //opens the file cabinet and displays the items to be navigated through
+    openFileCabinet() {
+        this.fileOpenSound.stop();
+        this.fileCloseSound.stop();
+        this.fileOpenSound.play();
+
+        this.putInFile();
+        this.inFileCabinet();
+
         this.paused = true;
 
         this.blurRectangle = this.add.rectangle(0, 0, this.w, this.h)
@@ -672,42 +682,84 @@ class Start extends GameLevel {
             .on('pointerdown', () => {
                 this.closeWindow.destroy();
                 this.blurRectangle.destroy();
+                this.left.destroy();
+                this.right.destroy();
                 this.itemDisplay.destroy();
                 this.paused = false;
             });
-        
-        this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
-    }
 
-    //opens the file cabinet and displays the items to be navigated through
-    openFileCabinet() {
-        this.putInFile();
-        this.inFileCabinet();
-        let size = this.inventoryImages.length;
+
         let i = 0;
-        this.displayFile(this.inventoryImages[0]);
-        //while(true){
-            //if(left pressed && i > 0)
-            //i--
-            //display
-            //if(right pressed && i < size)
-            //i++
-            //display
-            //break condition if x is pressed
-            this.displayFile(this.inventoryImages[i]);
-        //}
+        this.displayFile(this.inventoryImages[i]);
+        let changeImage = true;
+
+        this.left = this.add.image(this.w * 0.15, this.h * 0.5, 'lArrow')
+            .setScale(2)
+            .setInteractive()
+            .setVisible(false)
+            .on('pointerover', () => {
+                this.left.setScale(1.6);
+            })
+            .on('pointerout', () => {
+                this.left.setScale(1.5);
+            })
+            .on('pointerdown', () => {
+                if (changeImage) {
+                    changeImage = false;
+                    if (i === this.inventory.length - 1) {
+                        this.right.setVisible(true);
+                    }
+                    if (i > 0) {
+                        i--;
+                    }
+                    if (i === 0) {
+                        this.left.setVisible(false);
+                    }
+                    this.itemDisplay.destroy();
+                    this.displayFile(this.inventoryImages[i]);
+                    this.time.delayedCall(100, () => { changeImage = true; });
+                }
+            });
+
+        this.right = this.add.image(this.w * 0.85, this.h * 0.5, 'rArrow')
+            .setScale(2)
+            .setInteractive()
+            .setVisible(this.inventory.length > 1 ? true : false) // right arrow will only start visible if there is more than 1 item in inventory
+            .on('pointerover', () => {
+                this.right.setScale(1.6);
+            })
+            .on('pointerout', () => {
+                this.right.setScale(1.5);
+            })
+            .on('pointerdown', () => {
+                if (changeImage) {
+                    changeImage = false;
+                    if (i === 0) {
+                        this.left.setVisible(true);
+                    }
+                    if (i < this.inventory.length - 1) {
+                        i++;
+                    }
+                    if (i === this.inventory.length - 1) {
+                        this.right.setVisible(false);
+                    }
+                    this.itemDisplay.destroy();
+                    this.displayFile(this.inventoryImages[i]);
+                    this.time.delayedCall(100, () => { changeImage = true; });
+                }
+            });
     }
 
     //add an item from inventory into the file cabinet
-    putInFile(){
+    putInFile() {
         let size = this.inventory.length;
         for(let i = 0; i < size; i++){
             let temp = this.inventory[i];
             let temp2 = this.inventoryImages[i];
             if (!temp.inFile) {
                 temp.inFile = true;
-                console.log(temp.itemName);
-                console.log(temp2);
+                //console.log(temp.itemName);
+                //console.log(temp2);
                 this.fileItems.push(temp);
                 this.fileImages.push(temp2);
             }
