@@ -367,7 +367,7 @@ class Start extends GameLevel {
                     this.doorCloseSound.stop();
                     this.doorOpenSound.stop();
 
-                    this.doorCloseSound.play();
+                    this.doorOpenSound.play();
 
                 }
                 else {
@@ -375,7 +375,8 @@ class Start extends GameLevel {
 
                     this.doorCloseSound.stop();
                     this.doorOpenSound.stop();
-                    this.doorOpenSound.play();
+
+                    this.doorCloseSound.play();
 
                     this.hidingFloor = this.add.image(0, 0, 'floor2').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
                 }
@@ -506,8 +507,10 @@ class Start extends GameLevel {
 
     initializeItemLocations() {
         if(this.itemLocations.length == 0) { // if item locations hasn't been initialized yet
-            let itemNames = ['note', 'phone', 'picture'];
-            let existingLocations = [];
+            let itemNames = ['note', 'phone', 'picture'];//extra items go here
+            //r:0 c:1
+            
+            let existingLocations = [{r:0, c:1}]; //add non rooms to this list
             let itemLocation;
             // Note will be in the first room outside the safe room
             let note = {
@@ -694,7 +697,7 @@ class Start extends GameLevel {
         let changeImage = true;
 
         this.left = this.add.image(this.w * 0.15, this.h * 0.5, 'lArrow')
-            .setScale(2)
+            .setScale(1.5)
             .setInteractive()
             .setVisible(false)
             .on('pointerover', () => {
@@ -722,7 +725,7 @@ class Start extends GameLevel {
             });
 
         this.right = this.add.image(this.w * 0.85, this.h * 0.5, 'rArrow')
-            .setScale(2)
+            .setScale(1.5)
             .setInteractive()
             .setVisible(this.inventory.length > 1 ? true : false) // right arrow will only start visible if there is more than 1 item in inventory
             .on('pointerover', () => {

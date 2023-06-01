@@ -104,7 +104,7 @@ class GameLevel extends Phaser.Scene {
         });
     }
 
-    chase(c) {
+    chase(c) {  // CHANGE
         if (!this.playerChased && ((this.location.r == 0 && !this.everChased) || c == 1)) { // Player starts getting chased when they reach the top of the map
             this.everChased = true;
             this.playerChased = !this.playerChased;
@@ -137,7 +137,7 @@ class GameLevel extends Phaser.Scene {
     }
 
     updateMonsterLocation() {
-        let r = Phaser.Math.Between(0, 2);
+        let r = Phaser.Math.Between(0, 2); // CHANGE
         if (r === 0) { // 1 in 3 to move the monster 2 rooms closer
             this.updateMonsterRow();
             this.updateMonsterColumn();
