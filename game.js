@@ -12,6 +12,7 @@ class GameLevel extends Phaser.Scene {
         this.inventoryDisplaying = data.inventoryDisplaying || false;
         this.itemLocations = data.itemLocations || [];
         this.fileLocations = data.fileLocations || [];
+        this.fileImages = data.fileImages || [];
         this.fileItems = data.fileItems || [];
     }
 
@@ -95,7 +96,10 @@ class GameLevel extends Phaser.Scene {
                 inventory: this.inventory,
                 inventoryImages: this.inventoryImages,
                 inventoryDisplaying: this.inventoryDisplaying,
-                itemLocations: this.itemLocations
+                itemLocations: this.itemLocations,
+                fileLocation: this.fileLocations,
+                fileImages: this.fileImages,
+                fileItems: this.fileItems
             });
         });
     }

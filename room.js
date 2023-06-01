@@ -22,8 +22,14 @@ class Start extends GameLevel {
         this.load.spritesheet('icon', 'assets/images/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
         this.load.json('map', 'assets/json/map.json');
         this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
-        this.load.image('floor2', 'assets/images/blue.png');
+        this.load.image('floor2', 'assets/images/grey.png');
         this.load.image('border1', 'assets/images/BG_BORDER_1.png');
+        this.load.image('noteImage', 'assets/images/PoliceReport2.png');
+        this.load.image('pictureImage', 'assets/images/dating.png');
+        this.load.image('phoneImage', 'assets/images/unfaithful.png');
+        this.load.image('xIcon', 'assets/images/x.png');
+        this.load.image('rArrow', 'assets/images/rightArrow.png');
+        this.load.image('lArrow', 'assets/images/leftArrow.png');
 
         this.load.audio('doorOpen', "assets/audio/Door_Open.mp3");
         this.load.audio('doorClose', "assets/audio/Door_Close.mp3");
@@ -32,9 +38,6 @@ class Start extends GameLevel {
     }
 
     onEnter() {
-        //let room = this.map.Levels[this.location.r][this.location.c];
-        //console.log(room.Doors);
-        //console.log(this.location);
         this.chase(0);
         
         this.initializeDoors();
@@ -87,6 +90,8 @@ class Start extends GameLevel {
     }
 
     update(time, delta) {
+        this.player.setVelocity(0);
+        
         if (!this.paused) {
             const {keys} = this; // this.keys
 
@@ -109,7 +114,6 @@ class Start extends GameLevel {
                 this.checkHideable();
             }
             
-            this.player.setVelocity(0);
             // movement
             if (this.player.alpha == 1) { // if player is not hiding
                 if(keys.left.isDown || keys.a.isDown) {
@@ -258,7 +262,7 @@ class Start extends GameLevel {
         this.EWall = this.physics.add.existing(this.EW, true);
         this.SWall = this.physics.add.existing(this.SW, true);
 
-        this.add.image(0, 0, 'border1').setOrigin(0, 0).setDisplaySize(this.w, this.h);
+        this.add.image(0, 0, 'border1').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
     }
 
     createDoor(x1, y1, x2, y2) {
@@ -352,7 +356,7 @@ class Start extends GameLevel {
             }
         }
         this.input.keyboard.on('keydown-' + 'H', () => { 
-            if(this.checkHideable()) {
+            if(this.checkHideable() && !this.paused) {
                 if(this.player.alpha == 0) {
                     this.player.setAlpha(1);
                     if (this.hidingFloor) {
@@ -441,9 +445,10 @@ class Start extends GameLevel {
     displayInventory() {
         // redraws inventory items at start of scene
         for(let i = 0; i < this.inventoryImages.length; i++) {
-            // this.inventoryImages[i].setAlpha(1).setDepth(1).setVisible(true).setActive(true);
-            // this.inventoryImages[i].scene = Start;
-            this.inventoryImages[i] = this.add.image(this.inventoryImages[i].x, this.inventoryImages[i].y, this.inventoryImages[i].name).setScale(this.inventoryImages[i].scale).setName(this.inventoryImages[i].name);
+            this.inventoryImages[i] = this.add.image(this.inventoryImages[i].x, this.inventoryImages[i].y, this.inventoryImages[i].name)
+                .setScale(this.inventoryImages[i].scale)
+                .setAlpha(this.inventoryImages[i].alpha)
+                .setName(this.inventoryImages[i].name);
         }
     }
 
@@ -483,7 +488,7 @@ class Start extends GameLevel {
             //this.physics.add.collider(this.physics.add.existing(this.item.itemImage, true), this.player);
             this.eSpr = this.add.image(this.item.itemImage.x + 150, this.item.itemImage.y, 'eSprite').setAlpha(0);
             this.input.keyboard.on('keydown-' + 'E', () => { 
-                if(this.checkPickup()) {
+                if(this.checkPickup() && !this.paused) {
                     this.pickUpItem(this.item);
                 }
             });
@@ -504,6 +509,18 @@ class Start extends GameLevel {
             let itemNames = ['note', 'phone', 'picture'];
             let existingLocations = [];
             let itemLocation;
+            // Note will be in the first room outside the safe room
+            let note = {
+                name: itemNames[0],
+                r: 2,
+                c: 1,
+                obtained: false
+            }
+            existingLocations.push({
+                r: note.r,
+                c: note.c
+            });
+            this.itemLocations.push(note);
             for (let i = 0; i < itemNames.length; i++) { // gives all items a random location
                 itemLocation = {
                     r: Phaser.Math.Between(0, 2),
@@ -534,7 +551,8 @@ class Start extends GameLevel {
         let iName = name;
         return { 
             itemImage : picture,
-            itemName : iName
+            itemName : iName,
+            inFile : false
         };
     }
 
@@ -604,13 +622,15 @@ class Start extends GameLevel {
                 }
             }
             this.input.keyboard.on('keydown-' + 'E', () => {
-                if(this.checkInteractable()){
-                    console.log("worked");
+                if(this.checkInteractable() && !this.paused){
+                    if(this.inventory.length > 0) {
+                        console.log("worked");
+                        this.openFileCabinet();
+                        this.fileOpenSound.stop();
+                        this.fileCloseSound.stop();
 
-                    this.fileOpenSound.stop();
-                    this.fileCloseSound.stop();
-
-                    this.fileOpenSound.play();
+                        this.fileOpenSound.play();
+                    }
                 }
             });
         }
@@ -618,12 +638,80 @@ class Start extends GameLevel {
 
     // makes the item in backpack alpha .5 to show its in the desk
     inFileCabinet() {
-
+        let size = this.inventory.length;
+        for(let i = 0; i < size; i++){
+            if(this.inventory[i].inFile){
+                this.inventoryImages[i].setAlpha(0.5);
+            }
+        }
     }
 
-    //opens the file cabinet and 
-    openFileCabinet() {
 
+    //displays the file inside the file cabinet 
+    //THIS IS NOT DONE IT DOES NOT WORK FOR FILE IT DOES FOR ITEM
+    displayFile(item) {
+        // redraws inventory items at start of scene
+        this.paused = true;
+
+        this.blurRectangle = this.add.rectangle(0, 0, this.w, this.h)
+            .setOrigin(0,0)
+            .setFillStyle(0x323232)
+            .setAlpha(0.7)
+            .setVisible(true);
+
+        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.02, 'xIcon')
+            .setOrigin(0, 0)
+            .setScale(1)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.closeWindow.setScale(1.1);
+            })
+            .on('pointerout', () => {
+                this.closeWindow.setScale(1);
+            })
+            .on('pointerdown', () => {
+                this.closeWindow.destroy();
+                this.blurRectangle.destroy();
+                this.itemDisplay.destroy();
+                this.paused = false;
+            });
+        
+        this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
+    }
+
+    //opens the file cabinet and displays the items to be navigated through
+    openFileCabinet() {
+        this.putInFile();
+        this.inFileCabinet();
+        let size = this.inventoryImages.length;
+        let i = 0;
+        this.displayFile(this.inventoryImages[0]);
+        //while(true){
+            //if(left pressed && i > 0)
+            //i--
+            //display
+            //if(right pressed && i < size)
+            //i++
+            //display
+            //break condition if x is pressed
+            this.displayFile(this.inventoryImages[i]);
+        //}
+    }
+
+    //add an item from inventory into the file cabinet
+    putInFile(){
+        let size = this.inventory.length;
+        for(let i = 0; i < size; i++){
+            let temp = this.inventory[i];
+            let temp2 = this.inventoryImages[i];
+            if (!temp.inFile) {
+                temp.inFile = true;
+                console.log(temp.itemName);
+                console.log(temp2);
+                this.fileItems.push(temp);
+                this.fileImages.push(temp2);
+            }
+        }
     }
 
     
@@ -651,11 +739,37 @@ class Start extends GameLevel {
         image.name = i.itemName;
         this.inventoryImages.push(image);
         this.eSpr.setAlpha(0);
+        this.displayItem(image);
     }
 
     // shows the name and icon of the item after pickup
     displayItem(item) {
-        this.showTextBox("Congrats you have found " + item.itemName, 50, 0);
+        this.paused = true;
+
+        this.blurRectangle = this.add.rectangle(0, 0, this.w, this.h)
+            .setOrigin(0,0)
+            .setFillStyle(0x323232)
+            .setAlpha(0.7)
+            .setVisible(true);
+
+        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.02, 'xIcon')
+            .setOrigin(0, 0)
+            .setScale(1)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.closeWindow.setScale(1.1);
+            })
+            .on('pointerout', () => {
+                this.closeWindow.setScale(1);
+            })
+            .on('pointerdown', () => {
+                this.closeWindow.destroy();
+                this.blurRectangle.destroy();
+                this.itemDisplay.destroy();
+                this.paused = false;
+            });
+        
+        this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
     }
 }
 
