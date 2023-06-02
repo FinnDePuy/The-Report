@@ -104,8 +104,8 @@ class GameLevel extends Phaser.Scene {
         });
     }
 
-    chase(c) {  // CHANGE
-        if (!this.playerChased && ((this.location.r == 0 && !this.everChased) || c == 1)) { // Player starts getting chased when they reach the top of the map
+    chase(c) {  // CHANGE 
+        if (!this.playerChased && ((this.location.r == -1 && !this.everChased) || c == 1)) { // Player only gets chased when c key is pressed
             this.everChased = true;
             this.playerChased = !this.playerChased;
             let run = this.add.text(this.w * 0.52, this.h * 0.3, "Run!", { color: '#710C04', fontSize: 150 })
@@ -130,9 +130,9 @@ class GameLevel extends Phaser.Scene {
             }
             this.monsterLocation.c = Phaser.Math.Between(0, 2); // Monster in a random column 
         }
-        if (this.playerChased && this.location.r == 3 && this.location.c == 1) { // safe room stops the player from being chased
+        if (this.playerChased && this.location.r == 3 && this.location.c == 6) { // safe room stops the player from being chased
             this.playerChased = !this.playerChased;
-            this.everChased = false;
+            this.everChased = false;n
         }
     }
 
@@ -196,7 +196,7 @@ class GameLevel extends Phaser.Scene {
             }
             let row_diff = this.monsterLocation.r - this.location.r;
             let col_diff = this.monsterLocation.c - this.location.c;
-            if(row_diff == -1 && col_diff >= -1 && col_diff <= 1) { // North Wall should start flashing red
+            if(row_diff === -1 && col_diff >= -1 && col_diff <= 1) { // North Wall should start flashing red
                 this.NW.setFillStyle(0x710C04);
                 this.NWTween = this.tweens.add({
                     targets: this.NW,
@@ -212,7 +212,7 @@ class GameLevel extends Phaser.Scene {
                 this.NW.setFillStyle(0x323232);
             }
 
-            if(row_diff == 1 && col_diff >= -1 && col_diff <= 1) { // South Wall should start flashing red
+            if(row_diff === 1 && col_diff >= -1 && col_diff <= 1) { // South Wall should start flashing red
                 this.SW.setFillStyle(0x710C04);
                 this.SWTween = this.tweens.add({
                     targets: this.SW,
@@ -228,7 +228,7 @@ class GameLevel extends Phaser.Scene {
                 this.SW.setFillStyle(0x323232);
             }
 
-            if(col_diff == 1 && row_diff >= -1 && row_diff <= 1) { // East Wall should start flashing red
+            if(col_diff === 1 && row_diff >= -1 && row_diff <= 1) { // East Wall should start flashing red
                 this.EW.setFillStyle(0x710C04);
                 this.EWTween = this.tweens.add({
                     targets: this.EW,
@@ -244,7 +244,7 @@ class GameLevel extends Phaser.Scene {
                 this.EW.setFillStyle(0x323232);
             }
 
-            if(col_diff == -1 && row_diff >= -1 && row_diff <= 1) { // West Wall should start flashing red
+            if(col_diff === -1 && row_diff >= -1 && row_diff <= 1) { // West Wall should start flashing red
                 this.WW.setFillStyle(0x710C04);
                 this.WWTween = this.tweens.add({
                     targets: this.WW,

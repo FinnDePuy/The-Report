@@ -59,20 +59,6 @@ class Start extends GameLevel {
         this.fileOpenSound = this.sound.add('fileOpen');
         this.fileCloseSound = this.sound.add('fileClose');
 
-        // //super basic implementation
-        // //creates an intem adds to the inventory instantly then displays what you have collected
-        // let note = this.createItem('note', 175, 200, 'The First Note');
-        // //adds the created item into the findableobjects list to be tracked for collision later
-        // this.findableObjects.push(note);
-        // //prints to make sure we got the item
-        // console.log(this.findableObjects[0].itemName);
-        // //adds the item to the player inventory at this.inventory
-        // this.pickUpItem(note);
-        // //displays the item with the characters face at the bottom
-        // this.displayItem(note);
-
-
-
         // inputs
         const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H} = Phaser.Input.Keyboard.KeyCodes;
         this.keys = this.input.keyboard.addKeys({
@@ -511,13 +497,13 @@ class Start extends GameLevel {
             let itemNames = ['note', 'phone', 'picture'];//extra items go here
             //r:0 c:1
             
-            let existingLocations = [{r:0, c:1}]; //add non rooms to this list
+            let existingLocations = [{r:0, c:5}, { r:1, c:0}, {r:1, c:2}, {r:1, c:6}, {r:2, c:2}, {r:2, c:4}, {r:2, c:6}, {r:3, c:0}, {r:3, c:2}, {r:3, c:4}, {r:3, c:6}, {r:4, c:0}, {r:4, c:2}, {r:5, c:0}, {r:5, c:4}, {r:5, c:6}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}]; //add non rooms to this list
             let itemLocation;
             // Note will be in the first room outside the safe room
             let note = {
                 name: itemNames[0],
-                r: 2,
-                c: 1,
+                r: 5,
+                c: 3,
                 obtained: false
             }
             existingLocations.push({
@@ -525,15 +511,15 @@ class Start extends GameLevel {
                 c: note.c
             });
             this.itemLocations.push(note);
-            for (let i = 0; i < itemNames.length; i++) { // gives all items a random location
+            for (let i = 1; i < itemNames.length; i++) { // gives all items a random location
                 itemLocation = {
-                    r: Phaser.Math.Between(0, 2),
-                    c: Phaser.Math.Between(0, 2)
+                    r: Phaser.Math.Between(0, 6),
+                    c: Phaser.Math.Between(0, 6)
                 }
                 while(existingLocations.find(l => l.r === itemLocation.r && l.c === itemLocation.c)) { // while the random location already has an item
                     itemLocation = {
-                        r: Phaser.Math.Between(0, 2),
-                        c: Phaser.Math.Between(0, 2)
+                        r: Phaser.Math.Between(0, 6),
+                        c: Phaser.Math.Between(0, 6)
                     }
                 }
                 existingLocations.push(itemLocation);
@@ -562,12 +548,8 @@ class Start extends GameLevel {
 
     // makes an inventory to store items in
 
-    // to be done by Wednesday
     // makes the cabinet and and allows items to be put into
-
-
-
-    checkInteractable(){
+    checkInteractable() {
         for(let i = 0; i < this.fileLocations.length; i++) {
            let object = this.fileLocations[i];//this is the line
             if(this.isItemOverlap(this.player, object.zoneObject)) {
@@ -770,11 +752,6 @@ class Start extends GameLevel {
         }
     }
 
-    
-    // shows the items icons
-    showBackpack() {
-
-    }
 
     // boolean check if you have a certain item by name
     hasItem(iName) {
