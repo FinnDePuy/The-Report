@@ -38,6 +38,7 @@ class Start extends GameLevel {
     }
 
     onEnter() {
+        console.log(this.location.r + ", " + this.location.c);
         this.chase(0);
         
         this.initializeDoors();
@@ -141,7 +142,7 @@ class Start extends GameLevel {
                 }
             }
 
-            if(this.location.r === 3 && this.location.c === 1) {
+            if(this.location.r === 6 && this.location.c === 3) {
                 this.checkInteractable();
             }
         }
@@ -615,8 +616,8 @@ class Start extends GameLevel {
     }
 
     initializeFile(){
-        if(this.location.r === 3 && this.location.c === 1){
-            let Files = this.map.Levels[3][1].File;
+        if(this.location.r === 6 && this.location.c === 3){
+            let Files = this.map.Levels[this.location.r][this.location.c].File;
             if(Files){
                 for (let i = 0; i <= 1 ; i++){
                     let fileCabinetName = i === 1 ? 'fileCabinet1' : 'fileCabinet';
