@@ -11,9 +11,6 @@ class Start extends GameLevel {
         this.load.image('cabinetZone', 'assets/images/RedZone.png');
         this.load.image('fileCabinet', 'assets/images/File_Cabinet.png');
         this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
-        this.load.image('picture', 'assets/images/Picture.png');
-        this.load.image('phone', 'assets/images/Phone.png');
-        this.load.image('note', 'assets/images/Note.png');
         this.load.image('hSprite', 'assets/images/hSprite.png');
         this.load.image('eSprite', 'assets/images/eSprite.png');
         this.load.image('player', 'assets/images/alexfront.png');
@@ -24,9 +21,42 @@ class Start extends GameLevel {
         this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
         this.load.image('floor2', 'assets/images/grey.png');
         this.load.image('border1', 'assets/images/BG_BORDER_1.png');
-        this.load.image('noteImage', 'assets/images/PoliceReport2.png');
-        this.load.image('pictureImage', 'assets/images/dating.png');
-        this.load.image('phoneImage', 'assets/images/unfaithful.png');
+        this.load.image('box', 'assets/images/box.png');
+
+
+
+
+
+
+
+        this.load.image('picture', 'assets/images/Picture.png');
+        this.load.image('phone', 'assets/images/Phone.png');
+        this.load.image('note', 'assets/images/Note.png');
+        this.load.image('blackmail', 'assets/images/Note.png');
+        this.load.image('father', 'assets/images/Note.png');
+        this.load.image('outside', 'assets/images/Note.png');
+        this.load.image('discouraged', 'assets/images/Picture.png');
+        this.load.image('harassing', 'assets/images/Phone.png');
+        this.load.image('sound', 'assets/images/Phone.png');
+        this.load.image('breakIn', 'assets/images/Phone.png');
+        this.load.image('waiting', 'assets/images/Phone.png');
+        this.load.image('violating', 'assets/images/Note.png');
+        
+        this.load.image('noteImage', 'assets/images/notes/N_PoliceReport2.png');
+        this.load.image('pictureImage', 'assets/images/notes/Pi_dating.png');
+        this.load.image('phoneImage', 'assets/images/notes/Ph_unfaithful.png');
+        this.load.image('blackmailImage', 'assets/images/notes/N_blackmailingherbrother.png');
+        this.load.image('fatherImage', 'assets/images/notes/N_byherfather.png');
+        this.load.image('outsideImage', 'assets/images/notes/Ph_byoutsidepressure.png');
+        this.load.image('discouragedImage', 'assets/images/notes/Pi_discouragedbyothers.png');
+        this.load.image('harassingImage', 'assets/images/notes/Ph_previouslyharassingasuspect.png');
+        this.load.image('soundImage', 'assets/images/notes/Ph_soundmentally.png');
+        this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');
+        this.load.image('waitingImage', 'assets/images/notes/Ph_waitingforherbrotherspartner.png');
+        this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
+
+
+
         this.load.image('xIcon', 'assets/images/x.png');
         this.load.image('rArrow', 'assets/images/rightArrow.png');
         this.load.image('lArrow', 'assets/images/leftArrow.png');
@@ -52,6 +82,8 @@ class Start extends GameLevel {
 
         this.checkMonsterWarning();
         this.initializeFile();
+
+        this.initializeDesk();
 
         this.doorOpenSound = this.sound.add('doorOpen');
         this.doorCloseSound = this.sound.add('doorClose');
@@ -473,6 +505,7 @@ class Start extends GameLevel {
         this.item = null; // if room doesn't have item, this.item will be null
         if (item != null) {
             this.item = this.createItem(item.name, this.w * 0.5, this.h * 0.5, item.name);
+            console.log(this.item);
             //this.physics.add.collider(this.physics.add.existing(this.item.itemImage, true), this.player);
             this.eSpr = this.add.image(this.item.itemImage.x + 150, this.item.itemImage.y, 'eSprite').setAlpha(0);
             this.input.keyboard.on('keydown-' + 'E', () => { 
@@ -494,7 +527,7 @@ class Start extends GameLevel {
 
     initializeItemLocations() {
         if(this.itemLocations.length == 0) { // if item locations hasn't been initialized yet
-            let itemNames = ['note', 'phone', 'picture'];//extra items go here
+            let itemNames = ['note', 'phone', 'picture', 'blackmail', 'father', 'outside', 'discouraged', 'harassing', 'sound', 'breakIn', 'waiting', 'violating'];//extra items go here
             //r:0 c:1
             
             let existingLocations = [{r:0, c:5}, { r:1, c:0}, {r:1, c:2}, {r:1, c:6}, {r:2, c:2}, {r:2, c:4}, {r:2, c:6}, {r:3, c:0}, {r:3, c:2}, {r:3, c:4}, {r:3, c:6}, {r:4, c:0}, {r:4, c:2}, {r:5, c:0}, {r:5, c:4}, {r:5, c:6}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}]; //add non rooms to this list
@@ -804,6 +837,55 @@ class Start extends GameLevel {
         
         this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
     }
+
+
+
+
+    createDesk(object, zone, e, x, y) {
+        let deskO = this.add.image(x, y, object).setScale(1);
+        let zoneO = this.add.image(x, y + 100, zone).setAlpha(0).setScale(0.8, 1);
+        let eSpr = this.add.image(x + 200, y, e).setAlpha(0);
+
+        if(x > this.w * 0.8){
+            eSpr.x -= 400;
+        }
+
+        return {
+            deskObject : deskO,
+            zoneObject : zoneO,
+            eSprite : eSpr
+        };
+    }
+
+
+
+    initializeDesk(){
+        if(this.location.r === 6 && this.location.c === 3){
+            let desk = this.map.Levels[this.location.r][this.location.c].Desk;
+            if(desk){
+                let deskPhysical = this.createDesk('box', 'cabinetZone', 'eSprite', desk.x, desk.y);
+                this.physics.add.collider(this.physics.add.existing(deskPhysical.deskObject, true), this.player);
+            }
+            this.input.keyboard.on('keydown-' + 'E', () => {
+                if(this.checkInteractable() && !this.paused){//maybe a different check
+                    if(this.inventory.length > 0) {
+                        //console.log("worked");
+                        this.openFileCabinet();
+                    }
+                    // else {
+                    //     this.showTextBox("I wonder what I should put in here.", 50, 1);
+                    //     this.time.delayedCall(5000, () => { this.hideTextBox(); });
+                    // }
+                }
+            });
+        }
+    }
+
+
+
+
+
+
 }
 
 
