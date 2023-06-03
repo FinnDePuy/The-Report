@@ -1,7 +1,7 @@
 class GameLevel extends Phaser.Scene {
     init(data) {
         this.location = data.location || {r: 6, c: 3}; 
-        this.playerLocation = data.playerLocation || {x: 912, y: 492};
+        this.playerLocation = data.playerLocation || {x: 912, y: 800};
         this.playerChased = data.playerChased || false;
         this.monsterLocation = data.monsterLocation || {r: 0, c: 0};
         this.chaseTime = data.chaseTime || 0;
@@ -57,11 +57,30 @@ class GameLevel extends Phaser.Scene {
             }
             this.shown = !this.shown;
         });
+        
+
+        if (!this.anims.exists('backw')) {
+            this.anims.create({ key: 'backw', frames: this.anims.generateFrameNames('player', { prefix: 'backw', start: 1, end: 3, suffix: ".png"}), frameRate: 3,  repeat: -1});
+            this.anims.create({ key: 'frontw', frames: this.anims.generateFrameNames('player', { prefix: 'walkf', start: 1, end: 3, suffix: ".png"}), frameRate: 3, repeat: -1});
+            this.anims.create({ key: 'leftw', frames: this.anims.generateFrameNames('player', { prefix: 'leftw', start: 1, end: 3, suffix: ".png"}), frameRate: 3, repeat: -1});
+            this.anims.create({ key: 'rightw', frames: this.anims.generateFrameNames('player', { prefix: 'rightw', start: 1, end: 3, suffix: ".png"}), frameRate: 3, repeat: -1});
+            this.anims.create({ key: 'idle', frames: this.anims.generateFrameNames('player', { prefix: 'idle', start: 1, end: 2, suffix: ".png"}), frameRate: 1.5, repeat: -1});
+        }
+
+
+        //creating all animations for the game
 
         this.onEnter();
     }
+ 
 
     showTextBox(t, size, i) { // text, font size, which spritesheet icon to use
+        if (this.bubble) {
+            this.bubble.destroy();
+            this.text.destroy();
+            this.i.destroy();
+        }
+        
         this.bubble = this.add.image(this.w * 0.44, this.h * 0.85, 'speechBubble').setOrigin(0.5, 0.5).setAlpha(1).setScale(1.16, 1);
         this.text = this.add.text(this.w * 0.35, this.h * 0.85, t, { color: '#000000', fontSize: size })
             .setOrigin(0.5, 0.5)
@@ -76,9 +95,9 @@ class GameLevel extends Phaser.Scene {
     }
 
     initializePlayer() {
-        this.player = this.physics.add.image(this.playerLocation.x, this.playerLocation.y, 'player')
+        this.player = this.physics.add.sprite(this.playerLocation.x, this.playerLocation.y, 'player')
             .setOrigin(0, 0)
-            .setScale(0.3);
+            .setScale(0.4);
     }
 
     gotoScene(key) {

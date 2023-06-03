@@ -1,4 +1,3 @@
-//import { hide } from "./hide.js";
 
 
 class Start extends GameLevel {
@@ -13,7 +12,6 @@ class Start extends GameLevel {
         this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
         this.load.image('hSprite', 'assets/images/hSprite.png');
         this.load.image('eSprite', 'assets/images/eSprite.png');
-        this.load.image('player', 'assets/images/alexfront.png');
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
         this.load.image('cabinet', 'assets/images/Cabinet.png');
         this.load.spritesheet('icon', 'assets/images/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
@@ -21,27 +19,36 @@ class Start extends GameLevel {
         this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
         this.load.image('floor2', 'assets/images/grey.png');
         this.load.image('border1', 'assets/images/BG_BORDER_1.png');
-        this.load.image('box', 'assets/images/box.png');
+        this.load.image('desk', 'assets/images/desk.png');
+        this.load.image('chair', 'assets/images/chair.png');
+
+        this.load.image('doorN', 'assets/images/doorN.png');
+        this.load.image('doorS', 'assets/images/doorS.png');
+        this.load.image('doorE', 'assets/images/doorE.png');
+        this.load.image('doorW', 'assets/images/doorW.png');
 
 
 
 
+        //this.load.image('player', 'assets/images/alexfront.png');
+        this.load.atlas('player', 'assets/images/FINALSP.png', 'assets/json/FINALSPJSON.json'); 
 
-
-
-        this.load.image('picture', 'assets/images/Picture.png');
-        this.load.image('phone', 'assets/images/Phone.png');
-        this.load.image('note', 'assets/images/Note.png');
-        this.load.image('blackmail', 'assets/images/Note.png');
-        this.load.image('father', 'assets/images/Note.png');
-        this.load.image('outside', 'assets/images/Note.png');
-        this.load.image('discouraged', 'assets/images/Picture.png');
-        this.load.image('harassing', 'assets/images/Phone.png');
-        this.load.image('sound', 'assets/images/Phone.png');
-        this.load.image('breakIn', 'assets/images/Phone.png');
-        this.load.image('waiting', 'assets/images/Phone.png');
-        this.load.image('violating', 'assets/images/Note.png');
+        this.load.image('blackmail', 'assets/images/notes/blackmail.png');
+        this.load.image('discouraged', 'assets/images/notes/discourage.png');
+        this.load.image('father', 'assets/images/notes/fathernote.png');
+        this.load.image('picture', 'assets/images/notes/love.png');
+        this.load.image('note', 'assets/images/notes/off.png');
+        this.load.image('sound', 'assets/images/notes/sound.png');
+        this.load.image('phone', 'assets/images/notes/unfaithful.png');
+        this.load.image('escape', 'assets/images/notes/upnote.png')
+        this.load.image('violating', 'assets/images/notes/violatepolicy.png');
+        this.load.image('breakIn', 'assets/images/notes/voicemail.png');
+        this.load.image('harassing', 'assets/images/notes/breakin.png');
+        this.load.image('outside', 'assets/images/notes/breakin.png');
+        this.load.image('waiting', 'assets/images/notes/breakin.png');
         
+        
+
         this.load.image('noteImage', 'assets/images/notes/N_PoliceReport2.png');
         this.load.image('pictureImage', 'assets/images/notes/Pi_dating.png');
         this.load.image('phoneImage', 'assets/images/notes/Ph_unfaithful.png');
@@ -51,9 +58,10 @@ class Start extends GameLevel {
         this.load.image('discouragedImage', 'assets/images/notes/Pi_discouragedbyothers.png');
         this.load.image('harassingImage', 'assets/images/notes/Ph_previouslyharassingasuspect.png');
         this.load.image('soundImage', 'assets/images/notes/Ph_soundmentally.png');
-        this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');
+        this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');//this is a placeholder
         this.load.image('waitingImage', 'assets/images/notes/Ph_waitingforherbrotherspartner.png');
         this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
+        this.load.image('deskPaper', 'assets/images/deskPaper.png')
 
 
 
@@ -65,6 +73,7 @@ class Start extends GameLevel {
         this.load.audio('doorClose', "assets/audio/Door_Close.mp3");
         this.load.audio('fileOpen', "assets/audio/fileOpen.mp3");
         this.load.audio('fileClose', "assets/audio/fileClose.mp3");
+        this.load.audio('happyLoop', 'assets/audio/happyLoop.mp3')
     }
 
     onEnter() {
@@ -85,6 +94,8 @@ class Start extends GameLevel {
 
         this.initializeDesk();
 
+        this.playMusic();
+
         this.doorOpenSound = this.sound.add('doorOpen');
         this.doorCloseSound = this.sound.add('doorClose');
 
@@ -92,7 +103,7 @@ class Start extends GameLevel {
         this.fileCloseSound = this.sound.add('fileClose');
 
         // inputs
-        const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H} = Phaser.Input.Keyboard.KeyCodes;
+        const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H, ESC} = Phaser.Input.Keyboard.KeyCodes;
         this.keys = this.input.keyboard.addKeys({
             left: LEFT,
             right: RIGHT,
@@ -104,7 +115,8 @@ class Start extends GameLevel {
             d: D,
             c: C,
             e: E,
-            h: H
+            h: H,
+            esc: ESC
         });
     }
 
@@ -132,21 +144,33 @@ class Start extends GameLevel {
                 // checks if interaction is available
                 this.checkHideable();
             }
+
+            //this.player.anims.play('idle');
             
             // movement
             if (this.player.alpha == 1) { // if player is not hiding
                 if(keys.left.isDown || keys.a.isDown) {
                     this.player.setVelocityX(-this.speed);
+                    this.player.anims.play('leftw', true);
                 }
-                if(keys.right.isDown || keys.d.isDown) {
+                else if(keys.right.isDown || keys.d.isDown) {
                     this.player.setVelocityX(this.speed);
+                    this.player.anims.play('rightw', true);
                 }
-                if(keys.up.isDown || keys.w.isDown) {
+                else if(keys.up.isDown || keys.w.isDown) {
                     this.player.setVelocityY(-this.speed);
+                    this.player.anims.play('backw', true);
                 } 
-                if(keys.down.isDown || keys.s.isDown) {
+                else if(keys.down.isDown || keys.s.isDown) {
                     this.player.setVelocityY(this.speed);
-                } 
+                    this.player.anims.play('frontw', true);
+                }
+                else {
+                    // If no keys are pressed, stop the player and play the idle animation
+                    this.player.setVelocityX(0);
+                    this.player.setVelocityY(0);
+                    this.player.anims.play('idle', true);
+                }
             }
 
             // lets the player get chased again
@@ -162,6 +186,7 @@ class Start extends GameLevel {
 
             if(this.location.r === 6 && this.location.c === 3) {
                 this.checkInteractable();
+                this.atDesk(this.deskPhysical);
             }
         }
     }
@@ -195,7 +220,7 @@ class Start extends GameLevel {
     setCollision() {
         this.sceneChanged = false; // makes sure scene only changes once
         
-        // Miles
+
         this.physics.add.collider(this.NWall, this.player);
         this.physics.add.collider(this.WWall, this.player);
         this.physics.add.collider(this.EWall, this.player);
@@ -238,25 +263,28 @@ class Start extends GameLevel {
         this.EDoor;
         this.SDoor;
         if (room.Doors.N === 1) {
-            this.ND = this.createDoor(this.w * 0.45, 0, this.w * 0.1, this.h * 0.075, true, -1);
+            //this.ND = this.createDoor(this.w * 0.45, 0, this.w * 0.1, this.h * 0.075, true, -1);
+            this.ND = this.createDoor(this.w * 0.5, 0 + 40, 'doorN');
             this.NDoor = this.physics.add.existing(this.ND, true);
         }
         if (room.Doors.S === 1) {
-            this.SD = this.createDoor(this.w * 0.45, this.h * 0.925, this.w * 0.1, this.h * 0.075, true, 1);
+            this.SD = this.createDoor(this.w * 0.5, this.h* 0.925 + 40, 'doorS');
+            // this.SD = this.createDoor(this.w * 0.45, this.h * 0.925, this.w * 0.1, this.h * 0.075, true, 1);
             this.SDoor = this.physics.add.existing(this.SD, true);
         }
         if (room.Doors.E === 1) {
-            this.ED = this.createDoor(this.w * 0.9625, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, 1);
+            this.ED = this.createDoor(this.w * 0.9625 + 40, this.h * 0.425 + 40, 'doorE');
+            // this.ED = this.createDoor(this.w * 0.9625, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, 1);
             this.EDoor = this.physics.add.existing(this.ED, true);
         }
         if (room.Doors.W === 1) {
-            this.WD = this.createDoor(0, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, -1);
+            this.WD = this.createDoor(0 + 40, this.h * 0.425 + 40, 'doorW');
+            // this.WD = this.createDoor(0, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, -1);
             this.WDoor = this.physics.add.existing(this.WD, true);
         }
     }
 
     createWalls() {
-        // Miles
         // Creates North West East and South walls
         this.add.image(0, 0, 'floor1').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
 
@@ -284,12 +312,16 @@ class Start extends GameLevel {
         this.add.image(0, 0, 'border1').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
     }
 
-    createDoor(x1, y1, x2, y2) {
-        let r = this.add.rectangle(x1, y1, x2, y2)
-            .setOrigin(0, 0)
-            .setFillStyle(0x42280E);
-        return r;
-    }
+    // createDoor(x1, y1, x2, y2) {
+    //     let r = this.add.rectangle(x1, y1, x2, y2)
+    //         .setOrigin(0, 0)
+    //         .setFillStyle(0x42280E);
+    //     return r;
+    // }
+
+    createDoor(x,y,object){
+        return this.add.image(x, y, object);
+     }
 
 
 
@@ -388,6 +420,8 @@ class Start extends GameLevel {
 
                     this.doorOpenSound.play();
 
+                    this.toggleMusic();
+
                 }
                 else {
                     this.player.setAlpha(0);
@@ -396,6 +430,8 @@ class Start extends GameLevel {
                     this.doorOpenSound.stop();
 
                     this.doorCloseSound.play();
+
+                    this.toggleMusic();
 
                     this.hidingFloor = this.add.image(0, 0, 'floor2').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
                 }
@@ -615,7 +651,7 @@ class Start extends GameLevel {
 
 
     createFileCabinet(object, zone, e, x, y) {
-        let fileO = this.add.image(x, y, object).setScale(1);
+        let fileO = this.add.image(x, y, object).setScale(.4);
         let zoneO = this.add.image(x, y + 100, zone).setAlpha(0).setScale(0.8, 1);
         let eSpr = this.add.image(x + 200, y, e).setAlpha(0);
 
@@ -635,8 +671,8 @@ class Start extends GameLevel {
             let Files = this.map.Levels[this.location.r][this.location.c].File;
             if(Files){
                 for (let i = 0; i <= 1 ; i++){
-                    let fileCabinetName = i === 1 ? 'fileCabinet1' : 'fileCabinet';
-                    this.fileLocations.push(this.createFileCabinet(fileCabinetName, 'cabinetZone', 'eSprite', Files[i].x, Files[i].y));
+                    //let fileCabinetName = i === 1 ? 'fileCabinet1' : 'fileCabinet';
+                    this.fileLocations.push(this.createFileCabinet('fileCabinet', 'cabinetZone', 'eSprite', Files[i].x, Files[i].y));
                     this.physics.add.collider(this.physics.add.existing(this.fileLocations[i].fileObject, true), this.player);
                 }
             }
@@ -706,7 +742,6 @@ class Start extends GameLevel {
                 this.itemDisplay.destroy();
                 this.paused = false;
             });
-
 
         let i = 0;
         this.displayFile(this.inventoryImages[i]);
@@ -838,13 +873,68 @@ class Start extends GameLevel {
         this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
     }
 
+    diaryText() {
+        const centerX = this.cameras.main.width / 2;
+        const topOffset = 170; 
+    
+        if (this.texts) {
+            this.texts.forEach(text => text.destroy());
+        }
+        
+        this.texts = [];
+    
+        // Display previously selected options.
+        this.deskPhysical.selectedOptions.forEach((option, index) => {
+            let chosenText = this.add.text(centerX, topOffset + (index*90), `The player chose option ${option}`, { 
+                fontSize: '32px', 
+                color: '#fff'
+            }).setOrigin(0.5);
+            this.texts.push(chosenText);
+        });
+    
+        // Display new choice template.
+        let newChoiceTemplate = this.add.text(centerX, topOffset + (this.deskPhysical.selectedOptions.length*90), 'The player chose option _________', { 
+            fontSize: '32px', 
+            color: '#fff'
+        }).setOrigin(0.5);
+        this.texts.push(newChoiceTemplate);
+    
+        const newOptions = ['Option 1', 'Option 2', 'Option 3'];
+        this.optionTexts = newOptions.map((option, index) => {
+            let optionText = this.add.text(centerX, topOffset + (this.deskPhysical.selectedOptions.length*90) + (index+1)*30, option, { 
+                fontSize: '24px', 
+                color: '#aaa'
+            })
+            .setInteractive()
+            .setOrigin(0.5)
+            .on('pointerdown', () => {
+                newChoiceTemplate.setText(`The player chose option ${option}`);
+                this.deskPhysical.selectedOptions.push(option);
+                this.writingSound.stop();
+
+                this.writingSound.play();
+                this.diaryText(); // Recreate the text fields.
+            })
+            .on('pointerover', () => {
+                optionText.setFontSize('28px');
+            })
+            .on('pointerout', () => { 
+                optionText.setFontSize('24px');
+            });
+            
+            this.texts.push(optionText);
+            return optionText;
+        });
+    }
 
 
 
-    createDesk(object, zone, e, x, y) {
-        let deskO = this.add.image(x, y, object).setScale(1);
+
+    createDesk(object, zone, e, chair, x, y) {
+        let deskO = this.add.image(x - 40, y, object).setScale(.9);
         let zoneO = this.add.image(x, y + 100, zone).setAlpha(0).setScale(0.8, 1);
         let eSpr = this.add.image(x + 200, y, e).setAlpha(0);
+        let chairO = this.add.image(x - 45, y + 65, chair).setScale(.8);
 
         if(x > this.w * 0.8){
             eSpr.x -= 400;
@@ -853,8 +943,74 @@ class Start extends GameLevel {
         return {
             deskObject : deskO,
             zoneObject : zoneO,
-            eSprite : eSpr
+            eSprite : eSpr,
+            chairObject : chairO,
+            selectedOptions : []
         };
+    }
+
+    atDesk(desk){
+        if(this.isItemOverlap(this.player, desk.zoneObject)) {
+                if(desk.eSprite.alpha === 0) {
+                    desk.eSprite.setAlpha(1);
+
+                    this.eTween = this.tweens.add({
+                        targets: desk.eSprite,
+                        y: '-=10', 
+                        ease: 'Power1',
+                        duration: 500,
+                        repeat: -1, 
+                        repeatDelay: 500,
+                        yoyo: true 
+                    });
+                }
+                return true;
+            }
+            else {
+                if (desk.eSprite.alpha === 1) {
+                    desk.eSprite.setAlpha(0); // eSprite disappears
+                    desk.eSprite.y = desk.deskObject.y;  // return eSprite to starting location
+                    this.eTween.stop(); // stop eSprite tween bounce
+                } 
+            }
+        return false;
+    }
+    
+
+
+    openDesk() {
+        this.paused = true;
+
+        this.blurRectangle = this.add.rectangle(0, 0, this.w, this.h)
+            .setOrigin(0,0)
+            .setFillStyle(0x323232)
+            .setAlpha(0.7)
+            .setVisible(true);
+
+        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.02, 'xIcon')
+            .setOrigin(0, 0)
+            .setScale(1)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.closeWindow.setScale(1.1);
+            })
+            .on('pointerout', () => {
+                this.closeWindow.setScale(1);
+            })
+            .on('pointerdown', () => {
+                this.closeWindow.destroy();
+                this.blurRectangle.destroy();
+                this.paper.destroy();
+                this.paused = false;
+
+                if (this.texts) {
+                    this.texts.forEach(text => text.destroy());
+                }
+
+            });
+        
+        this.paper = this.add.image(this.w * 0.5, this.h * 0.5,'deskPaper').setOrigin(0.5, 0.5).setScale(3.6);
+        this.text = this.diaryText();
     }
 
 
@@ -863,26 +1019,48 @@ class Start extends GameLevel {
         if(this.location.r === 6 && this.location.c === 3){
             let desk = this.map.Levels[this.location.r][this.location.c].Desk;
             if(desk){
-                let deskPhysical = this.createDesk('box', 'cabinetZone', 'eSprite', desk.x, desk.y);
-                this.physics.add.collider(this.physics.add.existing(deskPhysical.deskObject, true), this.player);
+                this.deskPhysical = this.createDesk('desk', 'cabinetZone', 'eSprite', 'chair', desk.x, desk.y);
+                this.physics.add.collider(this.physics.add.existing(this.deskPhysical.deskObject, true), this.player);
             }
-            this.input.keyboard.on('keydown-' + 'E', () => {
-                if(this.checkInteractable() && !this.paused){//maybe a different check
-                    if(this.inventory.length > 0) {
-                        //console.log("worked");
-                        this.openFileCabinet();
+            
+            if(this.deskPhysical){
+                this.input.keyboard.on('keydown-' + 'E', () => {
+                    if(this.atDesk(this.deskPhysical)){
+                        if(!this.paused && this.inventory.length > 0){
+                               this.openDesk();
+                        }
                     }
-                    // else {
-                    //     this.showTextBox("I wonder what I should put in here.", 50, 1);
-                    //     this.time.delayedCall(5000, () => { this.hideTextBox(); });
-                    // }
-                }
-            });
+                });
+            }
+        }
+    }
+
+    toggleMusic() {
+        if (this.sound.get('happyLoop')) {
+            let music = this.sound.get('happyLoop');
+            console.log(music);
+
+            if (music.isPlaying) {
+                music.pause();
+            } 
+            else {
+                music.resume();
+            }
+              
         }
     }
 
 
+    playMusic() {
+        if (!this.sound.get('happyLoop')) {
+            let music = this.sound.add('happyLoop');
 
+            music.setLoop(true);
+            music.setVolume(0.3);
+
+            music.play();
+        }
+    }
 
 
 
@@ -907,7 +1085,7 @@ const game = new Phaser.Game({
         default: 'arcade',
         //arcade: { debug: true }
     },
-    // Miles (UPDATE BACKGROUND)
+
     backgroundColor: 0x212121,
     scene: [Start],
     title: "Chase",
