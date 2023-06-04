@@ -225,8 +225,6 @@ class Start extends GameLevel {
             // lets the player get chased again
             if(keys.c.isDown) {
                 this.chase(1);
-                // let room = this.map.Levels[0][0];
-                // room.Escape.Locked = 0;
             } 
 
             if(this.item != null) {
@@ -1022,6 +1020,8 @@ class Start extends GameLevel {
                 }
             }
         }
+        // let room = this.map.Levels[0][0];
+        // room.Escape.Locked = 0;
 
     }
 
