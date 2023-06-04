@@ -9,11 +9,12 @@ class GameLevel extends Phaser.Scene {
         this.everChased = data.everChased || false;
         this.inventory = data.inventory || [];
         this.inventoryImages = data.inventoryImages || [];
-        this.inventoryDisplaying = data.inventoryDisplaying || false;
+        this.inventoryDisplaying = data.inventoryDisplaying || false; // backpack
         this.itemLocations = data.itemLocations || [];
         this.fileLocations = data.fileLocations || [];
         this.fileImages = data.fileImages || [];
         this.fileItems = data.fileItems || [];
+        this.questions = data.questions || [null, null, null, null];
     }
 
     constructor(key, name) {
@@ -85,13 +86,15 @@ class GameLevel extends Phaser.Scene {
         this.text = this.add.text(this.w * 0.35, this.h * 0.85, t, { color: '#000000', fontSize: size })
             .setOrigin(0.5, 0.5)
             .setStroke(0x000000, 5);
-        this.i = this.add.image(this.w * 0.9, this.h * 0.81, 'icon', i).setAlpha(1).setScale(3); // i == 0 is neutral, i == 1 is irritated
+        this.i = this.add.image(this.w * 0.9, this.h * 0.81, 'icon', i).setAlpha(1).setScale(1); // i == 0 is neutral, i == 1 is irritated
     }
 
     hideTextBox() {
-        this.bubble.setAlpha(0);
-        this.text.setAlpha(0);
-        this.i.setAlpha(0);
+        if (this.bubble) {
+            this.bubble.setAlpha(0);
+            this.text.setAlpha(0);
+            this.i.setAlpha(0);
+        }
     }
 
     initializePlayer() {
@@ -118,7 +121,8 @@ class GameLevel extends Phaser.Scene {
                 itemLocations: this.itemLocations,
                 fileLocation: this.fileLocations,
                 fileImages: this.fileImages,
-                fileItems: this.fileItems
+                fileItems: this.fileItems,
+                questions: this.questions
             });
         });
     }

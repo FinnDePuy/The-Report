@@ -7,8 +7,9 @@ class Start extends GameLevel {
 
     preload() {
         // ---------------------------------------
-        // IMAGE LOADING
+        // $IMAGE LOADING
         // ---------------------------------------
+
         this.load.image('cabinetZone', 'assets/images/RedZone.png');
         this.load.image('fileCabinet', 'assets/images/File_Cabinet.png');
         this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
@@ -16,7 +17,7 @@ class Start extends GameLevel {
         this.load.image('eSprite', 'assets/images/eSprite.png');
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
         this.load.image('cabinet', 'assets/images/Cabinet.png');
-        this.load.spritesheet('icon', 'assets/images/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('icon', 'assets/images/FINALSP.png', { frameWidth: 300, frameHeight: 300 });
         this.load.json('map', 'assets/json/map.json');
 
 
@@ -30,7 +31,7 @@ class Start extends GameLevel {
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
         this.load.image('hiddenImage', 'assets/images/hiddenImage.png');
 
-
+        this.load.image('backpack', 'assets/images/backpack.png');
 
         this.load.image('lRed', 'assets/images/LEFTRED.png');
         this.load.image('rRed', 'assets/images/RIGHTRED.png');
@@ -120,7 +121,7 @@ class Start extends GameLevel {
 
 
         // ---------------------------------------
-        // MUSIC LOADING
+        // $MUSIC LOADING
         // ---------------------------------------
 
         this.load.audio('doorOpen', "assets/audio/doorOpen.mp3");
@@ -142,10 +143,11 @@ class Start extends GameLevel {
         this.load.audio('rushSong', 'assets/audio/rushSong.mp3')
     }
 
+    // ---------------------------------------
+    // $Initializing
+    // ---------------------------------------
+
     onEnter() {
-        // ---------------------------------------
-        // Initializing
-        // ---------------------------------------
         console.log(this.location.r + ", " + this.location.c);
         this.chase(0);
         
@@ -166,6 +168,7 @@ class Start extends GameLevel {
         this.playMusic('introSong');
         this.resumeMusic('introSong');
         
+        //this.backpack = this.add.image(0, 0, 'backpack').setOrigin(0, 0).setDepth(0);
 
         this.doorOpenSound = this.sound.add('doorOpen');
         this.doorCloseSound = this.sound.add('doorClose');
@@ -198,9 +201,9 @@ class Start extends GameLevel {
 
     update(time, delta) {
 
-        // ---------------------------------------
-        // Movement + Animation
-        // ---------------------------------------
+    // ---------------------------------------
+    // $Movement + Animation
+    // ---------------------------------------
 
         this.player.setVelocity(0);
         
@@ -264,9 +267,9 @@ class Start extends GameLevel {
             
             
             
-        // ---------------------------------------
-        // Chase
-        // ---------------------------------------
+    // ---------------------------------------
+    // $Chase
+    // ---------------------------------------
 
             // lets the player get chased again
             if(keys.c.isDown) {
@@ -312,7 +315,7 @@ class Start extends GameLevel {
 
 
     // ---------------------------------------
-    // Walls + Doors
+    // $Walls + Doors
     // ---------------------------------------
 
 
@@ -444,8 +447,9 @@ class Start extends GameLevel {
 
     
     // ---------------------------------------
-    // Hiding
+    // $Hiding
     // ---------------------------------------
+
 
     checkHideable() {
         for (let i = 0; i < this.hideableObjects.length; i++) {
@@ -574,12 +578,13 @@ class Start extends GameLevel {
 
 
     // ---------------------------------------
-    // Items + Inventory
+    // $Items + Inventory
     // ---------------------------------------
     //list of items
     //paper, scribbles on ground, photos,
     //items have the following parameters x, y, name
     //12 items total
+
 
     //checks if player and item are overlapping
     isItemOverlap(player, item){
@@ -726,7 +731,7 @@ class Start extends GameLevel {
 
     
     // ---------------------------------------
-    // File Cabinet
+    // $File Cabinet
     // ---------------------------------------
     // makes an inventory to store items in
     // makes the cabinet and and allows items to be put into
@@ -935,8 +940,9 @@ class Start extends GameLevel {
     }
 
     // ---------------------------------------
-    // Item Pickup + Display
+    // $Item Pickup + Display
     // ---------------------------------------
+
 
     // boolean check if you have a certain item by name
     hasItem(iName) {
@@ -994,9 +1000,77 @@ class Start extends GameLevel {
                 this.blurRectangle.destroy();
                 this.itemDisplay.destroy();
                 this.paused = false;
+                this.voicemail.stop();
+                this.textAfterPickup(name);
             });
         
         this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
+    }
+
+        // this.load.image('blackmail', 'assets/images/notes/blackmail.png');
+        // this.load.image('discouraged', 'assets/images/notes/discourage.png');
+        // this.load.image('father', 'assets/images/notes/fathernote.png');
+        // this.load.image('picture', 'assets/images/notes/love.png');
+        // this.load.image('note', 'assets/images/notes/off.png');
+        // this.load.image('sound', 'assets/images/notes/sound.png');
+        // this.load.image('phone', 'assets/images/notes/unfaithful.png');
+        // this.load.image('escape', 'assets/images/notes/upnote.png')
+        // this.load.image('violating', 'assets/images/notes/violatepolicy.png');
+        // this.load.image('breakIn', 'assets/images/notes/voicemail.png');
+        // this.load.image('harassing', 'assets/images/notes/breakin.png');
+        // this.load.image('outside', 'assets/images/notes/breakin.png');
+        // this.load.image('waiting', 'assets/images/notes/breakin.png');
+
+        // this.load.image('noteImage', 'assets/images/notes/N_PoliceReport2.png');
+        // this.load.image('pictureImage', 'assets/images/notes/Pi_dating.png');
+        // this.load.image('phoneImage', 'assets/images/notes/Ph_unfaithful.png');
+        // this.load.image('blackmailImage', 'assets/images/notes/N_blackmailingherbrother.png');
+        // this.load.image('fatherImage', 'assets/images/notes/N_byherfather.png');
+        // this.load.image('outsideImage', 'assets/images/notes/Ph_byoutsidepressure.png');
+        // this.load.image('discouragedImage', 'assets/images/notes/Pi_discouragedbyothers.png');
+        // this.load.image('harassingImage', 'assets/images/notes/Ph_previouslyharassingasuspect.png');
+        // this.load.image('soundImage', 'assets/images/notes/Ph_soundmentally.png');
+        // this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');//this is a placeholder
+        // this.load.image('waitingImage', 'assets/images/notes/Ph_waitingforherbrotherspartner.png');
+        // this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
+
+    textAfterPickup(item) {
+        if (this.inventory.length % 3 === 0) {
+            // trigger chase
+            this.showTextBox('  These aren\'t for you to read!\n\n  I\'m going to find you!', 40, 1);
+        }
+        else if (this.inventory.length === 2) {
+            this.showTextBox('           I want to keep reading these... but that room with the \n\n           desk was the only one with a lock.', 40, 1);
+        }
+        else if (item === 'note') {
+            this.showTextBox('Man... what a sad way to go out.', 50, 1);
+        }
+        else if (item === 'blackmail') {
+            this.showTextBox('        Who is worth stalking?\n\n        I hope there was a decent reason...', 50, 1);
+        }
+        else if (item === 'father') {
+            this.showTextBox('        This is their dad!?\n\n        I’d lose my mind...', 40, 1);
+        }
+        else if (item === 'picture') {
+            this.showTextBox('How sweet...', 50, 1);
+        }
+        else if (item === 'discouraged') {
+            this.showTextBox('I agree. It\'s not that deep.', 40, 1);
+        }
+        else if (item === 'breakIn') {
+            this.showTextBox('       Who leaves a note behind,\n\n       what a dumbass...', 40, 1);
+        }
+        else if (item === 'outside') {
+            this.showTextBox('Who texts someone like that?', 40, 1);
+        }
+        else if (item === 'phone') {
+            this.showTextBox('    I don\'t know if I want\n\n    to believe a random note...', 40, 1);
+        }
+        else if (item === 'violating') {
+            this.showTextBox('Wow, strict...', 50, 1);
+        }
+        this.time.delayedCall(5000, () => { this.hideTextBox(); });
+
     }
 
     checkArrows(number) {
@@ -1009,14 +1083,14 @@ class Start extends GameLevel {
 
 
     // ---------------------------------------
-    // Desk + Insight
+    // $Desk + Insight
     // ---------------------------------------
-    
+
     question(number){
         this.sentence = this.add.image(this.w * 0.5, this.h * 0.2, 'question' + number); 
         
         if (number === 1) {
-            if (this.deskPhysical.selectedOptions[number-1] === null){
+            if (this.questions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
                         if (this.hasItem('note')) {
@@ -1027,7 +1101,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1053,7 +1127,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1079,7 +1153,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
                                 this.tweens.add({
@@ -1099,11 +1173,11 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.deskPhysical.selectedOptions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.questions[number-1]); 
             }
         }
         else if (number === 2) {
-            if (this.deskPhysical.selectedOptions[number-1] === null){
+            if (this.questions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
                         if (this.hasItem('blackmail')) {
@@ -1114,7 +1188,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1140,7 +1214,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1166,7 +1240,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
                                 this.tweens.add({
@@ -1186,11 +1260,11 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.23, this.deskPhysical.selectedOptions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.23, this.questions[number-1]); 
             }
         }
         else if (number === 3) {
-            if (this.deskPhysical.selectedOptions[number-1] === null){
+            if (this.questions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
                         if (this.hasItem('phone')) {
@@ -1201,7 +1275,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1227,7 +1301,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1253,7 +1327,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
                                 this.tweens.add({
@@ -1273,11 +1347,11 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.22, this.deskPhysical.selectedOptions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.22, this.questions[number-1]); 
             }
         }
         else if (number === 4) {
-            if (this.deskPhysical.selectedOptions[number-1] === null){
+            if (this.questions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
                         if (this.hasItem('father')) {
@@ -1288,7 +1362,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1313,7 +1387,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
                                 this.tweens.add({
@@ -1338,7 +1412,7 @@ class Start extends GameLevel {
                             .on('pointerdown', () => {
                                 this.writingSound.stop();
                                 this.writingSound.play();
-                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.questions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
                                 this.tweens.add({
@@ -1357,7 +1431,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.deskPhysical.selectedOptions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.questions[number-1]); 
             }
         }
         // let room = this.map.Levels[0][0];
@@ -1375,8 +1449,8 @@ class Start extends GameLevel {
 
         let q = 1; // question number
         this.maxQuestion = 1; // furthest question the player can see
-        for(let i = 0; i < this.deskPhysical.selectedOptions.length; i++) {
-            if(this.deskPhysical.selectedOptions[i] !== null) {
+        for(let i = 0; i < this.questions.length; i++) {
+            if(this.questions[i] !== null) {
                 this.maxQuestion++;
             }
         }
@@ -1542,6 +1616,7 @@ class Start extends GameLevel {
             if(desk){
                 this.deskPhysical = this.createDesk('desk', 'cabinetZone', 'eSprite', 'chair', desk.x, desk.y);
                 this.physics.add.collider(this.physics.add.existing(this.deskPhysical.deskObject, true), this.player);
+                this.physics.add.collider(this.physics.add.existing(this.deskPhysical.chairObject, true), this.player);
             }
             
             if(this.deskPhysical){
@@ -1557,7 +1632,7 @@ class Start extends GameLevel {
     }
 
     // ---------------------------------------
-    // Music
+    // $Music
     // ---------------------------------------
 
     pauseMusic(title){
