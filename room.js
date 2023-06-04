@@ -12,7 +12,7 @@ class Start extends GameLevel {
 
         this.load.image('cabinetZone', 'assets/images/RedZone.png');
         this.load.image('fileCabinet', 'assets/images/File_Cabinet.png');
-        this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
+        //this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
         this.load.image('hSprite', 'assets/images/hSprite.png');
         this.load.image('eSprite', 'assets/images/eSprite.png');
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
@@ -24,9 +24,9 @@ class Start extends GameLevel {
 
 
 
-        this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
-        this.load.image('floor2', 'assets/images/grey.png');
-        this.load.image('border1', 'assets/images/BG_BORDER_1.png');
+        //this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
+        //this.load.image('floor2', 'assets/images/grey.png');
+        //this.load.image('border1', 'assets/images/BG_BORDER_1.png');
 
         this.load.image('defaultFloor', 'assets/images/defaultFloor.png');
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
@@ -361,8 +361,7 @@ class Start extends GameLevel {
             this.playerLocation.x = x;
             this.playerLocation.y = y;
             this.gotoScene('start');
-//            this.initializeDesk();
-//            console.log(this.location.r + ", " + this.location.c);
+            console.log(this.location.r + ", " + this.location.c);
         }
     }
 
