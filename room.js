@@ -12,7 +12,6 @@ class Start extends GameLevel {
 
         this.load.image('cabinetZone', 'assets/images/RedZone.png');
         this.load.image('fileCabinet', 'assets/images/File_Cabinet.png');
-        //this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
         this.load.image('hSprite', 'assets/images/hSprite.png');
         this.load.image('eSprite', 'assets/images/eSprite.png');
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
@@ -22,11 +21,6 @@ class Start extends GameLevel {
         this.load.json('map', 'assets/json/map.json');
 
 
-
-
-        //this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
-        //this.load.image('floor2', 'assets/images/grey.png');
-        //this.load.image('border1', 'assets/images/BG_BORDER_1.png');
 
         this.load.image('defaultFloor', 'assets/images/defaultFloor.png');
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
@@ -81,7 +75,6 @@ class Start extends GameLevel {
 
 
 
-        //this.load.image('player', 'assets/images/alexfront.png');
         this.load.atlas('player', 'assets/images/FINALSP.png', 'assets/json/FINALSPJSON.json'); 
 
         this.load.image('blackmail', 'assets/images/notes/blackmail.png');
@@ -164,12 +157,22 @@ class Start extends GameLevel {
         this.checkMonsterWarning();
         this.initializeFile();
 
-        
+        if(this.location.r === 0 && this.location.c === 0){
+            this.setDoor();
+        }
 
         this.finalChase();
 
         this.playMusic('introSong');
-        this.resumeMusic('introSong');
+        if (!this.playerChased){
+            this.resumeMusic('introSong');
+        }
+        else{
+            this.resumeMusic('rushSong');
+            this.pauseMusic('introSong');
+        }
+        
+        //
         
         //this.backpack = this.add.image(0, 0, 'backpack').setOrigin(0, 0).setDepth(0);
 
@@ -291,10 +294,7 @@ class Start extends GameLevel {
                 this.checkInteractable();
                 if(this.deskPhysical) {
                     this.atDesk(this.deskPhysical);
-            }
-            }
-            if(this.location.r === 0 && this.location.c === 0){
-                this.setDoor();
+                }   
             }
         }
     }
@@ -539,7 +539,12 @@ class Start extends GameLevel {
 
                     this.doorOpenSound.play();
 
-                    this.resumeMusic();
+                    if (!this.playerChased){
+                        this.resumeMusic('introSong');
+                    }
+                    else{
+                        this.resumeMusic('rushSong');
+                    }
 
 
                 }
@@ -551,7 +556,12 @@ class Start extends GameLevel {
 
                     this.doorCloseSound.play();
 
-                    this.pauseMusic();
+                    if (!this.playerChased){
+                        this.pauseMusic('introSong');
+                    }
+                    else{
+                        this.pauseMusic('rushSong');
+                    }
 
 
                     this.hidingFloor = this.add.image(0, 0, 'hiddenImage').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
@@ -983,7 +993,8 @@ class Start extends GameLevel {
         this.paused = true;
 
         if (name === 'breakIn'){
-            this.sound.play('voicemail');
+            //this.sound.play('voicemail');
+            this.voicemail.play();
         }
         else{
             this.sound.play('paperPickup');
@@ -1010,7 +1021,10 @@ class Start extends GameLevel {
                 this.blurRectangle.destroy();
                 this.itemDisplay.destroy();
                 this.paused = false;
-                this.voicemail.stop();
+                if (name === 'breakIn'){
+                    console.log("stopped voicemail");
+                    this.voicemail.stop();
+                }
                 this.textAfterPickup(name);
             });
         
@@ -1421,8 +1435,7 @@ class Start extends GameLevel {
                 this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.questions[number-1]); 
             }
         }
-        // let room = this.map.Levels[0][0];
-        // room.Escape.Locked = 0;
+        //let room = this.map.Levels[0][0].room.Escape.Locked = 0;
         //ADD UNLOCK LOGIC
 
     }
@@ -1701,6 +1714,20 @@ class GameOver extends Phaser.Scene {
 }
 
 
+class Victory extends Phaser.Scene {
+	constructor() {
+        super('victory');
+    }
+	
+	create() {
+		this.cameras.main.setBackgroundColor('#000000');
+
+		this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
+		.setOrigin(0.5, 0.5)
+		.setStroke(0x000000, 5);
+	}
+}
+
 
 
 
@@ -1721,6 +1748,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Start, GameOver],
+    scene: [Start, GameOver, Victory],
     title: "Chase",
 });

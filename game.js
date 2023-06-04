@@ -31,7 +31,7 @@ class GameLevel extends Phaser.Scene {
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
 
-        this.speed = 500;
+        this.speed = 1500;
         this.paused = false;
         this.hideableObjects = [];
 
@@ -127,12 +127,16 @@ class GameLevel extends Phaser.Scene {
                 this.timeMove = 3250;
                 this.showTextBox('  You won\'t escape me!!!', 50, 0, 'monica');
                 this.chase('final');
+                this.map = this.cache.json.get('map');
+                this.map.Levels[0][0].Escape.Locked = 0;
             }
         }
     }
 
     chase(c) {  // CHANGE 
         if (!this.playerChased) {
+            this.pauseMusic('introSong');
+            this.playMusic('rushSong');
             this.playerChased = true;
             let run = this.add.text(this.w * 0.52, this.h * 0.3, "Run!", { color: '#710C04', fontSize: 150 })
                 .setOrigin(0.5, 0.5)
@@ -147,15 +151,15 @@ class GameLevel extends Phaser.Scene {
             this.monsterLocation.c = Phaser.Math.Between(this.location.c - 2, this.location.c + 2);
         }
 
-        if (this.playerChased && this.location.r == 6 && this.location.c == 3) { // safe room stops the player from being chased
-            this.playerChased = false;
-        }
+        this.checkSafe();
     }
 
     checkSafe() {
-        if (this.playerChased) {
+        if (this.playerChased && this.questions[3] === null) {
             if (this.location.r === 6 && this.location.c === 3) { // if player is in safe room
                 this.playerChased = false;
+                this.pauseMusic('rushSong');
+                this.resumeMusic('introSong');
             }
         }
     }
