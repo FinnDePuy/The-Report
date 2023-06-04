@@ -339,6 +339,7 @@ class Start extends GameLevel {
             if(room.Escape.N === 1){
                 this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'lDoor');
                 this.EscDoor = this.physics.add.existing(this.EscD, true);
+                this.physics.add.collider(this.EscDoor, this.player);
             }
         }
     }
@@ -633,7 +634,7 @@ class Start extends GameLevel {
             let itemNames = ['note', 'phone', 'picture', 'blackmail', 'father', 'outside', 'discouraged', 'harassing', 'sound', 'breakIn', 'waiting', 'violating'];//extra items go here
             //r:0 c:1
             
-            let existingLocations = [{r:0, c:5}, { r:1, c:0}, {r:1, c:2}, {r:1, c:6}, {r:2, c:2}, {r:2, c:4}, {r:2, c:6}, {r:3, c:0}, {r:3, c:2}, {r:3, c:4}, {r:3, c:6}, {r:4, c:0}, {r:4, c:2}, {r:5, c:0}, {r:5, c:4}, {r:5, c:6}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}]; //add non rooms to this list
+            let existingLocations = [{r:0, c:4}, { r:1, c:0}, {r:1, c:2}, {r:1, c:6}, {r:2, c:2}, {r:2, c:4}, {r:2, c:6}, {r:3, c:0}, {r:3, c:2}, {r:3, c:4}, {r:3, c:6}, {r:4, c:0}, {r:4, c:2}, {r:5, c:0}, {r:5, c:4}, {r:5, c:6}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}]; //add non rooms to this list
             let itemLocation;
             // Note will be in the first room outside the safe room
             let note = {
@@ -940,16 +941,22 @@ class Start extends GameLevel {
         this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
     }
 
+    checkArrows(number) {
+        this.maxQuestion++;
+        if (number === this.maxQuestion - 1) {
+            this.rightArrow.setVisible(true);
+        }
+    }
+    
     question(number){
         this.sentence = this.add.image(this.w * 0.5, this.h * 0.2, 'question' + number); 
         
-
         if (number === 1) {
             if (this.deskPhysical.selectedOptions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
                         if (this.hasItem('note')) {
-                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question1-' + i)
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
                             .setInteractive()
                             .on('pointerover', () => this.choice1.setScale(1.2))
                             .on('pointerout', () => this.choice1.setScale(1))
@@ -957,6 +964,14 @@ class Start extends GameLevel {
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice1,
+                                    y: this.h * 0.19, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice1.removeInteractive();
                             });
                         }
                         else {
@@ -964,10 +979,52 @@ class Start extends GameLevel {
                         }
                     }
                     else if (i === 2) {
-                        this.choice2 = this.hasItem('harassing') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question1-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('harassing')) {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice2.setScale(1.2))
+                            .on('pointerout', () => this.choice2.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice2,
+                                    y: this.h * 0.19, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice2.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 3) {
-                        this.choice3 = this.hasItem('sound') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question1-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('sound')) {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice3.setScale(1.2))
+                            .on('pointerout', () => this.choice3.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice2.destroy();
+                                this.tweens.add({
+                                    targets: this.choice3,
+                                    y: this.h * 0.19, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice3.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                 }
             }
@@ -979,45 +1036,240 @@ class Start extends GameLevel {
             if (this.deskPhysical.selectedOptions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
-                        this.choice1 = this.hasItem('blackmail') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question2-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('blackmail')) {
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice1.setScale(1.2))
+                            .on('pointerout', () => this.choice1.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice2.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice1,
+                                    y: this.h * 0.23, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice1.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 2) {
-                        this.choice2 = this.hasItem('breakIn') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question2-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('breakIn')) {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice2.setScale(1.2))
+                            .on('pointerout', () => this.choice2.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice2,
+                                    y: this.h * 0.23, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice2.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 3) {
-                        this.choice3 = this.hasItem('waiting') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question2-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('waiting')) {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice3.setScale(1.2))
+                            .on('pointerout', () => this.choice3.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice2.destroy();
+                                this.tweens.add({
+                                    targets: this.choice3,
+                                    y: this.h * 0.23, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice3.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                 }
+            }
+            else {
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.23, this.deskPhysical.selectedOptions[number-1]); 
             }
         }
         else if (number === 3) {
             if (this.deskPhysical.selectedOptions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
-                        this.choice1 = this.hasItem('phone') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question3-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('phone')) {
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice1.setScale(1.2))
+                            .on('pointerout', () => this.choice1.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice2.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice1,
+                                    y: this.h * 0.22, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice1.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 2) {
-                        this.choice2 = this.hasItem('picture') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question3-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('picture')) {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice2.setScale(1.2))
+                            .on('pointerout', () => this.choice2.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice2,
+                                    y: this.h * 0.22, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice2.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 3) {
-                        this.choice3 = this.hasItem('violating') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question3-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('violating')) {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice3.setScale(1.2))
+                            .on('pointerout', () => this.choice3.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice2.destroy();
+                                this.tweens.add({
+                                    targets: this.choice3,
+                                    y: this.h * 0.22, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.checkArrows(number);
+                                this.choice3.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                 }
+            }
+            else {
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.22, this.deskPhysical.selectedOptions[number-1]); 
             }
         }
         else if (number === 4) {
             if (this.deskPhysical.selectedOptions[number-1] === null){
                 for(let i = 1; i<4; i++){
                     if (i === 1) {
-                        this.choice1 = this.hasItem('father') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question4-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('father')) {
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice1.setScale(1.2))
+                            .on('pointerout', () => this.choice1.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice2.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice1,
+                                    y: this.h * 0.22, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.choice1.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice1 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 2) {
-                        this.choice2 = this.hasItem('outside') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question4-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('outside')) {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice2.setScale(1.2))
+                            .on('pointerout', () => this.choice2.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice3.destroy();
+                                this.tweens.add({
+                                    targets: this.choice2,
+                                    y: this.h * 0.22, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.choice2.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice2 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                     else if (i === 3) {
-                        this.choice3 = this.hasItem('discourage') ? this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question4-' + i) : this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE') ;
+                        if (this.hasItem('discouraged')) {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'question'+number+'-'+i)
+                            .setInteractive()
+                            .on('pointerover', () => this.choice3.setScale(1.2))
+                            .on('pointerout', () => this.choice3.setScale(1))
+                            .on('pointerdown', () => {
+                                this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
+                                this.choice1.destroy();
+                                this.choice2.destroy();
+                                this.tweens.add({
+                                    targets: this.choice3,
+                                    y: this.h * 0.22, 
+                                    ease: 'Power1',
+                                    duration: 200,
+                                });
+                                this.choice3.removeInteractive();
+                            });
+                        }
+                        else {
+                            this.choice3 = this.add.image(this.w * 0.5, this.h * 0.4 + i * this.h * 0.15,'BLANKWHITE');
+                        }
                     }
                 }
+            }
+            else {
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.deskPhysical.selectedOptions[number-1]); 
             }
         }
         // let room = this.map.Levels[0][0];
@@ -1034,7 +1286,13 @@ class Start extends GameLevel {
         this.question(1);
         //console.log(this.sentence);
 
-        let i = 0;
+        let q = 1; // question number
+        this.maxQuestion = 1; // furthest question the player can see
+        for(let i = 0; i < this.deskPhysical.selectedOptions.length; i++) {
+            if(this.deskPhysical.selectedOptions[i] !== null) {
+                this.maxQuestion++;
+            }
+        }
 
         let changeImage = true;
         this.leftArrow = this.add.image(this.w * 0.15, this.h * 0.5, 'lArrow')
@@ -1050,13 +1308,13 @@ class Start extends GameLevel {
             .on('pointerdown', () => {
                 if (changeImage) {
                     changeImage = false;
-                    if (i === 3) {
+                    if (q === this.maxQuestion) { // no longer at last question index
                         this.rightArrow.setVisible(true);
                     }
-                    if (i > 0) {
-                        i--;
+                    if (q > 1) {
+                        q--;
                     }
-                    if (i === 0) {
+                    if (q === 1) {
                         this.leftArrow.setVisible(false);
                     }
                     
@@ -1064,7 +1322,7 @@ class Start extends GameLevel {
                     this.choice1.destroy();
                     this.choice2.destroy();
                     this.choice3.destroy();
-                    this.question(i + 1);
+                    this.question(q);
                     this.time.delayedCall(100, () => { changeImage = true; });
                 }
             });
@@ -1072,7 +1330,7 @@ class Start extends GameLevel {
         this.rightArrow = this.add.image(this.w * 0.85, this.h * 0.5, 'rArrow')
             .setScale(1.5)
             .setInteractive()
-            .setVisible(true) // right arrow will only start visible if there is more than 1 item in inventory
+            .setVisible(this.maxQuestion > 1 ? true : false) // right arrow will only start visible if there is more than 1 item in inventory
             .on('pointerover', () => {
                 this.rightArrow.setScale(1.6);
             })
@@ -1082,13 +1340,13 @@ class Start extends GameLevel {
             .on('pointerdown', () => {
                 if (changeImage) {
                     changeImage = false;
-                    if (i === 0) {
+                    if (q === 1) {
                         this.leftArrow.setVisible(true);
                     }
-                    if (i < 3) {
-                        i++;
+                    if (q < this.maxQuestion) {
+                        q++;
                     }
-                    if (i === 3) {
+                    if (q === this.maxQuestion) {
                         this.rightArrow.setVisible(false);
                     }
                     this.sentence.destroy();
@@ -1096,7 +1354,7 @@ class Start extends GameLevel {
                     this.choice1.destroy();
                     this.choice2.destroy();
                     this.choice3.destroy();
-                    this.question(i + 1);
+                    this.question(q);
                     this.time.delayedCall(100, () => { changeImage = true; });
                 }
             });
@@ -1183,15 +1441,10 @@ class Start extends GameLevel {
                 this.leftArrow.destroy();
                 this.rightArrow.destroy();
                 this.paused = false;
-
-                if (this.texts) {
-                    this.texts.forEach(text => text.destroy());
-                }
-
             });
         
         this.paper = this.add.image(this.w * 0.5, this.h * 0.5,'background').setOrigin(0.5, 0.5).setScale(1);
-        this.text = this.diaryText();
+        this.diaryText();
     }
 
 
@@ -1207,7 +1460,7 @@ class Start extends GameLevel {
             if(this.deskPhysical){
                 this.input.keyboard.on('keydown-' + 'E', () => {
                     if(this.atDesk(this.deskPhysical)){
-                        if(!this.paused && this.inventory.length > 0){
+                        if(!this.paused/* && this.inventory.length > 0*/){
                                this.openDesk();
                         }
                     }
