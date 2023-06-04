@@ -4,4 +4,6 @@
 Miles Berman  
 Finn DePuy  
 Jackson Nadler-Block  
-Nicholas Schetman
+Nicholas Schetman  
+  
+Play Game [here] (https://finndepuy.github.io/Phaser-Group-Game/)
