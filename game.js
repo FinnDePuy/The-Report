@@ -1,6 +1,6 @@
 class GameLevel extends Phaser.Scene {
     init(data) {
-        this.location = data.location || {r: 6, c: 3}; 
+        this.location = data.location || {r: 6, c: 4}; 
         this.playerLocation = data.playerLocation || {x: 912, y: 800};
         this.playerChased = data.playerChased || false;
         this.monsterLocation = data.monsterLocation || {r: 0, c: 0};

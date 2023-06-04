@@ -150,8 +150,8 @@ class Start extends GameLevel {
 
     onEnter() {  
         //this.chase();
+        this.initializeDesk();
         this.checkSafe();
-        
         this.initializeDoors();
         this.setCollision();
 
@@ -164,7 +164,7 @@ class Start extends GameLevel {
         this.checkMonsterWarning();
         this.initializeFile();
 
-        this.initializeDesk();
+        
 
         this.finalChase();
 
@@ -266,6 +266,8 @@ class Start extends GameLevel {
                     this.player.anims.play('idle', true);
                 }
             }
+
+            
                     
             
             
@@ -287,7 +289,9 @@ class Start extends GameLevel {
 
             if(this.location.r === 6 && this.location.c === 3) {
                 this.checkInteractable();
-                this.atDesk(this.deskPhysical);
+                if(this.deskPhysical) {
+                    this.atDesk(this.deskPhysical);
+            }
             }
             if(this.location.r === 0 && this.location.c === 0){
                 this.setDoor();
@@ -357,6 +361,8 @@ class Start extends GameLevel {
             this.playerLocation.x = x;
             this.playerLocation.y = y;
             this.gotoScene('start');
+//            this.initializeDesk();
+//            console.log(this.location.r + ", " + this.location.c);
         }
     }
 
@@ -1616,6 +1622,7 @@ class Start extends GameLevel {
                 });
             }
         }
+        //return this.deskPhysical;
     }
 
     // ---------------------------------------
@@ -1649,6 +1656,32 @@ class Start extends GameLevel {
             music.play();
         }
     }
+
+
+
+
+
+
+
+
+    // ---------------------------------------
+    // $Title Screen and Tutorial
+    // ---------------------------------------
+
+
+    decorateFirstRoom(){
+        if(this.location.r === 6 && this.location.c === 4){
+
+        }
+    }
+
+
+
+
+
+
+
+
 
 
 
