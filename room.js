@@ -16,7 +16,7 @@ class Start extends GameLevel {
         this.load.image('eSprite', 'assets/images/eSprite.png');
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
         this.load.image('cabinet', 'assets/images/Cabinet.png');
-        this.load.spritesheet('icon', 'sprites/alex/alex.png', { frameWidth: 54, frameHeight: 54 });
+        this.load.spritesheet('icon', 'sprites/alex/alexr.png', { frameWidth: 204, frameHeight: 204 });
         this.load.spritesheet('monica', 'assets/images/monicaSpriteSheet.png', { frameWidth: 54, frameHeight: 54 });
         this.load.json('map', 'assets/json/map.json');
 
@@ -72,6 +72,11 @@ class Start extends GameLevel {
         this.load.image('doorE', 'assets/images/doorE.png');
         this.load.image('doorW', 'assets/images/doorW.png');
 
+
+
+        this.load.image('+Victory', 'assets/images/DANIELENDINGvictory.png');
+        this.load.image('-Victory', 'assets/images/MONICAvictory.png');
+        this.load.image('=Victory', 'assets/images/NEUTRALvictory.png');
 
 
 
@@ -172,6 +177,7 @@ class Start extends GameLevel {
             this.pauseMusic('introSong');
         }
         
+
         //
         
         //this.backpack = this.add.image(0, 0, 'backpack').setOrigin(0, 0).setDepth(0);
@@ -203,6 +209,15 @@ class Start extends GameLevel {
             h: H,
             esc: ESC
         });
+
+        if (this.location.r === 6 && this.location.c === 4){
+            this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
+            this.time.delayedCall(4000, () => { this.hideTextBox(); });
+            this.time.delayedCall(5000, () => { this.chase('tutorial'); });
+
+            this.time.delayedCall(5000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
+            this.time.delayedCall(10000, () => { this.hideTextBox(); });
+        }
     }
 
     update(time, delta) {
@@ -269,9 +284,7 @@ class Start extends GameLevel {
                     this.player.anims.play('idle', true);
                 }
             }
-
-            
-                    
+                  
             
             
             
@@ -296,6 +309,10 @@ class Start extends GameLevel {
                     this.atDesk(this.deskPhysical);
                 }   
             }
+
+            // if(this.location.r === 0 && this.location.c === 0){
+            //     this.goToEnding();
+            // }
         }
     }
 
@@ -329,6 +346,7 @@ class Start extends GameLevel {
     setCollision() {
         this.sceneChanged = false; // makes sure scene only changes once
         
+        this.map = this.cache.json.get('map');
 
         this.physics.add.collider(this.NWall, this.player);
         this.physics.add.collider(this.WWall, this.player);
@@ -361,7 +379,7 @@ class Start extends GameLevel {
             this.playerLocation.x = x;
             this.playerLocation.y = y;
             this.gotoScene('start');
-            console.log(this.location.r + ", " + this.location.c);
+            //console.log(this.location.r + ", " + this.location.c);
         }
     }
 
@@ -395,9 +413,16 @@ class Start extends GameLevel {
         }
         if(this.location.r === 0 && this.location.c === 0){
             if(room.Escape.N === 1){
-                this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'lDoor');
-                this.EscDoor = this.physics.add.existing(this.EscD, true);
-                this.physics.add.collider(this.EscDoor, this.player);
+                if(room.Escape.Locked === 1){
+                    this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'lDoor');
+                    this.EscDoor = this.physics.add.existing(this.EscD, true);
+                    this.physics.add.collider(this.EscDoor, this.player);
+                }
+                // else{
+                //     this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'uDoor');
+                //     this.EscDoor = this.physics.add.existing(this.EscD, true);
+                //     this.physics.add.collider(this.EscDoor, this.player);   
+                // }
             }
         }
     }
@@ -405,8 +430,11 @@ class Start extends GameLevel {
     setDoor(){
         let room = this.map.Levels[0][0];
         if(room.Escape.Locked === 0 && room.Escape.N === 1){
+            //console.log("are we inside?");
             this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'uDoor');
             this.EscDoor = this.physics.add.existing(this.EscD, true);
+            this.physics.add.collider(this.EscDoor, this.player, () => { this.goToEnding(); }, null, this);
+            //this.physics.add.collider(this.player, this.EscDoor, () => {console.log("XXXX"); }, null, this);
         }
     }
 
@@ -697,7 +725,7 @@ class Start extends GameLevel {
 
     initializeItemLocations() {
         if(this.itemLocations.length == 0) { // if item locations hasn't been initialized yet
-            let itemNames = ['note', 'phone', 'picture', 'blackmail', 'father', 'outside', 'discouraged', 'harassing', 'sound', 'breakIn', 'waiting', 'violating'];//extra items go here
+            let itemNames = ['note', 'outside', 'phone', 'picture', 'blackmail', 'father', 'discouraged', 'harassing', 'sound', 'breakIn', 'waiting', 'violating'];//extra items go here
             //r:0 c:1
             
             let existingLocations = [{r:0, c:4}, { r:1, c:0}, {r:1, c:2}, {r:1, c:6}, {r:2, c:2}, {r:2, c:4}, {r:2, c:6}, {r:3, c:0}, {r:3, c:2}, {r:3, c:4}, {r:3, c:6}, {r:4, c:0}, {r:4, c:2}, {r:5, c:0}, {r:5, c:4}, {r:5, c:6}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}]; //add non rooms to this list
@@ -714,7 +742,18 @@ class Start extends GameLevel {
                 c: note.c
             });
             this.itemLocations.push(note);
-            for (let i = 1; i < itemNames.length; i++) { // gives all items a random location
+            let outside = {
+                name: itemNames[1],
+                r: 0,
+                c: 0,
+                obtained: false
+            }
+            existingLocations.push({
+                r: outside.r,
+                c: outside.c
+            });
+            this.itemLocations.push(outside);
+            for (let i = 2; i < itemNames.length; i++) { // gives all items a random location
                 itemLocation = {
                     r: Phaser.Math.Between(0, 6),
                     c: Phaser.Math.Between(0, 6)
@@ -1108,7 +1147,9 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma--;
                                 this.checkArrows(number);
+                                this.choice1.setScale(1);
                                 this.choice1.removeInteractive();
                             });
                         }
@@ -1135,6 +1176,7 @@ class Start extends GameLevel {
                                     duration: 200,
                                 });
                                 this.checkArrows(number);
+                                this.choice2.setScale(1);
                                 this.choice2.removeInteractive();
                             });
                         }
@@ -1160,7 +1202,9 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma++;
                                 this.checkArrows(number);
+                                this.choice3.setScale(1);
                                 this.choice3.removeInteractive();
                             });
                         }
@@ -1196,6 +1240,7 @@ class Start extends GameLevel {
                                     duration: 200,
                                 });
                                 this.checkArrows(number);
+                                this.choice1.setScale(1)
                                 this.choice1.removeInteractive();
                             });
                         }
@@ -1221,7 +1266,9 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma++;
                                 this.checkArrows(number);
+                                this.choice2.setScale(1)
                                 this.choice2.removeInteractive();
                             });
                         }
@@ -1247,7 +1294,9 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma--;
                                 this.checkArrows(number);
+                                this.choice3.setScale(1)
                                 this.choice3.removeInteractive();
                             });
                         }
@@ -1282,7 +1331,9 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma--;
                                 this.checkArrows(number);
+                                this.choice1.setScale(1)
                                 this.choice1.removeInteractive();
                             });
                         }
@@ -1308,7 +1359,9 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma++;
                                 this.checkArrows(number);
+                                this.choice2.setScale(1)
                                 this.choice2.removeInteractive();
                             });
                         }
@@ -1335,6 +1388,7 @@ class Start extends GameLevel {
                                     duration: 200,
                                 });
                                 this.checkArrows(number);
+                                this.choice3.setScale(1)
                                 this.choice3.removeInteractive();
                             });
                         }
@@ -1369,6 +1423,8 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma--;
+                                this.choice1.setScale(1)
                                 this.choice1.removeInteractive();
                                 this.finalChaseTime = true;
                             });
@@ -1395,6 +1451,8 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.karma++;
+                                this.choice2.setScale(1)
                                 this.choice2.removeInteractive();
                                 this.finalChaseTime = true;
                             });
@@ -1421,6 +1479,7 @@ class Start extends GameLevel {
                                     ease: 'Power1',
                                     duration: 200,
                                 });
+                                this.choice3.setScale(1)
                                 this.choice3.removeInteractive();
                                 this.finalChaseTime = true;
                             });
@@ -1435,7 +1494,7 @@ class Start extends GameLevel {
                 this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.questions[number-1]); 
             }
         }
-        //let room = this.map.Levels[0][0].room.Escape.Locked = 0;
+        //let room = this.map.Levels[0][0].Escape.Locked = 0;
         //ADD UNLOCK LOGIC
 
     }
@@ -1450,7 +1509,7 @@ class Start extends GameLevel {
 
         let q = 1; // question number
         this.maxQuestion = 1; // furthest question the player can see
-        for(let i = 0; i < this.questions.length; i++) {
+        for(let i = 0; i < this.questions.length - 1; i++) {
             if(this.questions[i] !== null) {
                 this.maxQuestion++;
             }
@@ -1604,7 +1663,7 @@ class Start extends GameLevel {
                 this.rightArrow.destroy();
                 this.paused = false;
                 if(this.finalChaseTime) {
-                    this.showTextBox('       I need to escape through the door in the North West!', 40, 2, 'icon');
+                    this.showTextBox('          I need to escape! What about \n\nthat locked door from before?!', 40, 2, 'icon');
                     this.time.delayedCall(8000, () => { this.hideTextBox(); });
                 }
             });
@@ -1688,6 +1747,19 @@ class Start extends GameLevel {
     }
 
 
+    goToEnding(){
+        this.pauseMusic('rushSong');
+        if(this.location.r === 0 && this.location.c === 0){
+            if(this.karma === 0){
+                this.gotoScene('neutralvictory');
+            } else if(this.karma > 0){
+                this.gotoScene('negativevictory');
+            } else if(this.karma < 0) {
+                this.gotoScene('positivevictory');
+            }
+    }
+}
+
 
 
 
@@ -1713,18 +1785,52 @@ class GameOver extends Phaser.Scene {
 	}
 }
 
-
-class Victory extends Phaser.Scene {
+//neutral dub
+class NeutralVictory extends Phaser.Scene {
 	constructor() {
-        super('victory');
+        super('neutralvictory');
     }
 	
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
 
-		this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		.setOrigin(0.5, 0.5)
-		.setStroke(0x000000, 5);
+		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
+		// .setOrigin(0.5, 0.5)
+		// .setStroke(0x000000, 5);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
+	}
+}
+
+//daniel dub
+class PositiveVictory extends Phaser.Scene {
+	constructor() {
+        super('positivevictory');
+    }
+	
+	create() {
+		this.cameras.main.setBackgroundColor('#000000');
+
+		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
+		// .setOrigin(0.5, 0.5)
+		// .setStroke(0x000000, 5);
+
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '+Victory');
+	}
+}
+
+//monica dub
+class NegativeVictory extends Phaser.Scene {
+	constructor() {
+        super('negativevictory');
+    }
+	
+	create() {
+		this.cameras.main.setBackgroundColor('#000000');
+
+		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
+		// .setOrigin(0.5, 0.5)
+		// .setStroke(0x000000, 5);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory');
 	}
 }
 
@@ -1748,6 +1854,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Start, GameOver, Victory],
+    scene: [Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory],
     title: "Chase",
 });

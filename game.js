@@ -1,7 +1,7 @@
 class GameLevel extends Phaser.Scene {
     init(data) {
         this.location = data.location || {r: 6, c: 4}; 
-        this.playerLocation = data.playerLocation || {x: 912, y: 800};
+        this.playerLocation = data.playerLocation || {x: 912, y: 600};
         this.playerChased = data.playerChased || false;
         this.monsterLocation = data.monsterLocation || {r: 0, c: 0};
         this.chaseTime = data.chaseTime || 0;
@@ -17,6 +17,8 @@ class GameLevel extends Phaser.Scene {
         this.fileImages = data.fileImages || [];
         this.fileItems = data.fileItems || [];
         this.questions = data.questions || [null, null, null, null];
+        this.karma = data.karma || 0;
+        this.tutorial = (this.location.r !== 6 || this.location.c !== 4) ? false : true;
     }
 
     constructor(key, name) {
@@ -77,7 +79,7 @@ class GameLevel extends Phaser.Scene {
         this.text = this.add.text(this.w * 0.35, this.h * 0.85, t, { color: '#000000', fontSize: size })
             .setOrigin(0.5, 0.5)
             .setStroke(0x000000, 5);
-        this.i = this.add.image(this.w * 0.9, this.h * 0.858, json, i).setAlpha(1).setScale(4.5); // i == 0 is neutral, i == 1 is irritated
+        this.i = this.add.image(this.w * 0.9, this.h * 0.858, json, i).setAlpha(1).setScale(1); // i == 0 is neutral, i == 1 is irritated
     }
 
     hideTextBox() {
@@ -115,7 +117,8 @@ class GameLevel extends Phaser.Scene {
                 fileLocation: this.fileLocations,
                 fileImages: this.fileImages,
                 fileItems: this.fileItems,
-                questions: this.questions
+                questions: this.questions,
+                karma: this.karma
             });
         });
     }
@@ -147,8 +150,14 @@ class GameLevel extends Phaser.Scene {
                 ease: "Linear",
                 duration: 4000, 
             });
-            this.monsterLocation.r = c === 'final' ? this.location.r + 3 : this.location.r - 3;
-            this.monsterLocation.c = Phaser.Math.Between(this.location.c - 2, this.location.c + 2);
+            if (c === 'intro') {
+                this.monsterLocation.r = this.location.r + 1;
+                this.monsterLocation.c = this.location.c;
+            }
+            else {
+                this.monsterLocation.r = c === 'final' ? this.location.r + 3 : this.location.r - 3;
+                this.monsterLocation.c = Phaser.Math.Between(this.location.c - 2, this.location.c + 2);
+            }
         }
 
         this.checkSafe();
