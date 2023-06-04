@@ -16,9 +16,33 @@ class Start extends GameLevel {
         this.load.image('cabinet', 'assets/images/Cabinet.png');
         this.load.spritesheet('icon', 'assets/images/spritesheet.png', { frameWidth: 100, frameHeight: 100 });
         this.load.json('map', 'assets/json/map.json');
+
+
+
+
         this.load.image('floor1', 'assets/images/BG_FLOOR_1.png');
         this.load.image('floor2', 'assets/images/grey.png');
         this.load.image('border1', 'assets/images/BG_BORDER_1.png');
+
+        this.load.image('defaultFloor', 'assets/images/defaultFloor.png');
+        this.load.image('defaultWall', 'assets/images/defaultWall.png');
+        this.load.image('hiddenImage', 'assets/images/hiddenImage.png');
+
+
+
+        this.load.image('lRed', 'assets/images/LEFTRED.png');
+        this.load.image('rRed', 'assets/images/RIGHTRED.png');
+        this.load.image('tRed', 'assets/images/TOPRED.png');
+        this.load.image('bRed', 'assets/images/BOTTOMRED.png');
+
+
+        this.load.image('lDoor', 'assets/images/LOCKEDDOOR.png');
+        this.load.image('uDoor', 'assets/images/UNLOCKEDDOOR.png');
+
+
+
+
+
         this.load.image('desk', 'assets/images/desk.png');
         this.load.image('chair', 'assets/images/chair.png');
 
@@ -61,6 +85,8 @@ class Start extends GameLevel {
         this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');//this is a placeholder
         this.load.image('waitingImage', 'assets/images/notes/Ph_waitingforherbrotherspartner.png');
         this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
+
+
         this.load.image('deskPaper', 'assets/images/deskPaper.png')
 
 
@@ -176,6 +202,8 @@ class Start extends GameLevel {
             // lets the player get chased again
             if(keys.c.isDown) {
                 this.chase(1);
+                // let room = this.map.Levels[0][0];
+                // room.Escape.Locked = 0;
             } 
 
             if(this.item != null) {
@@ -187,6 +215,9 @@ class Start extends GameLevel {
             if(this.location.r === 6 && this.location.c === 3) {
                 this.checkInteractable();
                 this.atDesk(this.deskPhysical);
+            }
+            if(this.location.r === 0 && this.location.c === 0){
+                this.setDoor();
             }
         }
     }
@@ -262,6 +293,7 @@ class Start extends GameLevel {
         this.WDoor;
         this.EDoor;
         this.SDoor;
+        this.EscDoor;
         if (room.Doors.N === 1) {
             //this.ND = this.createDoor(this.w * 0.45, 0, this.w * 0.1, this.h * 0.075, true, -1);
             this.ND = this.createDoor(this.w * 0.5, 0 + 40, 'doorN');
@@ -273,20 +305,34 @@ class Start extends GameLevel {
             this.SDoor = this.physics.add.existing(this.SD, true);
         }
         if (room.Doors.E === 1) {
-            this.ED = this.createDoor(this.w * 0.9625 + 40, this.h * 0.425 + 40, 'doorE');
+            this.ED = this.createDoor(this.w * 0.9625 + 40, this.h * 0.425 + 100, 'doorE');
             // this.ED = this.createDoor(this.w * 0.9625, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, 1);
             this.EDoor = this.physics.add.existing(this.ED, true);
         }
         if (room.Doors.W === 1) {
-            this.WD = this.createDoor(0 + 40, this.h * 0.425 + 40, 'doorW');
+            this.WD = this.createDoor(0 + 40, this.h * 0.425 + 100, 'doorW');
             // this.WD = this.createDoor(0, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, -1);
             this.WDoor = this.physics.add.existing(this.WD, true);
+        }
+        if(this.location.r === 0 && this.location.c === 0){
+            if(room.Escape.N === 1){
+                this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'lDoor');
+                this.EscDoor = this.physics.add.existing(this.EscD, true);
+            }
+        }
+    }
+
+    setDoor(){
+        let room = this.map.Levels[0][0];
+        if(room.Escape.Locked === 0 && room.Escape.N === 1){
+            this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'uDoor');
+            this.EscDoor = this.physics.add.existing(this.EscD, true);
         }
     }
 
     createWalls() {
         // Creates North West East and South walls
-        this.add.image(0, 0, 'floor1').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
+        this.add.image(0, 0, 'defaultFloor').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
 
         this.NW = this.add.rectangle(0, 0, this.w, this.h * 0.04)
             .setOrigin(0,0)
@@ -309,7 +355,7 @@ class Start extends GameLevel {
         this.EWall = this.physics.add.existing(this.EW, true);
         this.SWall = this.physics.add.existing(this.SW, true);
 
-        this.add.image(0, 0, 'border1').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
+        this.add.image(0, 0, 'defaultWall').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
     }
 
     // createDoor(x1, y1, x2, y2) {
@@ -433,7 +479,7 @@ class Start extends GameLevel {
 
                     this.toggleMusic();
 
-                    this.hidingFloor = this.add.image(0, 0, 'floor2').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
+                    this.hidingFloor = this.add.image(0, 0, 'hiddenImage').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
                 }
             }
         });
