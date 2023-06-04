@@ -200,6 +200,9 @@ class GameLevel extends Phaser.Scene {
                 else {
                     warningText = 'Something is here.\nStay hidden!';
                 }
+                this.pauseMusic();
+                this.sound.play('doorSqueak');
+                this.sound.play('heartBeat');
                 this.warning = this.add.text(this.w * 0.5, this.h * 0.3, warningText, { color: '#ffffff', fontSize: 150, fontStyle: 'bold' })
                     .setOrigin(0.5, 0.5)
                     .setAlign('center')

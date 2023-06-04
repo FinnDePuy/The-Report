@@ -110,19 +110,28 @@ class Start extends GameLevel {
         this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
 
 
-        this.load.image('deskPaper', 'assets/images/deskPaper.png')
-
-
 
         this.load.image('xIcon', 'assets/images/x.png');
         this.load.image('rArrow', 'assets/images/rightArrow.png');
         this.load.image('lArrow', 'assets/images/leftArrow.png');
 
-        this.load.audio('doorOpen', "assets/audio/Door_Open.mp3");
-        this.load.audio('doorClose', "assets/audio/Door_Close.mp3");
+        this.load.audio('doorOpen', "assets/audio/doorOpen.mp3");
+        this.load.audio('doorClose', "assets/audio/doorClose.mp3");
         this.load.audio('fileOpen', "assets/audio/fileOpen.mp3");
         this.load.audio('fileClose', "assets/audio/fileClose.mp3");
+        this.load.audio('heartBeat', "assets/audio/heartBeat.mp3");
+        this.load.audio('doorSqueak', "assets/audio/doorSqueak.mp3");
+        this.load.audio('writing', "assets/audio/writing.mp3");
+        this.load.audio('walking', "assets/audio/walking.mp3");
+        this.load.audio('paperPickup', "assets/audio/paperPickup.mp3");
+        this.load.audio('itemPickup', "assets/audio/itemPickup.mp3");
+        this.load.audio('voicemail', "assets/audio/Voicemail.mp3");
+
+
+        //songs
+        this.load.audio('introSong', 'assets/audio/introSong.mp3')
         this.load.audio('happyLoop', 'assets/audio/happyLoop.mp3')
+        this.load.audio('rushSong', 'assets/audio/rushSong.mp3')
     }
 
     onEnter() {
@@ -143,13 +152,22 @@ class Start extends GameLevel {
 
         this.initializeDesk();
 
-        this.playMusic();
+        this.playMusic('introSong');
+        this.resumeMusic('introSong');
+        
 
         this.doorOpenSound = this.sound.add('doorOpen');
         this.doorCloseSound = this.sound.add('doorClose');
 
         this.fileOpenSound = this.sound.add('fileOpen');
         this.fileCloseSound = this.sound.add('fileClose');
+
+        this.walkSound = this.sound.add('walking');
+        this.writingSound = this.sound.add('writing');
+        this.heartBeatSound = this.sound.add('heartBeat');
+
+        this.voicemail = this.sound.add('voicemail');
+
 
         // inputs
         const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H, ESC} = Phaser.Input.Keyboard.KeyCodes;
@@ -194,25 +212,32 @@ class Start extends GameLevel {
                 this.checkHideable();
             }
 
-            //this.player.anims.play('idle');
             
             // movement
             if (this.player.alpha == 1) { // if player is not hiding
                 if(keys.left.isDown || keys.a.isDown) {
                     this.player.setVelocityX(-this.speed);
                     this.player.anims.play('leftw', true);
+                    if (!this.walkSound.isPlaying)
+                        this.walkSound.play({ volume: 0.3 });
                 }
                 else if(keys.right.isDown || keys.d.isDown) {
                     this.player.setVelocityX(this.speed);
                     this.player.anims.play('rightw', true);
+                    if (!this.walkSound.isPlaying)
+                        this.walkSound.play({ volume: 0.3 });
                 }
                 else if(keys.up.isDown || keys.w.isDown) {
                     this.player.setVelocityY(-this.speed);
                     this.player.anims.play('backw', true);
+                    if (!this.walkSound.isPlaying)
+                        this.walkSound.play({ volume: 0.3 });
                 } 
                 else if(keys.down.isDown || keys.s.isDown) {
                     this.player.setVelocityY(this.speed);
                     this.player.anims.play('frontw', true);
+                    if (!this.walkSound.isPlaying)
+                        this.walkSound.play({ volume: 0.3 });
                 }
                 else {
                     // If no keys are pressed, stop the player and play the idle animation
@@ -221,6 +246,14 @@ class Start extends GameLevel {
                     this.player.anims.play('idle', true);
                 }
             }
+                    
+            
+            
+            
+            
+            
+            
+            
 
             // lets the player get chased again
             if(keys.c.isDown) {
@@ -488,7 +521,8 @@ class Start extends GameLevel {
 
                     this.doorOpenSound.play();
 
-                    this.toggleMusic();
+                    this.resumeMusic();
+
 
                 }
                 else {
@@ -499,7 +533,8 @@ class Start extends GameLevel {
 
                     this.doorCloseSound.play();
 
-                    this.toggleMusic();
+                    this.pauseMusic();
+
 
                     this.hidingFloor = this.add.image(0, 0, 'hiddenImage').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
                 }
@@ -908,12 +943,21 @@ class Start extends GameLevel {
         image.name = i.itemName;
         this.inventoryImages.push(image);
         this.eSpr.setAlpha(0);
-        this.displayItem(image);
+        this.displayItem(image, i.itemName);
+
+
     }
 
     // shows the name and icon of the item after pickup
-    displayItem(item) {
+    displayItem(item, name) {
         this.paused = true;
+
+        if (name === 'breakIn'){
+            this.sound.play('voicemail');
+        }
+        else{
+            this.sound.play('paperPickup');
+        }
 
         this.blurRectangle = this.add.rectangle(0, 0, this.w, this.h)
             .setOrigin(0,0)
@@ -961,6 +1005,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice1.setScale(1.2))
                             .on('pointerout', () => this.choice1.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
@@ -985,6 +1031,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice2.setScale(1.2))
                             .on('pointerout', () => this.choice2.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
@@ -1009,6 +1057,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice3.setScale(1.2))
                             .on('pointerout', () => this.choice3.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
@@ -1042,6 +1092,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice1.setScale(1.2))
                             .on('pointerout', () => this.choice1.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
@@ -1066,6 +1118,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice2.setScale(1.2))
                             .on('pointerout', () => this.choice2.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
@@ -1090,6 +1144,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice3.setScale(1.2))
                             .on('pointerout', () => this.choice3.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
@@ -1123,6 +1179,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice1.setScale(1.2))
                             .on('pointerout', () => this.choice1.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
@@ -1147,6 +1205,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice2.setScale(1.2))
                             .on('pointerout', () => this.choice2.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
@@ -1171,6 +1231,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice3.setScale(1.2))
                             .on('pointerout', () => this.choice3.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
@@ -1204,6 +1266,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice1.setScale(1.2))
                             .on('pointerout', () => this.choice1.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice2.destroy();
                                 this.choice3.destroy();
@@ -1227,6 +1291,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice2.setScale(1.2))
                             .on('pointerout', () => this.choice2.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice3.destroy();
@@ -1250,6 +1316,8 @@ class Start extends GameLevel {
                             .on('pointerover', () => this.choice3.setScale(1.2))
                             .on('pointerout', () => this.choice3.setScale(1))
                             .on('pointerdown', () => {
+                                this.writingSound.stop();
+                                this.writingSound.play();
                                 this.deskPhysical.selectedOptions[number-1] = 'question'+number+'-'+i;
                                 this.choice1.destroy();
                                 this.choice2.destroy();
@@ -1284,7 +1352,6 @@ class Start extends GameLevel {
         this.choice3;
         
         this.question(1);
-        //console.log(this.sentence);
 
         let q = 1; // question number
         this.maxQuestion = 1; // furthest question the player can see
@@ -1469,28 +1536,29 @@ class Start extends GameLevel {
         }
     }
 
-    toggleMusic() {
-        if (this.sound.get('happyLoop')) {
-            let music = this.sound.get('happyLoop');
-            console.log(music);
-
-            if (music.isPlaying) {
-                music.pause();
-            } 
-            else {
-                music.resume();
-            }
-              
+    pauseMusic(title){
+        if (this.sound.get(title)) {
+            let music = this.sound.get(title);
+            music.pause();    
         }
+
+    }
+
+    resumeMusic(title){
+        if (this.sound.get(title)) {
+            let music = this.sound.get(title);
+            music.resume();    
+        }
+
     }
 
 
-    playMusic() {
-        if (!this.sound.get('happyLoop')) {
-            let music = this.sound.add('happyLoop');
+    playMusic(title) {
+        if (!this.sound.get(title)) {
+            let music = this.sound.add(title);
 
             music.setLoop(true);
-            music.setVolume(0.3);
+            music.setVolume(0.4);
 
             music.play();
         }
