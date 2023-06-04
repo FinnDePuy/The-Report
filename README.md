@@ -6,4 +6,4 @@ Finn DePuy
 Jackson Nadler-Block  
 Nicholas Schetman  
   
-Play Game [here] (https://finndepuy.github.io/Phaser-Group-Game/)
+Play Game [here](https://finndepuy.github.io/Phaser-Group-Game/)
