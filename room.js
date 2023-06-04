@@ -6,7 +6,9 @@ class Start extends GameLevel {
     }
 
     preload() {
-        //this.load.image('floor1', 'assets/green.png');
+        // ---------------------------------------
+        // IMAGE LOADING
+        // ---------------------------------------
         this.load.image('cabinetZone', 'assets/images/RedZone.png');
         this.load.image('fileCabinet', 'assets/images/File_Cabinet.png');
         this.load.image('fileCabinet1', 'assets/images/File_Cabinet_1.png');
@@ -115,6 +117,12 @@ class Start extends GameLevel {
         this.load.image('rArrow', 'assets/images/rightArrow.png');
         this.load.image('lArrow', 'assets/images/leftArrow.png');
 
+
+
+        // ---------------------------------------
+        // MUSIC LOADING
+        // ---------------------------------------
+
         this.load.audio('doorOpen', "assets/audio/doorOpen.mp3");
         this.load.audio('doorClose', "assets/audio/doorClose.mp3");
         this.load.audio('fileOpen', "assets/audio/fileOpen.mp3");
@@ -135,6 +143,9 @@ class Start extends GameLevel {
     }
 
     onEnter() {
+        // ---------------------------------------
+        // Initializing
+        // ---------------------------------------
         console.log(this.location.r + ", " + this.location.c);
         this.chase(0);
         
@@ -168,8 +179,6 @@ class Start extends GameLevel {
 
         this.voicemail = this.sound.add('voicemail');
 
-
-        // inputs
         const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H, ESC} = Phaser.Input.Keyboard.KeyCodes;
         this.keys = this.input.keyboard.addKeys({
             left: LEFT,
@@ -188,6 +197,11 @@ class Start extends GameLevel {
     }
 
     update(time, delta) {
+
+        // ---------------------------------------
+        // Movement + Animation
+        // ---------------------------------------
+
         this.player.setVelocity(0);
         
         if (!this.paused) {
@@ -250,10 +264,9 @@ class Start extends GameLevel {
             
             
             
-            
-            
-            
-            
+        // ---------------------------------------
+        // Chase
+        // ---------------------------------------
 
             // lets the player get chased again
             if(keys.c.isDown) {
@@ -298,8 +311,9 @@ class Start extends GameLevel {
 
 
 
-
-
+    // ---------------------------------------
+    // Walls + Doors
+    // ---------------------------------------
 
 
     setCollision() {
@@ -429,19 +443,9 @@ class Start extends GameLevel {
 
 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // ---------------------------------------
+    // Hiding
+    // ---------------------------------------
 
     checkHideable() {
         for (let i = 0; i < this.hideableObjects.length; i++) {
@@ -569,7 +573,9 @@ class Start extends GameLevel {
 
 
 
-
+    // ---------------------------------------
+    // Items + Inventory
+    // ---------------------------------------
     //list of items
     //paper, scribbles on ground, photos,
     //items have the following parameters x, y, name
@@ -718,9 +724,14 @@ class Start extends GameLevel {
         };
     }
 
+    
+    // ---------------------------------------
+    // File Cabinet
+    // ---------------------------------------
     // makes an inventory to store items in
-
     // makes the cabinet and and allows items to be put into
+
+
     checkInteractable() {
         for(let i = 0; i < this.fileLocations.length; i++) {
            let object = this.fileLocations[i];//this is the line
@@ -923,6 +934,9 @@ class Start extends GameLevel {
         }
     }
 
+    // ---------------------------------------
+    // Item Pickup + Display
+    // ---------------------------------------
 
     // boolean check if you have a certain item by name
     hasItem(iName) {
@@ -991,6 +1005,12 @@ class Start extends GameLevel {
             this.rightArrow.setVisible(true);
         }
     }
+
+
+
+    // ---------------------------------------
+    // Desk + Insight
+    // ---------------------------------------
     
     question(number){
         this.sentence = this.add.image(this.w * 0.5, this.h * 0.2, 'question' + number); 
@@ -1535,6 +1555,10 @@ class Start extends GameLevel {
             }
         }
     }
+
+    // ---------------------------------------
+    // Music
+    // ---------------------------------------
 
     pauseMusic(title){
         if (this.sound.get(title)) {
