@@ -5,7 +5,9 @@ class GameLevel extends Phaser.Scene {
         this.playerChased = data.playerChased || false;
         this.monsterLocation = data.monsterLocation || {r: 0, c: 0};
         this.chaseTime = data.chaseTime || 0;
+        this.timeMove = data.timeMove || 7000;
         this.caught = data.caught || false;
+        this.finalChaseTime = data.finalChaseTime || false;
         this.everChased = data.everChased || false;
         this.inventory = data.inventory || [];
         this.inventoryImages = data.inventoryImages || [];
@@ -29,7 +31,7 @@ class GameLevel extends Phaser.Scene {
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
 
-        this.speed = 1500; // should be 500
+        this.speed = 500;
         this.paused = false;
         this.hideableObjects = [];
 
@@ -46,17 +48,6 @@ class GameLevel extends Phaser.Scene {
             } else {
                 this.scale.startFullscreen();
             }
-        });
-
-        // textBox
-        this.shown = false;
-        this.input.keyboard.on('keydown-' + 'T', () => { 
-            if (!this.shown) {
-                this.showTextBox("Hi! How are you?", 100, 0);
-            } else {
-                this.hideTextBox();
-            }
-            this.shown = !this.shown;
         });
         
 
@@ -75,18 +66,18 @@ class GameLevel extends Phaser.Scene {
     }
  
 
-    showTextBox(t, size, i) { // text, font size, which spritesheet icon to use
+    showTextBox(t, size, i, character) { // text, font size, which spritesheet icon to use
         if (this.bubble) {
             this.bubble.destroy();
             this.text.destroy();
             this.i.destroy();
         }
-        
+        let json = character === 'monica' ? 'monica' : 'icon';
         this.bubble = this.add.image(this.w * 0.44, this.h * 0.85, 'speechBubble').setOrigin(0.5, 0.5).setAlpha(1).setScale(1.16, 1);
         this.text = this.add.text(this.w * 0.35, this.h * 0.85, t, { color: '#000000', fontSize: size })
             .setOrigin(0.5, 0.5)
             .setStroke(0x000000, 5);
-        this.i = this.add.image(this.w * 0.9, this.h * 0.81, 'icon', i).setAlpha(1).setScale(1); // i == 0 is neutral, i == 1 is irritated
+        this.i = this.add.image(this.w * 0.9, this.h * 0.858, json, i).setAlpha(1).setScale(4.5); // i == 0 is neutral, i == 1 is irritated
     }
 
     hideTextBox() {
@@ -112,8 +103,10 @@ class GameLevel extends Phaser.Scene {
                 playerLocation: this.playerLocation,
                 playerChased: this.playerChased,
                 chaseTime: this.chaseTime,
+                timeMove: this.timeMove,
                 monsterLocation: this.monsterLocation,
                 caught: this.caught,
+                finalChaseTime: this.finalChaseTime,
                 everChased: this.everChased,
                 inventory: this.inventory,
                 inventoryImages: this.inventoryImages,
@@ -127,10 +120,20 @@ class GameLevel extends Phaser.Scene {
         });
     }
 
+    finalChase() {
+        if(this.finalChaseTime) { // if the final chase is ready to begin
+            if (this.location.r === 5 && this.location.c === 3) { // if the player just left the safe room
+                this.finalChaseTime = false;
+                this.timeMove = 3250;
+                this.showTextBox('  You won\'t escape me!!!', 50, 0, 'monica');
+                this.chase('final');
+            }
+        }
+    }
+
     chase(c) {  // CHANGE 
-        if (!this.playerChased && ((this.location.r == -1 && !this.everChased) || c == 1)) { // Player only gets chased when c key is pressed
-            this.everChased = true;
-            this.playerChased = !this.playerChased;
+        if (!this.playerChased) {
+            this.playerChased = true;
             let run = this.add.text(this.w * 0.52, this.h * 0.3, "Run!", { color: '#710C04', fontSize: 150 })
                 .setOrigin(0.5, 0.5)
                 .setStroke(0x000000, 5);
@@ -140,22 +143,20 @@ class GameLevel extends Phaser.Scene {
                 ease: "Linear",
                 duration: 4000, 
             });
-            if (c == 1) { // if key was pressed to start chase
-                if (this.location.r == 0 || this.location.r == 1) {
-                    this.monsterLocation.r = 2; // Monster at least 2 rooms below player
-                }
-                else {
-                    this.monsterLocation.r = 0; // Monster at least 2 rooms below player
-                }
-            }
-            else {
-                this.monsterLocation.r = 2; // Monster at least 2 rooms below player
-            }
-            this.monsterLocation.c = Phaser.Math.Between(0, 2); // Monster in a random column 
+            this.monsterLocation.r = c === 'final' ? this.location.r + 3 : this.location.r - 3;
+            this.monsterLocation.c = Phaser.Math.Between(this.location.c - 2, this.location.c + 2);
         }
-        if (this.playerChased && this.location.r == 3 && this.location.c == 6) { // safe room stops the player from being chased
-            this.playerChased = !this.playerChased;
-            this.everChased = false;n
+
+        if (this.playerChased && this.location.r == 6 && this.location.c == 3) { // safe room stops the player from being chased
+            this.playerChased = false;
+        }
+    }
+
+    checkSafe() {
+        if (this.playerChased) {
+            if (this.location.r === 6 && this.location.c === 3) { // if player is in safe room
+                this.playerChased = false;
+            }
         }
     }
 
@@ -182,50 +183,45 @@ class GameLevel extends Phaser.Scene {
         this.warningTween.stop();
     }
 
-    checkMonsterWarning() {
-        // if you escape when cross
-        if(this.playerChased && this.caught && (this.monsterLocation.r != this.location.r || this.monsterLocation.c != this.location.c)) { // if the player was caught but got away
-            this.playerChased = !this.playerChased;
-            this.caught = !this.caught;
-        }
-        
+    checkMonsterWarning() {     
         if (this.playerChased && !this.caught) {
-            if (this.monsterLocation.r == this.location.r && this.monsterLocation.c == this.location.c) {
-                this.timeSinceCaught = 0;
-                
-                this.blackedOut = this.add.rectangle(0, 0, this.w, this.h)
-                    .setOrigin(0,0)
-                    .setFillStyle(0x000000);
-                this.caught = !this.caught;
-                let warningText = '';
-                if (this.player.alpha == 1) {
-                    warningText = 'Get Out Now';
+            if (this.monsterLocation.r === this.location.r && this.monsterLocation.c === this.location.c) {
+                if (this.player.alpha === 1) {
+                    this.pauseMusic();
+                    this.sound.play('doorSqueak');
+                    this.scene.start('game over');
                 }
                 else {
-                    warningText = 'Something is here.\nStay hidden!';
+                    this.timeSinceCaught = 0;
+                
+                    this.blackedOut = this.add.rectangle(0, 0, this.w, this.h)
+                        .setOrigin(0,0)
+                        .setFillStyle(0x000000);
+                    this.caught = !this.caught;
+                    let warningText = 'Something is here.\nStay hidden!';
+                    this.pauseMusic();
+                    this.sound.play('doorSqueak');
+                    this.sound.play('heartBeat');
+                    this.warning = this.add.text(this.w * 0.5, this.h * 0.3, warningText, { color: '#ffffff', fontSize: 150, fontStyle: 'bold' })
+                        .setOrigin(0.5, 0.5)
+                        .setAlign('center')
+                        .setStroke(0x000000, 5);
+                    this.warningTween = this.tweens.add({
+                        targets: this.warning,
+                        alpha: 0,
+                        ease: "Linear",
+                        repeat: -1,
+                        yoyo: true,
+                        duration: 3000, 
+                    });
                 }
-                this.pauseMusic();
-                this.sound.play('doorSqueak');
-                this.sound.play('heartBeat');
-                this.warning = this.add.text(this.w * 0.5, this.h * 0.3, warningText, { color: '#ffffff', fontSize: 150, fontStyle: 'bold' })
-                    .setOrigin(0.5, 0.5)
-                    .setAlign('center')
-                    .setStroke(0x000000, 5);
-                this.warningTween = this.tweens.add({
-                    targets: this.warning,
-                    alpha: 0,
-                    ease: "Linear",
-                    repeat: -1,
-                    yoyo: true,
-                    duration: 3000, 
-                });
             }
             let row_diff = this.monsterLocation.r - this.location.r;
             let col_diff = this.monsterLocation.c - this.location.c;
             if(row_diff === -1 && col_diff >= -1 && col_diff <= 1) { // North Wall should start flashing red
-                this.NW.setFillStyle(0x710C04);
+                this.NWarning = this.add.image(0, 0, 'tRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
                 this.NWTween = this.tweens.add({
-                    targets: this.NW,
+                    targets: this.NWarning,
                     alpha: { from: 1, to: 0.5 },
                     ease: "Sine.InOut",
                     repeat: -1,
@@ -233,15 +229,15 @@ class GameLevel extends Phaser.Scene {
                     duration: 500, 
                 });
             }
-            else if (this.NWTween){ // North Wall should be normal
+            else if (this.NWarning) { // North Wall should be normal
                 this.NWTween.stop();
-                this.NW.setFillStyle(0x323232);
+                this.NWarning.destroy();
             }
-
+            
             if(row_diff === 1 && col_diff >= -1 && col_diff <= 1) { // South Wall should start flashing red
-                this.SW.setFillStyle(0x710C04);
+                this.SWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'bRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
                 this.SWTween = this.tweens.add({
-                    targets: this.SW,
+                    targets: this.SWarning,
                     alpha: { from: 1, to: 0.5 },
                     ease: "Sine.InOut",
                     repeat: -1,
@@ -249,15 +245,15 @@ class GameLevel extends Phaser.Scene {
                     duration: 500, 
                 });
             }
-            else if (this.SWTween){ // South Wall should be normal
+            else if (this.SWTween) { // South Wall should be normal
                 this.SWTween.stop();
-                this.SW.setFillStyle(0x323232);
+                this.SWarning.destroy();
             }
 
             if(col_diff === 1 && row_diff >= -1 && row_diff <= 1) { // East Wall should start flashing red
-                this.EW.setFillStyle(0x710C04);
+                this.EWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'rRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
                 this.EWTween = this.tweens.add({
-                    targets: this.EW,
+                    targets: this.EWarning,
                     alpha: { from: 1, to: 0.5 },
                     ease: "Sine.InOut",
                     repeat: -1,
@@ -267,13 +263,13 @@ class GameLevel extends Phaser.Scene {
             }
             else if (this.EWTween) { // East Wall should be normal
                 this.EWTween.stop();
-                this.EW.setFillStyle(0x323232);
+                this.EWarning.destroy();
             }
 
             if(col_diff === -1 && row_diff >= -1 && row_diff <= 1) { // West Wall should start flashing red
-                this.WW.setFillStyle(0x710C04);
+                this.WWarning = this.add.image(0, 0, 'lRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
                 this.WWTween = this.tweens.add({
-                    targets: this.WW,
+                    targets: this.WWarning,
                     alpha: { from: 1, to: 0.5 },
                     ease: "Sine.InOut",
                     repeat: -1,
@@ -283,7 +279,7 @@ class GameLevel extends Phaser.Scene {
             }
             else if (this.WWTween) { // West Wall should be normal
                 this.WWTween.stop();
-                this.WW.setFillStyle(0x323232);
+                this.WWarning.destroy();
             }
         }
 

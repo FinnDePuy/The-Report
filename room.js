@@ -17,7 +17,8 @@ class Start extends GameLevel {
         this.load.image('eSprite', 'assets/images/eSprite.png');
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
         this.load.image('cabinet', 'assets/images/Cabinet.png');
-        this.load.spritesheet('icon', 'assets/images/FINALSP.png', { frameWidth: 300, frameHeight: 300 });
+        this.load.spritesheet('icon', 'sprites/alex/alex.png', { frameWidth: 54, frameHeight: 54 });
+        this.load.spritesheet('monica', 'assets/images/monicaSpriteSheet.png', { frameWidth: 54, frameHeight: 54 });
         this.load.json('map', 'assets/json/map.json');
 
 
@@ -147,9 +148,9 @@ class Start extends GameLevel {
     // $Initializing
     // ---------------------------------------
 
-    onEnter() {
-        console.log(this.location.r + ", " + this.location.c);
-        this.chase(0);
+    onEnter() {  
+        //this.chase();
+        this.checkSafe();
         
         this.initializeDoors();
         this.setCollision();
@@ -164,6 +165,8 @@ class Start extends GameLevel {
         this.initializeFile();
 
         this.initializeDesk();
+
+        this.finalChase();
 
         this.playMusic('introSong');
         this.resumeMusic('introSong');
@@ -212,26 +215,26 @@ class Start extends GameLevel {
 
             if (this.playerChased) {
                 this.chaseTime += delta;
-                if (this.chaseTime > 5000) { // every 5 seconds of chasing, the monster will get closer
-                    this.chaseTime -= 5000;
+                if (this.chaseTime > this.timeMove) { // every 5 seconds of chasing, the monster will get closer
+                    this.chaseTime -= this.timeMove;
                     this.updateMonsterLocation();
                 }
             }
 
-            if (this.caught && this.player.alpha == 0) {
+            if (this.caught && this.player.alpha === 0) {
                 this.timeSinceCaught += delta;
-                if (this.timeSinceCaught > 5000) { // every 5 seconds of chasing, the monster will get closer
+                if (this.timeSinceCaught > 10000) { // every 5 seconds of chasing, the monster will get closer
                     this.notCaught();
                 }
             }
-            else {
+            else if (!this.caught) {
                 // checks if interaction is available
                 this.checkHideable();
             }
 
             
             // movement
-            if (this.player.alpha == 1) { // if player is not hiding
+            if (this.player.alpha === 1) { // if player is not hiding
                 if(keys.left.isDown || keys.a.isDown) {
                     this.player.setVelocityX(-this.speed);
                     this.player.anims.play('leftw', true);
@@ -272,9 +275,9 @@ class Start extends GameLevel {
     // ---------------------------------------
 
             // lets the player get chased again
-            if(keys.c.isDown) {
-                this.chase(1);
-            } 
+            // if(keys.c.isDown) {
+            //     this.chase('final');
+            // } 
 
             if(this.item != null) {
                 if(this.item.itemImage.alpha == 1) {
@@ -452,40 +455,42 @@ class Start extends GameLevel {
 
 
     checkHideable() {
-        for (let i = 0; i < this.hideableObjects.length; i++) {
-            let object = this.hideableObjects[i];
-            if (this.isOverlap(this.player, object.zoneObject)) {
-                if (object.hSprite.alpha === 0) {
-                    object.hSprite.setAlpha(1);
-                    
-                    // start tween
-                    this.hTween = this.tweens.add({
-                        targets: object.hSprite,
-                        y: '-=10', // move up 10 pixels
-                        ease: 'Power1',
-                        duration: 500,
-                        repeat: -1, // Repeat forever
-                        repeatDelay: 500,
-                        yoyo: true 
-                    });
+        if (!this.caught) {
+            for (let i = 0; i < this.hideableObjects.length; i++) {
+                let object = this.hideableObjects[i];
+                if (this.isOverlap(this.player, object.zoneObject)) {
+                    if (object.hSprite.alpha === 0) {
+                        object.hSprite.setAlpha(1);
+                        
+                        // start tween
+                        this.hTween = this.tweens.add({
+                            targets: object.hSprite,
+                            y: '-=10', // move up 10 pixels
+                            ease: 'Power1',
+                            duration: 500,
+                            repeat: -1, // Repeat forever
+                            repeatDelay: 500,
+                            yoyo: true 
+                        });
+                    }
+                    return true;
                 }
-                return true;
-            }
-            else {
-                if (object.hSprite.alpha === 1) {
-                    object.hSprite.setAlpha(0); // hSprite disappears
-                    object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
-                    this.hTween.stop(); // stop hSprite tween bounce
-                } 
-                if (i == this.hideableObjects.length - 1) {
-                    //fixing the out of hiding bug
-                    if (object.hSprite.alpha === 0){
-                        this.player.setAlpha(1);
-                        if (this.hidingFloor) {
-                            this.hidingFloor.destroy();
-                            this.hidingFloor = null;
+                else {
+                    if (object.hSprite.alpha === 1) {
+                        object.hSprite.setAlpha(0); // hSprite disappears
+                        object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
+                        this.hTween.stop(); // stop hSprite tween bounce
+                    } 
+                    if (i == this.hideableObjects.length - 1) {
+                        //fixing the out of hiding bug
+                        if (object.hSprite.alpha === 0){
+                            this.player.setAlpha(1);
+                            if (this.hidingFloor) {
+                                this.hidingFloor.destroy();
+                                this.hidingFloor = null;
+                            }
+                            //this.cameras.main.setBackgroundColor('#444');
                         }
-                        //this.cameras.main.setBackgroundColor('#444');
                     }
                 }
             }
@@ -802,7 +807,7 @@ class Start extends GameLevel {
                         this.openFileCabinet();
                     }
                     else {
-                        this.showTextBox("I wonder what I should put in here.", 50, 1);
+                        this.showTextBox("I wonder what I should put in here.", 50, 3, 'kayce');
                         this.time.delayedCall(5000, () => { this.hideTextBox(); });
                     }
                 }
@@ -1007,67 +1012,41 @@ class Start extends GameLevel {
         this.itemDisplay = this.add.image(this.w * 0.5, this.h * 0.5, item.name + 'Image').setOrigin(0.5, 0.5);
     }
 
-        // this.load.image('blackmail', 'assets/images/notes/blackmail.png');
-        // this.load.image('discouraged', 'assets/images/notes/discourage.png');
-        // this.load.image('father', 'assets/images/notes/fathernote.png');
-        // this.load.image('picture', 'assets/images/notes/love.png');
-        // this.load.image('note', 'assets/images/notes/off.png');
-        // this.load.image('sound', 'assets/images/notes/sound.png');
-        // this.load.image('phone', 'assets/images/notes/unfaithful.png');
-        // this.load.image('escape', 'assets/images/notes/upnote.png')
-        // this.load.image('violating', 'assets/images/notes/violatepolicy.png');
-        // this.load.image('breakIn', 'assets/images/notes/voicemail.png');
-        // this.load.image('harassing', 'assets/images/notes/breakin.png');
-        // this.load.image('outside', 'assets/images/notes/breakin.png');
-        // this.load.image('waiting', 'assets/images/notes/breakin.png');
-
-        // this.load.image('noteImage', 'assets/images/notes/N_PoliceReport2.png');
-        // this.load.image('pictureImage', 'assets/images/notes/Pi_dating.png');
-        // this.load.image('phoneImage', 'assets/images/notes/Ph_unfaithful.png');
-        // this.load.image('blackmailImage', 'assets/images/notes/N_blackmailingherbrother.png');
-        // this.load.image('fatherImage', 'assets/images/notes/N_byherfather.png');
-        // this.load.image('outsideImage', 'assets/images/notes/Ph_byoutsidepressure.png');
-        // this.load.image('discouragedImage', 'assets/images/notes/Pi_discouragedbyothers.png');
-        // this.load.image('harassingImage', 'assets/images/notes/Ph_previouslyharassingasuspect.png');
-        // this.load.image('soundImage', 'assets/images/notes/Ph_soundmentally.png');
-        // this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');//this is a placeholder
-        // this.load.image('waitingImage', 'assets/images/notes/Ph_waitingforherbrotherspartner.png');
-        // this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
-
     textAfterPickup(item) {
         if (this.inventory.length % 3 === 0) {
-            // trigger chase
-            this.showTextBox('  These aren\'t for you to read!\n\n  I\'m going to find you!', 40, 1);
+            this.timeMove -= 750;
+            this.chase('regular');
+            this.showTextBox('  These aren\'t for you to read!\n\n  I\'m going to find you!', 40, 1, 'monica');
         }
         else if (this.inventory.length === 2) {
-            this.showTextBox('           I want to keep reading these... but that room with the \n\n           desk was the only one with a lock.', 40, 1);
+            this.showTextBox('           I want to keep reading these... but that room with the \n\n           desk was the only one with a lock.', 40, 3, 'kayce');
         }
         else if (item === 'note') {
-            this.showTextBox('Man... what a sad way to go out.', 50, 1);
+            this.showTextBox('Man... what a sad way to go out.', 50, 5, 'kayce');
         }
         else if (item === 'blackmail') {
-            this.showTextBox('        Who is worth stalking?\n\n        I hope there was a decent reason...', 50, 1);
+            this.showTextBox('        Who is worth stalking?\n\n        I hope there was a decent reason...', 50, 5, 'kayce');
         }
         else if (item === 'father') {
-            this.showTextBox('        This is their dad!?\n\n        I’d lose my mind...', 40, 1);
+            this.showTextBox('        This is their dad!?\n\n        I’d lose my mind...', 40, 2, 'kayce');
         }
         else if (item === 'picture') {
-            this.showTextBox('How sweet...', 50, 1);
+            this.showTextBox('How sweet...', 50, 1, 'kayce');
         }
         else if (item === 'discouraged') {
-            this.showTextBox('I agree. It\'s not that deep.', 40, 1);
+            this.showTextBox('I agree. It\'s not that deep.', 40, 0, 'kayce');
         }
         else if (item === 'breakIn') {
-            this.showTextBox('       Who leaves a note behind,\n\n       what a dumbass...', 40, 1);
+            this.showTextBox('       Who leaves a note behind,\n\n       what a dumbass...', 40, 4, 'kayce');
         }
         else if (item === 'outside') {
-            this.showTextBox('Who texts someone like that?', 40, 1);
+            this.showTextBox('Who texts someone like that?', 40, 5, 'kayce');
         }
         else if (item === 'phone') {
-            this.showTextBox('    I don\'t know if I want\n\n    to believe a random note...', 40, 1);
+            this.showTextBox('    I don\'t know if I want\n\n    to believe a random note...', 40, 3, 'kayce');
         }
         else if (item === 'violating') {
-            this.showTextBox('Wow, strict...', 50, 1);
+            this.showTextBox('Wow, strict...', 50, 2, 'kayce');
         }
         this.time.delayedCall(5000, () => { this.hideTextBox(); });
 
@@ -1372,6 +1351,7 @@ class Start extends GameLevel {
                                     duration: 200,
                                 });
                                 this.choice1.removeInteractive();
+                                this.finalChaseTime = true;
                             });
                         }
                         else {
@@ -1397,6 +1377,7 @@ class Start extends GameLevel {
                                     duration: 200,
                                 });
                                 this.choice2.removeInteractive();
+                                this.finalChaseTime = true;
                             });
                         }
                         else {
@@ -1422,6 +1403,7 @@ class Start extends GameLevel {
                                     duration: 200,
                                 });
                                 this.choice3.removeInteractive();
+                                this.finalChaseTime = true;
                             });
                         }
                         else {
@@ -1436,6 +1418,7 @@ class Start extends GameLevel {
         }
         // let room = this.map.Levels[0][0];
         // room.Escape.Locked = 0;
+        //ADD UNLOCK LOGIC
 
     }
 
@@ -1602,6 +1585,10 @@ class Start extends GameLevel {
                 this.leftArrow.destroy();
                 this.rightArrow.destroy();
                 this.paused = false;
+                if(this.finalChaseTime) {
+                    this.showTextBox('       I need to escape through the door in the North West!', 40, 2, 'icon');
+                    this.time.delayedCall(8000, () => { this.hideTextBox(); });
+                }
             });
         
         this.paper = this.add.image(this.w * 0.5, this.h * 0.5,'background').setOrigin(0.5, 0.5).setScale(1);
@@ -1667,6 +1654,20 @@ class Start extends GameLevel {
 
 }
 
+class GameOver extends Phaser.Scene {
+	constructor() {
+        super('game over');
+    }
+	
+	create() {
+		this.cameras.main.setBackgroundColor('#000000');
+
+		this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Game Over', { color: '#ffffff', fontSize: 90 })
+		.setOrigin(0.5, 0.5)
+		.setStroke(0x000000, 5);
+	}
+}
+
 
 
 
@@ -1688,6 +1689,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Start],
+    scene: [Start, GameOver],
     title: "Chase",
 });
