@@ -147,13 +147,13 @@ class Start extends GameLevel {
 
 
         //Finale Layers
-        this.load.image('backgroundLayer', 'assets/images/backgroundLayer.png');
-        this.load.image('borderLayer', 'assets/images/borderLayer.png');
-        this.load.image('deskLayer', 'assets/images/deskLayer.png');
-        this.load.image('monicaLayer', 'assets/images/monicaLayer.png');
-        this.load.image('paperLayer', 'assets/images/paperLayer.png');
-        this.load.image('spotlightLayer', 'assets/images/spotlightLayer.png');
-        this.load.image('takeitLayer', 'assets/images/takeitLayer.png');
+        // this.load.image('backgroundLayer', 'assets/images/backgroundLayer.png');
+        // this.load.image('borderLayer', 'assets/images/borderLayer.png');
+        // this.load.image('deskLayer', 'assets/images/deskLayer.png');
+        // this.load.image('monicaLayer', 'assets/images/monicaLayer.png');
+        // this.load.image('paperLayer', 'assets/images/paperLayer.png');
+        // this.load.image('spotlightLayer', 'assets/images/spotlightLayer.png');
+        // this.load.image('takeitLayer', 'assets/images/takeitLayer.png');
 
 
 
@@ -1822,134 +1822,6 @@ class Start extends GameLevel {
 
 }
 
-class PapersPlease extends Phaser.Scene{
-    constructor() {
-        super('finale');
-    }
-
-    preload(){
-        this.load.image('brownLayer', 'assets/images/brownLayer.png');
-        this.load.image('papersLayer', 'assets/images/papersLayer.png');
-        this.load.image('borderLayer2', 'assets/images/borderLayer2.png');
-        this.load.image('submitLayer', 'assets/images/submitLayer.png');
-    }
-	
-	create() {
-		//this.cameras.main.setBackgroundColor('#000000');
-
-        this.w = this.game.config.width;
-        this.h = this.game.config.height;
-        this.s = this.game.config.width * 0.01;
-        
-        let brownLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'brownLayer');
-        let borderLayer2 = this.add.image(this.w * 0.5, this.h * 0.5, 'borderLayer2').setDepth(5);
-        let submitLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'submitLayer');
-
-
-        let papersLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'papersLayer')
-        .setInteractive()
-        .on('pointerover', () => papersLayer.setScale(1.2))
-        .on('pointerout', () => papersLayer.setScale(1))
-        .on('pointerdown', () => {
-            this.tweens.add({
-                targets: this.papersLayer,
-                y: this.h - 319, 
-                ease: 'Power1',
-                duration: 200,
-            });
-        });
-    }
-}
-
-class Finale extends Phaser.Scene {
-	constructor() {
-        super('finale2');
-    }
-	
-	create() {
-		//this.cameras.main.setBackgroundColor('#000000');
-
-        let backgroundLayer = this.add.image(temp,temp, 'backgroundLayer');
-        let borderLayer = this.add.image(temp,temp, 'borderLayer');
-        let deskLayer = this.add.image(temp,temp, 'deskLayer');
-        let monicaLayer = this.add.image(temp,temp, 'monicaLayer');
-        let paperLayer = this.add.image(temp,temp, 'paperLayer');
-        let spotlightLayer = this.add.image(temp,temp, 'spotlightLayer');
-        let takeitLayer = this.add.image(temp,temp, 'takeitLayer');
-        
-        //this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
-        
-	}
-}
-
-
-
-
-
-
-class GameOver extends Phaser.Scene {
-	constructor() {
-        super('game over');
-    }
-	
-	create() {
-		this.cameras.main.setBackgroundColor('#000000');
-
-		this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Game Over', { color: '#ffffff', fontSize: 90 })
-		.setOrigin(0.5, 0.5)
-		.setStroke(0x000000, 5);
-	}
-}
-
-//neutral dub
-class NeutralVictory extends Phaser.Scene {
-	constructor() {
-        super('neutralvictory');
-    }
-	
-	create() {
-		this.cameras.main.setBackgroundColor('#000000');
-
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
-	}
-}
-
-//daniel dub
-class PositiveVictory extends Phaser.Scene {
-	constructor() {
-        super('positivevictory');
-    }
-	
-	create() {
-		this.cameras.main.setBackgroundColor('#000000');
-
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
-
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '+Victory');
-	}
-}
-
-//monica dub
-class NegativeVictory extends Phaser.Scene {
-	constructor() {
-        super('negativevictory');
-    }
-	
-	create() {
-		this.cameras.main.setBackgroundColor('#000000');
-
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory');
-	}
-}
-
 class PapersPlease extends GameLevel{
     constructor() {
         super('finale');
@@ -2027,6 +1899,7 @@ class Finale extends GameLevel {
 	}
 
     goToEnding(){
+        console.log("karma = " + this.karma);
         if(this.karma === 0){
             this.gotoScene('neutralvictory');
         } else if(this.karma > 0){
@@ -2034,12 +1907,8 @@ class Finale extends GameLevel {
         } else if(this.karma < 0) {
             this.gotoScene('positivevictory');
         }
-    }
-
+    }   
 }
-
-
-
 
 
 
@@ -2105,8 +1974,6 @@ class NegativeVictory extends Phaser.Scene {
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory');
 	}
 }
-
-
 
 const game = new Phaser.Game({
     scale: {
