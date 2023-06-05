@@ -25,6 +25,7 @@ class Start extends GameLevel {
         this.load.image('defaultFloor', 'assets/images/defaultFloor.png');
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
         this.load.image('hiddenImage', 'assets/images/hiddenImage.png');
+        this.load.image('titleTable', 'assets/images/titleTable.png');
 
         this.load.image('backpack', 'assets/images/backpack.png');
 
@@ -140,6 +141,22 @@ class Start extends GameLevel {
         this.load.audio('introSong', 'assets/audio/introSong.mp3')
         this.load.audio('happyLoop', 'assets/audio/happyLoop.mp3')
         this.load.audio('rushSong', 'assets/audio/rushSong.mp3')
+
+
+
+
+
+        //Finale Layers
+        this.load.image('backgroundLayer', 'assets/images/backgroundLayer.png');
+        this.load.image('borderLayer', 'assets/images/borderLayer.png');
+        this.load.image('deskLayer', 'assets/images/deskLayer.png');
+        this.load.image('monicaLayer', 'assets/images/monicaLayer.png');
+        this.load.image('paperLayer', 'assets/images/paperLayer.png');
+        this.load.image('spotlightLayer', 'assets/images/spotlightLayer.png');
+        this.load.image('takeitLayer', 'assets/images/takeitLayer.png');
+
+
+
     }
 
     // ---------------------------------------
@@ -152,6 +169,7 @@ class Start extends GameLevel {
         this.checkSafe();
         this.initializeDoors();
         this.setCollision();
+        console.log(this.tutorial)
 
         this.initializeCabinet();
 
@@ -211,12 +229,40 @@ class Start extends GameLevel {
         });
 
         if (this.location.r === 6 && this.location.c === 4){
-            this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
-            this.time.delayedCall(4000, () => { this.hideTextBox(); });
-            this.time.delayedCall(5000, () => { this.chase('tutorial'); });
+            this.pauseMusic('introSong')
+            this.titleScreen = this.add.image(0, 0, 'titleTable');
+            this.titleScreen.setOrigin(0, 0);
+            this.titleScreen.displayWidth = this.sys.game.config.width;
+            this.titleScreen.displayHeight = this.sys.game.config.height;
 
-            this.time.delayedCall(5000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
-            this.time.delayedCall(10000, () => { this.hideTextBox(); });
+            this.playText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 150, 'START', { font: 'bold 50px Arial', fill: '#ffffff' });
+            this.playText.setOrigin(0.5, 0.5);
+
+            // Create interactive text
+            this.playText.setInteractive();
+            
+            this.playText.on('pointerdown', function() {
+                this.titleScreen.destroy();
+                this.playText.destroy();
+
+                this.resumeMusic('introSong');
+                
+                this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
+                this.time.delayedCall(4000, () => { this.hideTextBox(); });
+                this.time.delayedCall(5000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
+
+                this.time.delayedCall(5000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
+                this.time.delayedCall(10000, () => { this.hideTextBox(); });
+            }, this);
+
+            this.playText.on('pointerover', function () {
+                this.playText.setFontSize(60); 
+            }, this);
+    
+            this.playText.on('pointerout', function () {
+                this.playText.setFontSize(50); 
+            }, this);
+            
         }
     }
 
@@ -231,9 +277,21 @@ class Start extends GameLevel {
         if (!this.paused) {
             const {keys} = this; // this.keys
 
-            if (this.playerChased) {
+            if (this.playerChased && this.tutorial) {
+                if (this.player.alpha === 0) {
+                    this.monsterLocation.r = this.location.r;
+                    this.monsterLocation.c = this.location.c;
+                    //this.caught = true;
+                    this.time.delayedCall(200, () => { this.checkMonsterWarning(); this.tutorial = false;});
+                }
+            }
+            else if (this.playerChased) {
+                if (this.tutorial)
                 this.chaseTime += delta;
-                if (this.chaseTime > this.timeMove) { // every 5 seconds of chasing, the monster will get closer
+                if (this.player.alpha === 0) { // if player is hiding monster catches them faster
+                    this.chaseTime += delta;
+                }
+                if (this.chaseTime > this.timeMove) { // monster moves closer after time has passed
                     this.chaseTime -= this.timeMove;
                     this.updateMonsterLocation();
                 }
@@ -245,7 +303,7 @@ class Start extends GameLevel {
                     this.notCaught();
                 }
             }
-            else if (!this.caught) {
+            else if (!this.caught && (this.tutorial && !this.playerChased)) {
                 // checks if interaction is available
                 this.checkHideable();
             }
@@ -368,7 +426,7 @@ class Start extends GameLevel {
     }
 
     gotoDoor(r, l, x, y) {
-        if (!this.sceneChanged) {
+        if (!this.sceneChanged && !this.tutorial) {
             this.sceneChanged = true;
             if (r) { // move up or down in the grid when going to a new scene
                 this.location.r += l;
@@ -378,7 +436,7 @@ class Start extends GameLevel {
             }
             this.playerLocation.x = x;
             this.playerLocation.y = y;
-            this.gotoScene('start');
+            this.gotoScene('start');//needs to say start
             //console.log(this.location.r + ", " + this.location.c);
         }
     }
@@ -433,7 +491,7 @@ class Start extends GameLevel {
             //console.log("are we inside?");
             this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'uDoor');
             this.EscDoor = this.physics.add.existing(this.EscD, true);
-            this.physics.add.collider(this.EscDoor, this.player, () => { this.goToEnding(); }, null, this);
+            this.physics.add.collider(this.EscDoor, this.player, () => { this.goToFinale(); }, null, this);
             //this.physics.add.collider(this.player, this.EscDoor, () => {console.log("XXXX"); }, null, this);
         }
     }
@@ -1746,9 +1804,12 @@ class Start extends GameLevel {
         }
     }
 
+    goToFinale(){
+        this.pauseMusic('rushSong');
+        this.gotoScene('finale');
+    }
 
     goToEnding(){
-        this.pauseMusic('rushSong');
         if(this.location.r === 0 && this.location.c === 0){
             if(this.karma === 0){
                 this.gotoScene('neutralvictory');
@@ -1760,16 +1821,72 @@ class Start extends GameLevel {
     }
 }
 
-
-
-
-
-
-
-
-
-
 }
+
+class PapersPlease extends Phaser.Scene{
+    constructor() {
+        super('finale');
+    }
+
+    preload(){
+        this.load.image('brownLayer', 'assets/images/brownLayer.png');
+        this.load.image('papersLayer', 'assets/images/papersLayer.png');
+        this.load.image('borderLayer2', 'assets/images/borderLayer2.png');
+        this.load.image('submitLayer', 'assets/images/submitLayer.png');
+    }
+	
+	create() {
+		//this.cameras.main.setBackgroundColor('#000000');
+
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        this.s = this.game.config.width * 0.01;
+        
+        let brownLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'brownLayer');
+        let borderLayer2 = this.add.image(this.w * 0.5, this.h * 0.5, 'borderLayer2').setDepth(5);
+        let submitLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'submitLayer');
+
+
+        let papersLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'papersLayer')
+        .setInteractive()
+        .on('pointerover', () => papersLayer.setScale(1.2))
+        .on('pointerout', () => papersLayer.setScale(1))
+        .on('pointerdown', () => {
+            this.tweens.add({
+                targets: this.papersLayer,
+                y: this.h - 319, 
+                ease: 'Power1',
+                duration: 200,
+            });
+        });
+    }
+}
+
+class Finale extends Phaser.Scene {
+	constructor() {
+        super('finale2');
+    }
+	
+	create() {
+		//this.cameras.main.setBackgroundColor('#000000');
+
+        let backgroundLayer = this.add.image(temp,temp, 'backgroundLayer');
+        let borderLayer = this.add.image(temp,temp, 'borderLayer');
+        let deskLayer = this.add.image(temp,temp, 'deskLayer');
+        let monicaLayer = this.add.image(temp,temp, 'monicaLayer');
+        let paperLayer = this.add.image(temp,temp, 'paperLayer');
+        let spotlightLayer = this.add.image(temp,temp, 'spotlightLayer');
+        let takeitLayer = this.add.image(temp,temp, 'takeitLayer');
+        
+        //this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
+        
+	}
+}
+
+
+
+
+
 
 class GameOver extends Phaser.Scene {
 	constructor() {
@@ -1854,6 +1971,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory],
+    scene: [Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
     title: "Chase",
 });

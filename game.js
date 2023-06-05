@@ -150,8 +150,8 @@ class GameLevel extends Phaser.Scene {
                 ease: "Linear",
                 duration: 4000, 
             });
-            if (c === 'intro') {
-                this.monsterLocation.r = this.location.r + 1;
+            if (c === 'tutorial') {
+                this.monsterLocation.r = this.location.r - 1;
                 this.monsterLocation.c = this.location.c;
             }
             else {
@@ -194,12 +194,14 @@ class GameLevel extends Phaser.Scene {
         this.caught = false;
         this.warning.setAlpha(0);
         this.warningTween.stop();
+        this.monsterLocation.r = -5;
+        this.monsterLocation.c = -5;
     }
 
     checkMonsterWarning() {     
         if (this.playerChased && !this.caught) {
             if (this.monsterLocation.r === this.location.r && this.monsterLocation.c === this.location.c) {
-                if (this.player.alpha === 1) {
+                if (this.player.alpha === 1 || this.questions[3] !== null) {
                     this.pauseMusic();
                     this.sound.play('doorSqueak');
                     this.scene.start('game over');
