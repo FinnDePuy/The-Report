@@ -2027,16 +2027,15 @@ class Finale extends GameLevel {
 	}
 
     goToEnding(){
-        if(this.location.r === 6 && this.location.c === 3){
-            if(this.karma === 0){
-                this.gotoScene('neutralvictory');
-            } else if(this.karma > 0){
-                this.gotoScene('negativevictory');
-            } else if(this.karma < 0) {
-                this.gotoScene('positivevictory');
-            }
+        if(this.karma === 0){
+            this.gotoScene('neutralvictory');
+        } else if(this.karma > 0){
+            this.gotoScene('negativevictory');
+        } else if(this.karma < 0) {
+            this.gotoScene('positivevictory');
         }
-    }   
+    }
+
 }
 
 
