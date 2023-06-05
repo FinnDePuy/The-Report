@@ -758,7 +758,7 @@ class Start extends GameLevel {
         this.item = null; // if room doesn't have item, this.item will be null
         if (item != null) {
             this.item = this.createItem(item.name, this.w * 0.5, this.h * 0.5, item.name);
-            console.log(this.item);
+            //console.log(this.item);
             //this.physics.add.collider(this.physics.add.existing(this.item.itemImage, true), this.player);
             this.eSpr = this.add.image(this.item.itemImage.x + 150, this.item.itemImage.y, 'eSprite').setAlpha(0);
             this.input.keyboard.on('keydown-' + 'E', () => { 
@@ -1364,7 +1364,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.282, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.292, this.questions[number-1]); 
             }
         }
         else if (number === 3) {
@@ -1456,7 +1456,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.18, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.155, this.questions[number-1]); 
             }
         }
         else if (number === 4) {
@@ -1548,7 +1548,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.135, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.12, this.questions[number-1]); 
             }
         }
         //let room = this.map.Levels[0][0].Escape.Locked = 0;
@@ -1907,7 +1907,7 @@ class Finale extends GameLevel {
 	}
 
     goToEnding(){
-        console.log("karma = " + this.karma);
+        //console.log("karma = " + this.karma);
         if(this.karma === 0){
             this.gotoScene('neutralvictory');
         } else if(this.karma > 0){

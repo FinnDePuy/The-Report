@@ -187,11 +187,15 @@ class GameLevel extends Phaser.Scene {
         else { // change monsterLocation.c
             this.updateMonsterColumn();
         }
-        console.log(this.monsterLocation.r + " " + this.monsterLocation.c)
+        //console.log(this.monsterLocation.r + " " + this.monsterLocation.c)
         this.checkMonsterWarning();
     }
 
     startNorthWarning() {
+        if (this.NWTween) { // North Wall should be normal
+            this.NWTween.stop();
+            this.NWarning.destroy();
+        }
         this.NWarning = this.add.image(0, 0, 'tRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
         this.NWTween = this.tweens.add({
             targets: this.NWarning,
@@ -211,6 +215,10 @@ class GameLevel extends Phaser.Scene {
     }
 
     startEastWarning() {
+        if (this.EWTween) { // East Wall should be normal
+            this.EWTween.stop();
+            this.EWarning.destroy();
+        }
         this.EWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'rRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
         this.EWTween = this.tweens.add({
             targets: this.EWarning,
@@ -230,6 +238,10 @@ class GameLevel extends Phaser.Scene {
     }
 
     startWestWarning() {
+        if (this.WWTween) { // West Wall should be normal
+            this.WWTween.stop();
+            this.WWarning.destroy();
+        }
         this.WWarning = this.add.image(0, 0, 'lRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
         this.WWTween = this.tweens.add({
             targets: this.WWarning,
@@ -249,6 +261,10 @@ class GameLevel extends Phaser.Scene {
     }
     
     startSouthWarning() {
+        if (this.SWTween) { // South Wall should be normal
+            this.SWTween.stop();
+            this.SWarning.destroy();
+        }
         this.SWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'bRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
         this.SWTween = this.tweens.add({
             targets: this.SWarning,
