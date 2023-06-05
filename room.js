@@ -28,6 +28,7 @@ class Start extends GameLevel {
         this.load.image('titleTable', 'assets/images/titleTable.png');
         this.load.image('title', 'assets/images/Title.png');
         this.load.image('start', 'assets/images/start.png');
+        this.load.image('restart', 'assets/images/restart.png');
 
         this.load.image('backpack', 'assets/images/backpack.png');
 
@@ -1898,7 +1899,7 @@ class Finale extends GameLevel {
         let monicaLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'monicaLayer').setDepth(0);
         let spotlightLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'spotlightLayer').setAlpha(0.25).setDepth(10);
         let takeitLayer = this.add.image(this.w * 0.5, this.h * 0.5, 'takeitLayer').setDepth(5);
-        let paperLayer = this.add.image(this.w * 0.5, this.h * 0.5 - 75,'paperLayer')
+        let paperLayer = this.add.image(this.w * 0.5, this.h * 0.5 - 175,'paperLayer')
         .setInteractive()
         .on('pointerover', () => paperLayer.setScale(1.2))
         .on('pointerout', () => paperLayer.setScale(1))
@@ -1948,7 +1949,13 @@ class GameOver extends Phaser.Scene {
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'gameOver');
 
 
-        this.time.delayedCall(10000, () => { location.reload();});
+        let reload = this.add.image(this.w * 0.5, this.h * 0.6, 'restart')
+        .setInteractive()
+        .on('pointerover', () => reload.setScale(1.2))
+        .on('pointerout', () => reload.setScale(1))
+        .on('pointerdown', () => {
+            location.reload();
+        });
 	}
 }
 
@@ -1961,11 +1968,22 @@ class NeutralVictory extends Phaser.Scene {
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
 
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        this.s = this.game.config.width * 0.01;
 		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
 		// .setOrigin(0.5, 0.5)
 		// .setStroke(0x000000, 5);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory').setDepth(1);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NeutralBackground').setDepth(0);
+        let reload = this.add.image(this.w * 0.8, this.h * 0.9, 'restart')
+        .setInteractive()
+        .setDepth(2)
+        .on('pointerover', () => reload.setScale(1.2))
+        .on('pointerout', () => reload.setScale(1))
+        .on('pointerdown', () => {
+            location.reload();
+        });
 	}
 }
 
@@ -1978,12 +1996,23 @@ class PositiveVictory extends Phaser.Scene {
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
 
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        this.s = this.game.config.width * 0.01;
 		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
 		// .setOrigin(0.5, 0.5)
 		// .setStroke(0x000000, 5);
 
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '+Victory').setDepth(1);
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'PositiveBackground').setDepth(0);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NegativeBackground').setDepth(0);
+        let reload = this.add.image(this.w * 0.8, this.h * 0.9, 'restart')
+        .setInteractive()
+        .setDepth(2)
+        .on('pointerover', () => reload.setScale(1.2))
+        .on('pointerout', () => reload.setScale(1))
+        .on('pointerdown', () => {
+            location.reload();
+        });
 	}
 }
 
@@ -1996,11 +2025,22 @@ class NegativeVictory extends Phaser.Scene {
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
 
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        this.s = this.game.config.width * 0.01;
 		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
 		// .setOrigin(0.5, 0.5)
 		// .setStroke(0x000000, 5);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory').setDepth(1);
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NegativeBackground').setDepth(0);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'PositiveBackground').setDepth(0);
+        let reload = this.add.image(this.w * 0.8, this.h * 0.9, 'restart')
+        .setInteractive()
+        .setDepth(2)
+        .on('pointerover', () => reload.setScale(1.2))
+        .on('pointerout', () => reload.setScale(1))
+        .on('pointerdown', () => {
+            location.reload();
+        });
 	}
 }
 
