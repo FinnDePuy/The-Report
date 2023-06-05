@@ -318,7 +318,7 @@ class GameLevel extends Phaser.Scene {
                         ease: "Linear",
                         repeat: -1,
                         yoyo: true,
-                        duration: 5000, 
+                        duration: 5000,
                     });
                 }
             }

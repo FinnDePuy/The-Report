@@ -169,7 +169,6 @@ class Start extends GameLevel {
         this.checkSafe();
         this.initializeDoors();
         this.setCollision();
-        console.log(this.tutorial)
 
         this.initializeCabinet();
 
@@ -1364,7 +1363,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.23, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.268, this.questions[number-1]); 
             }
         }
         else if (number === 3) {
@@ -1456,7 +1455,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.22, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.205, this.questions[number-1]); 
             }
         }
         else if (number === 4) {
@@ -1548,7 +1547,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.15, this.questions[number-1]); 
             }
         }
         //let room = this.map.Levels[0][0].Escape.Locked = 0;
@@ -1725,10 +1724,10 @@ class Start extends GameLevel {
                     this.showTextBox('I need to escape! What about \n\nthat locked door from before?!', 40, 2, 'icon');
                     this.time.delayedCall(8000, () => { this.hideTextBox(); });
                 }
-                else if (!this.deskPhysical.hasInteracted){
-                    this.showTextBox("      Interesting... I should fill \n\n this out I guess.     ", 40, 3, 'kayce');
-                    this.deskPhysical.hasInteracted = true;
-                }
+                // else if (this.deskPhysical.hasInteracted === false){
+                //     this.showTextBox("      Interesting... I should \n\n      fill this out I guess.     ", 40, 3, 'kayce');
+                //     this.deskPhysical.hasInteracted = true;
+                // }
             });
         
         this.paper = this.add.image(this.w * 0.5, this.h * 0.5,'background').setOrigin(0.5, 0.5).setScale(1);
