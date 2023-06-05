@@ -1292,7 +1292,7 @@ class Start extends GameLevel {
                                 this.choice3.destroy();
                                 this.tweens.add({
                                     targets: this.choice1,
-                                    y: this.h * 0.23, 
+                                    y: this.h * 0.253, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1319,7 +1319,7 @@ class Start extends GameLevel {
                                 this.choice3.destroy();
                                 this.tweens.add({
                                     targets: this.choice2,
-                                    y: this.h * 0.23, 
+                                    y: this.h * 0.253, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1347,7 +1347,7 @@ class Start extends GameLevel {
                                 this.choice2.destroy();
                                 this.tweens.add({
                                     targets: this.choice3,
-                                    y: this.h * 0.23, 
+                                    y: this.h * 0.253, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1364,7 +1364,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.292, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.253, this.questions[number-1]); 
             }
         }
         else if (number === 3) {
@@ -1384,7 +1384,7 @@ class Start extends GameLevel {
                                 this.choice3.destroy();
                                 this.tweens.add({
                                     targets: this.choice1,
-                                    y: this.h * 0.22, 
+                                    y: this.h * 0.195, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1412,7 +1412,7 @@ class Start extends GameLevel {
                                 this.choice3.destroy();
                                 this.tweens.add({
                                     targets: this.choice2,
-                                    y: this.h * 0.22, 
+                                    y: this.h * 0.195, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1440,7 +1440,7 @@ class Start extends GameLevel {
                                 this.choice2.destroy();
                                 this.tweens.add({
                                     targets: this.choice3,
-                                    y: this.h * 0.22, 
+                                    y: this.h * 0.195, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1456,7 +1456,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.155, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.195, this.questions[number-1]); 
             }
         }
         else if (number === 4) {
@@ -1476,7 +1476,7 @@ class Start extends GameLevel {
                                 this.choice3.destroy();
                                 this.tweens.add({
                                     targets: this.choice1,
-                                    y: this.h * 0.22, 
+                                    y: this.h * 0.195, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1504,7 +1504,7 @@ class Start extends GameLevel {
                                 this.choice3.destroy();
                                 this.tweens.add({
                                     targets: this.choice2,
-                                    y: this.h * 0.22, 
+                                    y: this.h * 0.195, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1532,7 +1532,7 @@ class Start extends GameLevel {
                                 this.choice2.destroy();
                                 this.tweens.add({
                                     targets: this.choice3,
-                                    y: this.h * 0.22, 
+                                    y: this.h * 0.195, 
                                     ease: 'Power1',
                                     duration: 200,
                                 });
@@ -1548,7 +1548,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.12, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.195, this.questions[number-1]); 
             }
         }
         //let room = this.map.Levels[0][0].Escape.Locked = 0;
