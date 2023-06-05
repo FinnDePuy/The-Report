@@ -33,7 +33,7 @@ class GameLevel extends Phaser.Scene {
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
 
-        this.speed = 1500;
+        this.speed = 500;
         this.paused = false;
         this.hideableObjects = [];
 
