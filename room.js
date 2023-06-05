@@ -84,6 +84,7 @@ class Start extends GameLevel {
         this.load.image('NegativeBackground', 'assets/images/negativeBackground.png');
         this.load.image('PositiveBackground', 'assets/images/positiveBackground.png');
         this.load.image('NeutralBackground', 'assets/images/NeutralBackground.png');
+        
 
 
 
