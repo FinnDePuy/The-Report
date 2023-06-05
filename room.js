@@ -26,6 +26,8 @@ class Start extends GameLevel {
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
         this.load.image('hiddenImage', 'assets/images/hiddenImage.png');
         this.load.image('titleTable', 'assets/images/titleTable.png');
+        this.load.image('title', 'assets/images/Title.png');
+        this.load.image('start', 'assets/images/start.png');
 
         this.load.image('backpack', 'assets/images/backpack.png');
 
@@ -78,6 +80,9 @@ class Start extends GameLevel {
         this.load.image('+Victory', 'assets/images/DANIELENDINGvictory.png');
         this.load.image('-Victory', 'assets/images/MONICAvictory.png');
         this.load.image('=Victory', 'assets/images/NEUTRALvictory.png');
+        this.load.image('NegativeBackground', 'assets/images/negativeBackground.png');
+        this.load.image('PositiveBackground', 'assets/images/positiveBackground.png');
+        this.load.image('NeutralBackground', 'assets/images/neutralBackground.png');
 
 
 
@@ -169,7 +174,6 @@ class Start extends GameLevel {
         this.checkSafe();
         this.initializeDoors();
         this.setCollision();
-        console.log(this.tutorial)
 
         this.initializeCabinet();
 
@@ -235,8 +239,10 @@ class Start extends GameLevel {
             this.titleScreen.displayWidth = this.sys.game.config.width;
             this.titleScreen.displayHeight = this.sys.game.config.height;
 
-            this.playText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 150, 'START', { font: 'bold 50px Arial', fill: '#ffffff' });
-            this.playText.setOrigin(0.5, 0.5);
+            // this.playText = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 150, 'START', { font: 'bold 50px Arial', fill: '#ffffff' });
+            // this.playText.setOrigin(0.5, 0.5);
+            this.playText = this.add.image(990, 875, 'start').setScale(.8);
+            this.title = this.add.image(920 , 150, 'title');
 
             // Create interactive text
             this.playText.setInteractive();
@@ -244,6 +250,7 @@ class Start extends GameLevel {
             this.playText.on('pointerdown', function() {
                     this.titleScreen.destroy();
                     this.playText.destroy();
+                    this.title.destroy();
 
                     this.resumeMusic('introSong');
                     
@@ -256,11 +263,11 @@ class Start extends GameLevel {
                 }, this);
 
             this.playText.on('pointerover', function () {
-                    this.playText.setFontSize(60); 
+                    this.playText.setScale(1); 
                 }, this);
     
             this.playText.on('pointerout', function () {
-                    this.playText.setFontSize(50); 
+                    this.playText.setScale(.8); 
                 }, this);
             
         }
@@ -1143,7 +1150,7 @@ class Start extends GameLevel {
             this.showTextBox('        Who is worth stalking?\n\n        I hope there was a decent reason...', 50, 5, 'kayce');
         }
         else if (item === 'father') {
-            this.showTextBox('        This is their dad!?\n\n        I’d lose my mind...', 40, 2, 'kayce');
+            this.showTextBox('    This is their dad!?\n\n      I’d lose my mind...', 40, 2, 'kayce');
         }
         else if (item === 'picture') {
             this.showTextBox('How sweet...', 50, 1, 'kayce');
@@ -1364,7 +1371,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.23, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.282, this.questions[number-1]); 
             }
         }
         else if (number === 3) {
@@ -1456,7 +1463,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.22, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.18, this.questions[number-1]); 
             }
         }
         else if (number === 4) {
@@ -1548,7 +1555,7 @@ class Start extends GameLevel {
                 }
             }
             else {
-                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.19, this.questions[number-1]); 
+                this.choice1 = this.add.image(this.w * 0.5, this.h * 0.135, this.questions[number-1]); 
             }
         }
         //let room = this.map.Levels[0][0].Escape.Locked = 0;
@@ -1725,10 +1732,10 @@ class Start extends GameLevel {
                     this.showTextBox('I need to escape! What about \n\nthat locked door from before?!', 40, 2, 'icon');
                     this.time.delayedCall(8000, () => { this.hideTextBox(); });
                 }
-                else if (!this.deskPhysical.hasInteracted){
-                    this.showTextBox("      Interesting... I should fill \n\n this out I guess.     ", 40, 3, 'kayce');
-                    this.deskPhysical.hasInteracted = true;
-                }
+                // else if (this.deskPhysical.hasInteracted === false){
+                //     this.showTextBox("      Interesting... I should \n\n      fill this out I guess.     ", 40, 3, 'kayce');
+                //     this.deskPhysical.hasInteracted = true;
+                // }
             });
         
         this.paper = this.add.image(this.w * 0.5, this.h * 0.5,'background').setOrigin(0.5, 0.5).setScale(1);
@@ -1957,7 +1964,8 @@ class NeutralVictory extends Phaser.Scene {
 		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
 		// .setOrigin(0.5, 0.5)
 		// .setStroke(0x000000, 5);
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory').setDepth(1);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NeutralBackground').setDepth(0);
 	}
 }
 
@@ -1974,7 +1982,8 @@ class PositiveVictory extends Phaser.Scene {
 		// .setOrigin(0.5, 0.5)
 		// .setStroke(0x000000, 5);
 
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '+Victory');
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '+Victory').setDepth(1);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'PositiveBackground').setDepth(0);
 	}
 }
 
@@ -1990,7 +1999,8 @@ class NegativeVictory extends Phaser.Scene {
 		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
 		// .setOrigin(0.5, 0.5)
 		// .setStroke(0x000000, 5);
-        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory');
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory').setDepth(1);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NegativeBackground').setDepth(0);
 	}
 }
 
