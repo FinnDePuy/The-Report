@@ -140,6 +140,7 @@ class GameLevel extends Phaser.Scene {
         if (!this.playerChased) {
             this.pauseMusic('introSong');
             this.playMusic('rushSong');
+            this.resumeMusic('rushSong');
             this.playerChased = true;
             let text = c === 'tutorial' ? 'Hide!' : 'Run!';
             let run = this.add.text(this.w * 0.52, this.h * 0.3, text, { color: '#710C04', fontSize: 150 })
