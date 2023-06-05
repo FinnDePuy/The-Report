@@ -249,10 +249,10 @@ class Start extends GameLevel {
                     
                     this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
                     this.time.delayedCall(4000, () => { this.hideTextBox(); });
-                    this.time.delayedCall(5000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
+                    this.time.delayedCall(10000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
 
-                    this.time.delayedCall(5000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
-                    this.time.delayedCall(10000, () => { this.hideTextBox(); });
+                    this.time.delayedCall(10000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
+                    this.time.delayedCall(15000, () => { this.hideTextBox(); });
                 }, this);
 
             this.playText.on('pointerover', function () {
@@ -279,10 +279,10 @@ class Start extends GameLevel {
 
             if (this.playerChased && this.tutorial) {
                 if (this.player.alpha === 0) {
+                    this.hideTextBox();
                     this.monsterLocation.r = this.location.r;
                     this.monsterLocation.c = this.location.c;
-                    //this.caught = true;
-                    this.time.delayedCall(200, () => { this.checkMonsterWarning(); this.tutorial = false;});
+                    this.time.delayedCall(3000, () => { this.checkMonsterWarning(); this.tutorial = false;});
                 }
             }
             else if (this.playerChased) {
@@ -1656,7 +1656,8 @@ class Start extends GameLevel {
             zoneObject : zoneO,
             eSprite : eSpr,
             chairObject : chairO,
-            selectedOptions : [null, null, null, null]
+            selectedOptions : [null, null, null, null],
+            hasInteracted: false
         };
     }
 
@@ -1692,6 +1693,7 @@ class Start extends GameLevel {
     openDesk() {
         this.paused = true;
 
+
         this.blurRectangle = this.add.rectangle(0, 0, this.w, this.h)
             .setOrigin(0,0)
             .setFillStyle(0x323232)
@@ -1720,8 +1722,12 @@ class Start extends GameLevel {
                 this.rightArrow.destroy();
                 this.paused = false;
                 if(this.finalChaseTime) {
-                    this.showTextBox('          I need to escape! What about \n\nthat locked door from before?!', 40, 2, 'icon');
+                    this.showTextBox('I need to escape! What about \n\nthat locked door from before?!', 40, 2, 'icon');
                     this.time.delayedCall(8000, () => { this.hideTextBox(); });
+                }
+                else if (!this.deskPhysical.hasInteracted){
+                    this.showTextBox("      Interesting... I should fill \n\n this out I guess.     ", 40, 3, 'kayce');
+                    this.deskPhysical.hasInteracted = true;
                 }
             });
         
@@ -1870,6 +1876,7 @@ class Finale extends GameLevel {
         this.load.image('paperLayer', 'assets/images/paperLayer.png');
         this.load.image('spotlightLayer', 'assets/images/spotlightLayer.png');
         this.load.image('takeitLayer', 'assets/images/takeitLayer.png');
+        this.load.audio('paperPickup', "assets/audio/paperPickup.mp3");
 
     }
 	
@@ -1892,6 +1899,7 @@ class Finale extends GameLevel {
             this.goToEnding();
         })
         .setDepth(9);
+        this.sound.play('paperPickup');
 
         
         //this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
@@ -1916,13 +1924,24 @@ class GameOver extends Phaser.Scene {
 	constructor() {
         super('game over');
     }
+
+    preload(){
+        this.load.image('gameOver', 'assets/images/gameOver.png');
+    }
 	
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        this.s = this.game.config.width * 0.01;
 
-		this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Game Over', { color: '#ffffff', fontSize: 90 })
-		.setOrigin(0.5, 0.5)
-		.setStroke(0x000000, 5);
+		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Game Over', { color: '#ffffff', fontSize: 90 })
+		// .setOrigin(0.5, 0.5)
+		// .setStroke(0x000000, 5);
+        this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'gameOver');
+
+
+        this.time.delayedCall(10000, () => { location.reload();});
 	}
 }
 

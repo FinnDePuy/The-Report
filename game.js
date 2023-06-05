@@ -190,30 +190,103 @@ class GameLevel extends Phaser.Scene {
         this.checkMonsterWarning();
     }
 
+    startNorthWarning() {
+        this.NWarning = this.add.image(0, 0, 'tRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
+        this.NWTween = this.tweens.add({
+            targets: this.NWarning,
+            alpha: { from: 1, to: 0.5 },
+            ease: "Sine.InOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 500, 
+        });
+    }
+    
+    stopNorthWarning() {
+        if (this.NWTween) { // North Wall should be normal
+            this.NWTween.stop();
+            this.NWarning.destroy();
+        }
+    }
+
+    startEastWarning() {
+        this.EWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'rRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
+        this.EWTween = this.tweens.add({
+            targets: this.EWarning,
+            alpha: { from: 1, to: 0.5 },
+            ease: "Sine.InOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 500, 
+        });
+    }
+
+    stopEastWarning() {
+        if (this.EWTween) { // East Wall should be normal
+            this.EWTween.stop();
+            this.EWarning.destroy();
+        }
+    }
+
+    startWestWarning() {
+        this.WWarning = this.add.image(0, 0, 'lRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
+        this.WWTween = this.tweens.add({
+            targets: this.WWarning,
+            alpha: { from: 1, to: 0.5 },
+            ease: "Sine.InOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 500, 
+        });
+    }
+
+    stopWestWarning() {
+        if (this.WWTween) { // West Wall should be normal
+            this.WWTween.stop();
+            this.WWarning.destroy();
+        }
+    }
+    
+    startSouthWarning() {
+        this.SWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'bRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
+        this.SWTween = this.tweens.add({
+            targets: this.SWarning,
+            alpha: { from: 1, to: 0.5 },
+            ease: "Sine.InOut",
+            repeat: -1,
+            yoyo: true,
+            duration: 500, 
+        });
+    }
+
+    stopSouthWarning() {
+        if (this.SWTween) { // South Wall should be normal
+            this.SWTween.stop();
+            this.SWarning.destroy();
+        }
+    }
+    
+    stopWarnings() {
+        this.stopNorthWarning();
+        this.stopEastWarning();
+        this.stopSouthWarning();
+        this.stopWestWarning();
+    }
+    
     notCaught() {
-        this.blackedOut.setAlpha(0);
+        this.blackedOutTween = this.tweens.add({
+            targets: this.blackedOut,
+            alpha: 0,
+            duration: 3000,
+            ease: "Linear",
+        });
         this.playerChased = false;
         this.caught = false;
         this.warning.setAlpha(0);
         this.warningTween.stop();
         this.monsterLocation.r = -5;
         this.monsterLocation.c = -5;
-        if (this.SWTween) { // South Wall should be normal
-            this.SWTween.stop();
-            this.SWarning.destroy();
-        }
-        if (this.NWTween) { // North Wall should be normal
-            this.NWTween.stop();
-            this.NWarning.destroy();
-        }
-        if (this.EWTween) { // East Wall should be normal
-            this.EWTween.stop();
-            this.EWarning.destroy();
-        }
-        if (this.WWTween) { // West Wall should be normal
-            this.WWTween.stop();
-            this.WWarning.destroy();
-        }
+        this.stopWarnings();
     }
 
     checkMonsterWarning() {     
@@ -231,7 +304,7 @@ class GameLevel extends Phaser.Scene {
                         .setOrigin(0,0)
                         .setFillStyle(0x000000);
                     this.caught = !this.caught;
-                    let warningText = 'Something is here.\nStay hidden!';
+                    let warningText = 'Stay hidden!\nShe\'s here.';
                     this.pauseMusic();
                     this.sound.play('doorSqueak');
                     this.sound.play('heartBeat');
@@ -245,74 +318,51 @@ class GameLevel extends Phaser.Scene {
                         ease: "Linear",
                         repeat: -1,
                         yoyo: true,
-                        duration: 3000, 
+                        duration: 5000, 
                     });
                 }
             }
             let row_diff = this.monsterLocation.r - this.location.r;
             let col_diff = this.monsterLocation.c - this.location.c;
-            if(row_diff === -1 && col_diff >= -1 && col_diff <= 1) { // North Wall should start flashing red
-                this.NWarning = this.add.image(0, 0, 'tRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
-                this.NWTween = this.tweens.add({
-                    targets: this.NWarning,
-                    alpha: { from: 1, to: 0.5 },
-                    ease: "Sine.InOut",
-                    repeat: -1,
-                    yoyo: true,
-                    duration: 500, 
-                });
-            }
-            else if (this.NWarning) { // North Wall should be normal
-                this.NWTween.stop();
-                this.NWarning.destroy();
-            }
-            
-            if(row_diff === 1 && col_diff >= -1 && col_diff <= 1) { // South Wall should start flashing red
-                this.SWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'bRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
-                this.SWTween = this.tweens.add({
-                    targets: this.SWarning,
-                    alpha: { from: 1, to: 0.5 },
-                    ease: "Sine.InOut",
-                    repeat: -1,
-                    yoyo: true,
-                    duration: 500, 
-                });
-            }
-            else if (this.SWTween) { // South Wall should be normal
-                this.SWTween.stop();
-                this.SWarning.destroy();
-            }
 
-            if(col_diff === 1 && row_diff >= -1 && row_diff <= 1) { // East Wall should start flashing red
-                this.EWarning = this.add.image(this.w * 0.5, this.h * 0.5, 'rRed').setOrigin(0.5, 0.5).setDisplaySize(this.w, this.h).setDepth(-1);
-                this.EWTween = this.tweens.add({
-                    targets: this.EWarning,
-                    alpha: { from: 1, to: 0.5 },
-                    ease: "Sine.InOut",
-                    repeat: -1,
-                    yoyo: true,
-                    duration: 500, 
-                });
+            if(row_diff >= -1 && row_diff <= 1 && col_diff >= -1 && col_diff <= 1) { // North Wall should start flashing red
+                this.stopWarnings();
+                this.startNorthWarning();
+                this.startWestWarning();
+                this.startSouthWarning();
+                this.startEastWarning();
             }
-            else if (this.EWTween) { // East Wall should be normal
-                this.EWTween.stop();
-                this.EWarning.destroy();
-            }
+            else if ((col_diff >= -2 && col_diff <= 2) || (row_diff >= -2 && row_diff <= 2)) {
+                if (row_diff === -2 && col_diff >= -2 && col_diff <= 2) { // north
+                    this.startNorthWarning();
+                }
+                else {
+                    this.stopNorthWarning();
+                }
 
-            if(col_diff === -1 && row_diff >= -1 && row_diff <= 1) { // West Wall should start flashing red
-                this.WWarning = this.add.image(0, 0, 'lRed').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-1);
-                this.WWTween = this.tweens.add({
-                    targets: this.WWarning,
-                    alpha: { from: 1, to: 0.5 },
-                    ease: "Sine.InOut",
-                    repeat: -1,
-                    yoyo: true,
-                    duration: 500, 
-                });
+                if (row_diff === 2 && col_diff >= -2 && col_diff <= 2) { // north
+                    this.startSouthWarning();
+                }
+                else {
+                    this.stopSouthWarning();
+                }
+
+                if (col_diff === 2 && row_diff >= -2 && row_diff <= 2) { // north
+                    this.startEastWarning();
+                }
+                else {
+                    this.stopEastWarning();
+                }
+
+                if (col_diff === -2 && row_diff >= -2 && row_diff <= 2) { // north
+                    this.startWestWarning();
+                }
+                else {
+                    this.stopWestWarning();
+                }
             }
-            else if (this.WWTween) { // West Wall should be normal
-                this.WWTween.stop();
-                this.WWarning.destroy();
+            else {
+                this.stopWarnings();
             }
         }
 
