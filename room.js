@@ -242,26 +242,26 @@ class Start extends GameLevel {
             this.playText.setInteractive();
             
             this.playText.on('pointerdown', function() {
-                this.titleScreen.destroy();
-                this.playText.destroy();
+                    this.titleScreen.destroy();
+                    this.playText.destroy();
 
-                this.resumeMusic('introSong');
-                
-                this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
-                this.time.delayedCall(4000, () => { this.hideTextBox(); });
-                this.time.delayedCall(5000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
+                    this.resumeMusic('introSong');
+                    
+                    this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
+                    this.time.delayedCall(4000, () => { this.hideTextBox(); });
+                    this.time.delayedCall(5000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
 
-                this.time.delayedCall(5000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
-                this.time.delayedCall(10000, () => { this.hideTextBox(); });
-            }, this);
+                    this.time.delayedCall(5000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
+                    this.time.delayedCall(10000, () => { this.hideTextBox(); });
+                }, this);
 
             this.playText.on('pointerover', function () {
-                this.playText.setFontSize(60); 
-            }, this);
+                    this.playText.setFontSize(60); 
+                }, this);
     
             this.playText.on('pointerout', function () {
-                this.playText.setFontSize(50); 
-            }, this);
+                    this.playText.setFontSize(50); 
+                }, this);
             
         }
     }
@@ -286,10 +286,9 @@ class Start extends GameLevel {
                 }
             }
             else if (this.playerChased) {
-                if (this.tutorial)
                 this.chaseTime += delta;
-                if (this.player.alpha === 0) { // if player is hiding monster catches them faster
-                    this.chaseTime += delta;
+                if (this.player.alpha === 0 && this.questions[3] === null) { // if player is hiding monster catches them faster
+                    this.chaseTime += 2 * delta;
                 }
                 if (this.chaseTime > this.timeMove) { // monster moves closer after time has passed
                     this.chaseTime -= this.timeMove;
@@ -303,7 +302,7 @@ class Start extends GameLevel {
                     this.notCaught();
                 }
             }
-            else if (!this.caught && (this.tutorial && !this.playerChased)) {
+            else if (!this.caught) {
                 // checks if interaction is available
                 this.checkHideable();
             }
@@ -546,7 +545,7 @@ class Start extends GameLevel {
 
 
     checkHideable() {
-        if (!this.caught) {
+        if ((this.tutorial && this.playerChased && !this.caught && this.player.alpha === 1) || (!this.caught && !this.tutorial)) {
             for (let i = 0; i < this.hideableObjects.length; i++) {
                 let object = this.hideableObjects[i];
                 if (this.isOverlap(this.player, object.zoneObject)) {

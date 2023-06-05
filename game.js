@@ -141,7 +141,8 @@ class GameLevel extends Phaser.Scene {
             this.pauseMusic('introSong');
             this.playMusic('rushSong');
             this.playerChased = true;
-            let run = this.add.text(this.w * 0.52, this.h * 0.3, "Run!", { color: '#710C04', fontSize: 150 })
+            let text = c === 'tutorial' ? 'Hide!' : 'Run!';
+            let run = this.add.text(this.w * 0.52, this.h * 0.3, text, { color: '#710C04', fontSize: 150 })
                 .setOrigin(0.5, 0.5)
                 .setStroke(0x000000, 5);
             this.tweens.add({
@@ -185,6 +186,7 @@ class GameLevel extends Phaser.Scene {
         else { // change monsterLocation.c
             this.updateMonsterColumn();
         }
+        console.log(this.monsterLocation.r + " " + this.monsterLocation.c)
         this.checkMonsterWarning();
     }
 
@@ -196,6 +198,22 @@ class GameLevel extends Phaser.Scene {
         this.warningTween.stop();
         this.monsterLocation.r = -5;
         this.monsterLocation.c = -5;
+        if (this.SWTween) { // South Wall should be normal
+            this.SWTween.stop();
+            this.SWarning.destroy();
+        }
+        if (this.NWTween) { // North Wall should be normal
+            this.NWTween.stop();
+            this.NWarning.destroy();
+        }
+        if (this.EWTween) { // East Wall should be normal
+            this.EWTween.stop();
+            this.EWarning.destroy();
+        }
+        if (this.WWTween) { // West Wall should be normal
+            this.WWTween.stop();
+            this.WWarning.destroy();
+        }
     }
 
     checkMonsterWarning() {     
