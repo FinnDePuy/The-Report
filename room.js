@@ -258,10 +258,6 @@ class Start extends GameLevel {
                     
                     this.showTextBox("Where am I....?      ", 50, 3, 'kayce');
                     this.time.delayedCall(4000, () => { this.hideTextBox(); });
-                    this.time.delayedCall(10000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
-
-                    this.time.delayedCall(10000, () => { this.showTextBox("WHAT IS THAT!!!! \n\nCAN I HIDE IN THESE!?     ", 40, 3, 'kayce'); });
-                    this.time.delayedCall(15000, () => { this.hideTextBox(); });
                 }, this);
 
             this.playText.on('pointerover', function () {
@@ -650,13 +646,6 @@ class Start extends GameLevel {
 
                     this.doorCloseSound.play();
 
-                    if (!this.playerChased){
-                        this.pauseMusic('introSong');
-                    }
-                    else{
-                        this.pauseMusic('rushSong');
-                    }
-
 
                     this.hidingFloor = this.add.image(0, 0, 'hiddenImage').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
                 }
@@ -799,8 +788,8 @@ class Start extends GameLevel {
             // Note will be in the first room outside the safe room
             let note = {
                 name: itemNames[0],
-                r: 5,
-                c: 3,
+                r: 6,
+                c: 4,
                 obtained: false
             }
             existingLocations.push({
@@ -1127,7 +1116,6 @@ class Start extends GameLevel {
                 this.itemDisplay.destroy();
                 this.paused = false;
                 if (name === 'breakIn'){
-                    console.log("stopped voicemail");
                     this.voicemail.stop();
                 }
                 this.textAfterPickup(name);
@@ -1137,16 +1125,19 @@ class Start extends GameLevel {
     }
 
     textAfterPickup(item) {
-        if (this.inventory.length % 3 === 0) {
+        if (item === 'note') {
+            this.showTextBox('Monica didn\'t make it...\n\nI have to tell Daniel.', 40, 5, 'kayce');
+            this.time.delayedCall(5000, () => { this.chase('tutorial'); this.checkMonsterWarning(); });
+            this.time.delayedCall(5000, () => { this.hideTextBox(); });
+            
+        }
+        else if (this.inventory.length % 3 === 0) {
             this.timeMove -= 750;
             this.chase('regular');
-            this.showTextBox('  These aren\'t for you to read!\n\n  I\'m going to find you!', 40, 1, 'monica');
+            this.showTextBox('I hope you\'re thinking this out Kayce...', 40, 1, 'monica');
         }
         else if (this.inventory.length === 2) {
             this.showTextBox('           I want to keep reading these... but that room with the \n\n           desk was the only one with a lock.', 40, 3, 'kayce');
-        }
-        else if (item === 'note') {
-            this.showTextBox('Man... what a sad way to go out.', 50, 5, 'kayce');
         }
         else if (item === 'blackmail') {
             this.showTextBox('        Who is worth stalking?\n\n        I hope there was a decent reason...', 50, 5, 'kayce');
@@ -1155,7 +1146,7 @@ class Start extends GameLevel {
             this.showTextBox('    This is their dad!?\n\n      I’d lose my mind...', 40, 2, 'kayce');
         }
         else if (item === 'picture') {
-            this.showTextBox('How sweet...', 50, 1, 'kayce');
+            this.showTextBox('I remember tearing up reading this,\n\n he\'s so sweet to me.', 40, 1, 'kayce');
         }
         else if (item === 'discouraged') {
             this.showTextBox('I agree. It\'s not that deep.', 40, 0, 'kayce');
@@ -1167,7 +1158,7 @@ class Start extends GameLevel {
             this.showTextBox('Who texts someone like that?', 40, 5, 'kayce');
         }
         else if (item === 'phone') {
-            this.showTextBox('    I don\'t know if I want\n\n    to believe a random note...', 40, 3, 'kayce');
+            this.showTextBox('Wait hold on, who the fuck is Alicia?!', 40, 3, 'kayce');
         }
         else if (item === 'violating') {
             this.showTextBox('Wow, strict...', 50, 2, 'kayce');

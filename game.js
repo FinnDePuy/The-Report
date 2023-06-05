@@ -128,7 +128,7 @@ class GameLevel extends Phaser.Scene {
             if (this.location.r === 5 && this.location.c === 3) { // if the player just left the safe room
                 this.finalChaseTime = false;
                 this.timeMove = 3250;
-                this.showTextBox('  You won\'t escape me!!!', 50, 0, 'monica');
+                this.showTextBox('  Don\'t even try hiding this time Kayce', 50, 0, 'monica');
                 this.chase('final');
                 this.map = this.cache.json.get('map');
                 this.map.Levels[0][0].Escape.Locked = 0;
@@ -309,6 +309,7 @@ class GameLevel extends Phaser.Scene {
                     this.pauseMusic();
                     this.sound.play('doorSqueak');
                     this.sound.play('heartBeat');
+                    this.pauseMusic('rushSong');
                     this.warning = this.add.text(this.w * 0.5, this.h * 0.3, warningText, { color: '#ffffff', fontSize: 150, fontStyle: 'bold' })
                         .setOrigin(0.5, 0.5)
                         .setAlign('center')
