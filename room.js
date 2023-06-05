@@ -17,7 +17,7 @@ class Start extends GameLevel {
         this.load.image('speechBubble', 'assets/images/speechBubble.png');
         this.load.image('cabinet', 'assets/images/Cabinet.png');
         this.load.spritesheet('icon', 'sprites/alex/alexr.png', { frameWidth: 204, frameHeight: 204 });
-        this.load.spritesheet('monica', 'assets/images/monicaSpriteSheet.png', { frameWidth: 54, frameHeight: 54 });
+        this.load.spritesheet('monica', 'assets/images/monicasheet.png', { frameWidth: 204, frameHeight: 204 });
         this.load.json('map', 'assets/json/map.json');
 
 

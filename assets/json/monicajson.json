@@ -1,43 +1,43 @@
 {
 	"frames": {
-		"mangry.png": {
+		"monicaanger.png": {
 			"frame": {
 				"x": 2,
 				"y": 2,
-				"w": 50,
-				"h": 50
+				"w": 200,
+				"h": 200
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 50,
-				"h": 50
+				"w": 200,
+				"h": 200
 			},
 			"sourceSize": {
-				"w": 50,
-				"h": 50
+				"w": 200,
+				"h": 200
 			}
 		},
-		"mneutral.png": {
+		"monicaneut.png": {
 			"frame": {
-				"x": 56,
+				"x": 206,
 				"y": 2,
-				"w": 50,
-				"h": 50
+				"w": 200,
+				"h": 200
 			},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x": 0,
 				"y": 0,
-				"w": 50,
-				"h": 50
+				"w": 200,
+				"h": 200
 			},
 			"sourceSize": {
-				"w": 50,
-				"h": 50
+				"w": 200,
+				"h": 200
 			}
 		}
 	},
@@ -47,8 +47,8 @@
 		"image": "spritesheet.png",
 		"format": "RGBA8888",
 		"size": {
-			"w": 108,
-			"h": 54
+			"w": 408,
+			"h": 204
 		},
 		"scale": "1"
 	}
