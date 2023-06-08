@@ -149,7 +149,6 @@ export default class Load extends Phaser.Scene {
 
         //songs
         this.load.audio('introSong', 'assets/audio/introSong.mp3')
-        this.load.audio('happyLoop', 'assets/audio/happyLoop.mp3')
         this.load.audio('rushSong', 'assets/audio/rushSong.mp3')
 
         // Update the loading progress bar
