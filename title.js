@@ -4,6 +4,7 @@ export default class Title extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.fadeIn(250, 0, 0, 0);
         this.titleScreen = this.add.image(0, 0, 'titleTable');
         this.titleScreen.setOrigin(0, 0);
         this.titleScreen.displayWidth = this.cameras.main.width;
@@ -19,7 +20,8 @@ export default class Title extends Phaser.Scene {
             this.titleScreen.destroy();
             this.playText.destroy();
             this.title.destroy();
-            this.scene.start('start');
+            this.scene.start('options');
+            //this.scene.start('start');
         });
 
         this.playText.on('pointerover', () => {

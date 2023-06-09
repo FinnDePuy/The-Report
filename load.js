@@ -36,6 +36,12 @@ export default class Load extends Phaser.Scene {
         this.load.spritesheet('monica', 'assets/images/monicasheet.png', { frameWidth: 204, frameHeight: 204 });
         this.load.json('map', 'assets/json/map.json');
 
+        this.load.image('arrowU', 'assets/touch/arrowU.png');
+        this.load.image('arrowD', 'assets/touch/arrowD.png');
+        this.load.image('arrowL', 'assets/touch/arrowL.png');
+        this.load.image('arrowR', 'assets/touch/arrowR.png');
+        this.load.image('touchButton', 'assets/touch/button.png');
+
 
         this.load.image('defaultFloor', 'assets/images/defaultFloor.png');
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
@@ -134,6 +140,9 @@ export default class Load extends Phaser.Scene {
         this.load.image('xIcon', 'assets/images/x.png');
         this.load.image('rArrow', 'assets/images/rightArrow.png');
         this.load.image('lArrow', 'assets/images/leftArrow.png');
+
+        this.load.image('phoneOption', 'assets/images/phoneOption.png');
+        this.load.image('computerOption', 'assets/images/computerOption.png');
 
         this.load.audio('doorOpen', "assets/audio/doorOpen.mp3");
         this.load.audio('doorClose', "assets/audio/doorClose.mp3");

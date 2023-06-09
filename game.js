@@ -19,6 +19,14 @@ class GameLevel extends Phaser.Scene {
         this.questions = data.questions || [null, null, null, null];
         this.karma = data.karma || 0;
         this.tutorial = (this.location.r !== 6 || this.location.c !== 4) ? false : true;
+
+        this.touchMode = data.touchMode || false;
+        
+        this.movingUp = false;
+        this.movingDown = false;
+        this.movingLeft = false;
+        this.movingRight = false;
+        this.buttonPressed = false;
     }
 
     constructor(key, name) {
@@ -51,6 +59,73 @@ class GameLevel extends Phaser.Scene {
                 this.scale.startFullscreen();
             }
         });
+
+        // Touch Buttons
+
+        let centerX = 1700; 
+        let centerY = 1000; 
+        let arrowSize = 100; // size of each arrow
+        let gap = 10; // gap between arrows
+
+        if (this.touchMode){
+            this.arrowU = this.add.image(centerX, centerY - arrowSize - gap - 100, 'arrowU').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(0.2);
+            this.arrowD = this.add.image(centerX, centerY, 'arrowD').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(0.2);
+            this.arrowL = this.add.image(centerX - arrowSize - gap, centerY - 100, 'arrowL').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(0.2);
+            this.arrowR = this.add.image(centerX + arrowSize + gap, centerY - 100, 'arrowR').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(0.2);
+
+            this.touchButton = this.add.image(100, centerY, 'touchButton').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(1.3);
+
+            this.arrowU.setInteractive().on('pointerdown', () => { 
+                this.movingUp = true; });
+            this.arrowU.on('pointerup', () => { this.movingUp = false; });
+            this.arrowU.on('pointerout', () => { this.movingUp = false; });
+            this.arrowU.on('pointerover', () => {
+                if (this.input.activePointer.isDown){
+                    this.movingUp = true; 
+                }
+            });
+
+
+            this.arrowD.setInteractive().on('pointerdown', () => { 
+                this.movingDown = true; });
+            this.arrowD.on('pointerup', () => { this.movingDown = false; });
+            this.arrowD.on('pointerout', () => { this.movingDown = false; });
+            this.arrowD.on('pointerover', () => {
+                if (this.input.activePointer.isDown){
+                    this.movingDown = true; 
+                }
+            });
+
+            this.arrowL.setInteractive().on('pointerdown', () => { 
+                this.movingLeft = true; });
+            this.arrowL.on('pointerup', () => { this.movingLeft = false; });
+            this.arrowL.on('pointerout', () => { this.movingLeft = false; });
+            this.arrowL.on('pointerover', () => {
+                if (this.input.activePointer.isDown){
+                    this.movingLeft = true; 
+                }
+            });
+
+            this.arrowR.setInteractive().on('pointerdown', () => { 
+                this.movingRight = true; });
+            this.arrowR.on('pointerup', () => { this.movingRight = false; });
+            this.arrowR.on('pointerout', () => { this.movingRight = false; });
+            this.arrowR.on('pointerover', () => {
+                if (this.input.activePointer.isDown){
+                    this.movingRight = true; 
+                }
+            });
+
+            this.touchButton.setInteractive().on('pointerdown', () =>{
+                this.buttonPressed = true;
+            });
+        }
+        else{
+            this.touchButton = this.add.image(-500, centerY, 'touchButton').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(1.3);
+            this.touchButton.setInteractive().on('pointerdown', () =>{
+                this.buttonPressed = true;
+            });
+        }
         
 
         if (!this.anims.exists('backw')) {
@@ -118,7 +193,8 @@ class GameLevel extends Phaser.Scene {
                 fileImages: this.fileImages,
                 fileItems: this.fileItems,
                 questions: this.questions,
-                karma: this.karma
+                karma: this.karma,
+                touchMode: this.touchMode
             });
         });
     }

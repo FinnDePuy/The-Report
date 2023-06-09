@@ -1,5 +1,6 @@
 import Title from './title.js';
 import Load from './load.js';
+import Options from './options.js';
 
 class Start extends GameLevel {
     constructor() {
@@ -122,25 +123,25 @@ class Start extends GameLevel {
             
             // movement
             if (this.player.alpha === 1) { // if player is not hiding
-                if(keys.left.isDown || keys.a.isDown) {
+                if(keys.left.isDown || keys.a.isDown || this.movingLeft) {
                     this.player.setVelocityX(-this.speed);
                     this.player.anims.play('leftw', true);
                     if (!this.walkSound.isPlaying)
                         this.walkSound.play({ volume: 0.3 });
                 }
-                else if(keys.right.isDown || keys.d.isDown) {
+                else if(keys.right.isDown || keys.d.isDown || this.movingRight) {
                     this.player.setVelocityX(this.speed);
                     this.player.anims.play('rightw', true);
                     if (!this.walkSound.isPlaying)
                         this.walkSound.play({ volume: 0.3 });
                 }
-                else if(keys.up.isDown || keys.w.isDown) {
+                else if(keys.up.isDown || keys.w.isDown || this.movingUp) {
                     this.player.setVelocityY(-this.speed);
                     this.player.anims.play('backw', true);
                     if (!this.walkSound.isPlaying)
                         this.walkSound.play({ volume: 0.3 });
                 } 
-                else if(keys.down.isDown || keys.s.isDown) {
+                else if(keys.down.isDown || keys.s.isDown || this.movingDown) {
                     this.player.setVelocityY(this.speed);
                     this.player.anims.play('frontw', true);
                     if (!this.walkSound.isPlaying)
@@ -361,7 +362,7 @@ class Start extends GameLevel {
             for (let i = 0; i < this.hideableObjects.length; i++) {
                 let object = this.hideableObjects[i];
                 if (this.isOverlap(this.player, object.zoneObject)) {
-                    if (object.hSprite.alpha === 0) {
+                    if (object.hSprite.alpha === 0 && !this.touchMode) {
                         object.hSprite.setAlpha(1);
                         
                         // start tween
@@ -375,14 +376,20 @@ class Start extends GameLevel {
                             yoyo: true 
                         });
                     }
+                    else if (this.touchMode && this.touchButton.alpha === 0){
+                        this.touchButton.setAlpha(0.7);
+                    }
                     return true;
                 }
                 else {
-                    if (object.hSprite.alpha === 1) {
+                    if (object.hSprite.alpha === 1 && !this.touchMode) {
                         object.hSprite.setAlpha(0); // hSprite disappears
                         object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
                         this.hTween.stop(); // stop hSprite tween bounce
                     } 
+                    else if (this.touchMode && this.touchButton.alpha !== 0){
+                        this.touchButton.setAlpha(0);
+                    }
                     if (i == this.hideableObjects.length - 1) {
                         //fixing the out of hiding bug
                         if (object.hSprite.alpha === 0){
@@ -414,6 +421,43 @@ class Start extends GameLevel {
         };
     }
 
+    hide() {
+        if(this.checkHideable() && !this.paused) {
+            if(this.player.alpha == 0) {
+                this.player.setAlpha(1);
+                if (this.hidingFloor) {
+                    this.hidingFloor.destroy();
+                    this.hidingFloor = null;
+                }
+                
+                this.doorCloseSound.stop();
+                this.doorOpenSound.stop();
+
+                this.doorOpenSound.play();
+
+                if (!this.playerChased){
+                    this.resumeMusic('introSong');
+                }
+                else{
+                    this.resumeMusic('rushSong');
+                }
+
+
+            }
+            else {
+                this.player.setAlpha(0);
+
+                this.doorCloseSound.stop();
+                this.doorOpenSound.stop();
+
+                this.doorCloseSound.play();
+
+
+                this.hidingFloor = this.add.image(0, 0, 'hiddenImage').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
+            }
+        }
+    }
+
     initializeCabinet() {
         let cabinet = this.map.Levels[this.location.r][this.location.c].Cabinets;
         if (cabinet) {
@@ -422,42 +466,8 @@ class Start extends GameLevel {
                 this.physics.add.collider(this.physics.add.existing(this.hideableObjects[i].hidingObject, true), this.player);
             }
         }
-        this.input.keyboard.on('keydown-' + 'H', () => { 
-            if(this.checkHideable() && !this.paused) {
-                if(this.player.alpha == 0) {
-                    this.player.setAlpha(1);
-                    if (this.hidingFloor) {
-                        this.hidingFloor.destroy();
-                        this.hidingFloor = null;
-                    }
-                    
-                    this.doorCloseSound.stop();
-                    this.doorOpenSound.stop();
-
-                    this.doorOpenSound.play();
-
-                    if (!this.playerChased){
-                        this.resumeMusic('introSong');
-                    }
-                    else{
-                        this.resumeMusic('rushSong');
-                    }
-
-
-                }
-                else {
-                    this.player.setAlpha(0);
-
-                    this.doorCloseSound.stop();
-                    this.doorOpenSound.stop();
-
-                    this.doorCloseSound.play();
-
-
-                    this.hidingFloor = this.add.image(0, 0, 'hiddenImage').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
-                }
-            }
-        });
+        this.touchButton.on('pointerdown', () => {this.hide()});
+        this.input.keyboard.on('keydown-' + 'H', () => {this.hide()});
     }
 
 
@@ -534,9 +544,9 @@ class Start extends GameLevel {
 
     checkPickup() {
         let item = this.item.itemImage;
-        if (item.alpha == 1) {
+        if (item.alpha === 1) {
             if (this.isItemOverlap(this.player, item)) {
-                if (this.eSpr.alpha == 0) {
+                if (this.eSpr.alpha === 0 && !this.touchMode) {
                     this.eSpr.setAlpha(1);
                     this.eTween = this.tweens.add({
                         targets: this.eSpr,
@@ -548,12 +558,18 @@ class Start extends GameLevel {
                         yoyo: true 
                     });
                 }
+                else if (this.touchMode && this.touchButton.alpha === 0) {
+                    this.touchButton.setAlpha(0.7);
+                }
                 return true;
             }
             else {
-                if (this.eSpr.alpha == 1) {
+                if (this.eSpr.alpha === 1 && !this.touchMode) {
                     this.eSpr.setAlpha(0);  
                     this.eTween.stop();
+                }
+                else if (this.touchMode && this.touchButton.alpha !== 0) {
+                    this.touchButton.setAlpha(0);
                 }
             }
         }
@@ -573,6 +589,11 @@ class Start extends GameLevel {
                     this.pickUpItem(this.item);
                 }
             });
+            this.touchButton.on('pointerdown', () => {
+                if(this.checkPickup() && !this.paused) {
+                    this.pickUpItem(this.item);
+                    this.touchButton.setAlpha(0);
+            }});
         }
     }
 
@@ -662,7 +683,7 @@ class Start extends GameLevel {
         for(let i = 0; i < this.fileLocations.length; i++) {
            let object = this.fileLocations[i];//this is the line
             if(this.isItemOverlap(this.player, object.zoneObject)) {
-                if(object.eSprite.alpha === 0) {
+                if(object.eSprite.alpha === 0 && !this.touchMode) {
                     object.eSprite.setAlpha(1);
 
                     this.eTween = this.tweens.add({
@@ -675,14 +696,20 @@ class Start extends GameLevel {
                         yoyo: true 
                     });
                 }
+                else if (this.touchMode && this.touchButton.alpha === 0) {
+                    this.touchButton.setAlpha(0.7);
+                }
                 return true;
             }
             else {
-                if (object.eSprite.alpha === 1) {
+                if (object.eSprite.alpha === 1 && !this.touchMode) {
                     object.eSprite.setAlpha(0); // eSprite disappears
                     object.eSprite.y = object.fileObject.y;  // return eSprite to starting location
                     this.eTween.stop(); // stop eSprite tween bounce
                 } 
+                else if (this.touchMode && this.touchButton.alpha !== 0) {
+                    this.touchButton.setAlpha(0);
+                }
             }
         }
         return false;
@@ -717,6 +744,19 @@ class Start extends GameLevel {
                 }
             }
             this.input.keyboard.on('keydown-' + 'E', () => {
+                if(this.checkInteractable() && !this.paused){
+                    if(this.inventory.length > 0) {
+                        //console.log("worked");
+                        this.openFileCabinet();
+                    }
+                    else {
+                        this.showTextBox("I wonder what I should put in here.", 50, 3, 'kayce');
+                        this.time.delayedCall(5000, () => { this.hideTextBox(); });
+                    }
+                }
+            });
+
+            this.touchButton.on('pointerdown', () => {
                 if(this.checkInteractable() && !this.paused){
                     if(this.inventory.length > 0) {
                         //console.log("worked");
@@ -1470,7 +1510,7 @@ class Start extends GameLevel {
 
     atDesk(desk){
         if(this.isItemOverlap(this.player, desk.zoneObject)) {
-                if(desk.eSprite.alpha === 0) {
+                if(desk.eSprite.alpha === 0 && !this.touchMode) {
                     desk.eSprite.setAlpha(1);
 
                     this.eTween = this.tweens.add({
@@ -1483,14 +1523,20 @@ class Start extends GameLevel {
                         yoyo: true 
                     });
                 }
+                else if (this.touchMode && this.touchButton.alpha === 0) {
+                    this.touchButton.setAlpha(0.7);
+                }
                 return true;
             }
             else {
-                if (desk.eSprite.alpha === 1) {
+                if (desk.eSprite.alpha === 1 && !this.touchMode) {
                     desk.eSprite.setAlpha(0); // eSprite disappears
                     desk.eSprite.y = desk.deskObject.y;  // return eSprite to starting location
                     this.eTween.stop(); // stop eSprite tween bounce
                 } 
+                else if (this.touchMode && this.touchButton.alpha !== 0) {
+                    this.touchButton.setAlpha(0);
+                }
             }
         return false;
     }
@@ -1559,6 +1605,11 @@ class Start extends GameLevel {
                         if(!this.paused/* && this.inventory.length > 0*/){
                                this.openDesk();
                         }
+                    }
+                });
+                this.touchButton.on('pointerdown', () => {
+                    if(!this.paused){
+                        this.openDesk();
                     }
                 });
             }
@@ -1856,6 +1907,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Load, Title, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
+    scene: [Load, Title, Options, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
     title: "Chase",
 });
