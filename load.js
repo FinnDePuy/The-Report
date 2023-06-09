@@ -172,7 +172,7 @@ export default class Load extends Phaser.Scene {
             progressBar.destroy();
             progressBox.destroy();
             loadingText.destroy();
-            this.scene.start('title');
+            this.scene.start('info');
         });
     }
  }

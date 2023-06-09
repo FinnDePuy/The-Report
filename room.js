@@ -1686,6 +1686,43 @@ class Start extends GameLevel {
 
 }
 
+class info extends Phaser.Scene{
+    constructor(){
+        super('info');
+    }
+    preload(){
+        this.load.image('cover', 'assets/images/introscene3.png');
+        //this.load.audio('paperPickup', "assets/audio/paperPickup.mp3");
+    }
+    create(){
+        let cover = this.add.image(960 , 540, 'cover');
+        this.add.text(10, 5, "Click anywhere to continue.").setFontSize(20);
+        cover.setAlpha(0);
+        this.sound.play('paperPickup');
+
+        const fadeIn = this.tweens.add({
+            targets: cover,
+            alpha: 1,
+            duration: 1000, // Duration of the fade in effect (in milliseconds)
+            ease: 'Linear'
+          });
+
+        
+
+        this.input.on('pointerdown', () => {            
+            const fadeOut = this.tweens.add({
+                targets: cover,
+                alpha: 0,
+                delay: 500, // Delay before starting the fade out effect (in milliseconds)
+                duration: 1000, // Duration of the fade out effect (in milliseconds)
+                ease: 'Linear',
+            });
+            this.time.delayedCall(1500, () => fadeOut.play);
+            this.time.delayedCall(1500, () => this.scene.start('title'));
+        });
+    }
+}
+
 class PapersPlease extends GameLevel{
     constructor() {
         super('finale');
@@ -1907,6 +1944,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Load, Title, Options, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
+    scene: [Load, info, Title, Options, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
     title: "Chase",
 });

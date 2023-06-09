@@ -11,7 +11,18 @@ export default class Title extends Phaser.Scene {
         this.titleScreen.displayHeight = this.cameras.main.height;
 
         this.playText = this.add.image(990, 875, 'start').setScale(.8);
-        this.title = this.add.image(920 , 150, 'title');
+        let title = this.add.image(920 , 150, 'title');
+
+        const wiggleTween = this.tweens.add({
+            targets: title,
+            x: `+=${20}`,
+            duration: 3000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+          });
+        
+        wiggleTween.play();
 
         // Create interactive text
         this.playText.setInteractive();
@@ -19,7 +30,7 @@ export default class Title extends Phaser.Scene {
         this.playText.on('pointerdown', () => {
             this.titleScreen.destroy();
             this.playText.destroy();
-            this.title.destroy();
+            title.destroy();
             this.scene.start('options');
             //this.scene.start('start');
         });
