@@ -36,6 +36,11 @@ export default class Load extends Phaser.Scene {
         this.load.spritesheet('monica', 'assets/images/monicasheet.png', { frameWidth: 204, frameHeight: 204 });
         this.load.json('map', 'assets/json/map.json');
 
+        this.load.image('volume', 'assets/images/volume.png');
+        this.load.image('mute', 'assets/images/mute.png');
+        this.load.image('fsTrue', 'assets/images/fsTrue.png');
+        this.load.image('fsFalse', 'assets/images/fsFalse.png');
+
         this.load.image('arrowU', 'assets/touch/arrowU.png');
         this.load.image('arrowD', 'assets/touch/arrowD.png');
         this.load.image('arrowL', 'assets/touch/arrowL.png');

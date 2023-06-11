@@ -57,6 +57,47 @@ class Start extends GameLevel {
 
         this.voicemail = this.sound.add('voicemail');
 
+        this.fsButton = this.add.image(this.w * 0.87, this.h * 0.01, this.scale.isFullscreen ? 'fsTrue' : 'fsFalse')
+            .setOrigin(0, 0)
+            .setDepth(7)
+            .setAlpha(1)
+            .setScale(0.4)
+            .setInteractive();
+        this.fsButton.on('pointerdown', () => {
+            if (this.scale.isFullscreen) {
+                this.scale.stopFullscreen();
+                this.fsButton.setTexture('fsFalse');
+            } else {
+                this.scale.startFullscreen();
+                this.fsButton.setTexture('fsTrue');
+            }
+        });
+
+        this.musicButton = this.add.image(this.w * 0.94, this.h * 0.01, this.musicOff ? 'mute' : 'volume')
+            .setOrigin(0, 0)
+            .setDepth(7)
+            .setAlpha(1)
+            .setScale(0.4)
+            .setInteractive();
+        this.musicButton.on('pointerdown', () => {
+            if (this.musicOff) {
+                this.musicOff = false;
+                localStorage.setItem('soundOff', this.musicOff);
+                this.musicButton.setTexture('volume');
+                if (this.playerChased){
+                    this.resumeMusic('rushSong');
+                }
+                else{
+                    this.resumeMusic('introSong');
+                }
+            } else {
+                this.musicButton.setTexture('mute');
+                this.pauseMusic(this.currentSong());
+                this.musicOff = true;
+                localStorage.setItem('soundOff', this.musicOff);
+            }
+        });
+
         const {LEFT, RIGHT, UP, DOWN, W, A, S, D, C, E, H, ESC} = Phaser.Input.Keyboard.KeyCodes;
         this.keys = this.input.keyboard.addKeys({
             left: LEFT,
@@ -1670,6 +1711,17 @@ class Start extends GameLevel {
                 music.play();
             }
         }
+    }
+
+    currentSong() {
+        let keys = this.sound.sounds.map(sound => sound.key);
+        for (let i = 0; i < keys.length; i++) {
+            let music = this.sound.get(keys[i]);
+            if (music && music.isPlaying) {
+                return keys[i]; 
+            }
+        }
+        return null; 
     }
 
 

@@ -516,22 +516,3 @@ class GameLevel extends Phaser.Scene {
 }
 
 
-
-
-// Now you can use 'soundOff' in your game. When you want to update its value,
-// be sure to also update it in localStorage.
-
-// For example:
-// function toggleSound() {
-//   soundOff = !soundOff;
-
-//   // Update the value in localStorage.
-//   localStorage.setItem('soundOff', soundOff);
-
-//   // Then update the state of sound in your game.
-//   if (soundOff) {
-//     // Turn off the sound.
-//   } else {
-//     // Turn on the sound.
-//   }
-// }
