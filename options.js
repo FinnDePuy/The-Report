@@ -10,6 +10,8 @@ export default class Options extends Phaser.Scene {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
 
+        this.add.text(this.w * 0.5, this.h * 0.12, "Which device are you playing on?").setFontSize(60).setOrigin(0.5, 0.5);
+
         let sceneChange = false;
 
         this.phone = this.add.image(this.w * 0.3, this.h * 0.5, 'phoneOption')

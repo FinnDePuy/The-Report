@@ -143,6 +143,7 @@ export default class Load extends Phaser.Scene {
 
         this.load.image('phoneOption', 'assets/images/phoneOption.png');
         this.load.image('computerOption', 'assets/images/computerOption.png');
+        this.load.image('cover', 'assets/images/introscene3.png');
 
         this.load.audio('doorOpen', "assets/audio/doorOpen.mp3");
         this.load.audio('doorClose', "assets/audio/doorClose.mp3");
@@ -172,7 +173,7 @@ export default class Load extends Phaser.Scene {
             progressBar.destroy();
             progressBox.destroy();
             loadingText.destroy();
-            this.scene.start('info');
+            this.scene.start('title');
         });
     }
  }

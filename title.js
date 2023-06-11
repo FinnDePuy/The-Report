@@ -31,7 +31,7 @@ export default class Title extends Phaser.Scene {
             this.titleScreen.destroy();
             this.playText.destroy();
             title.destroy();
-            this.scene.start('options');
+            this.scene.start('info');
             //this.scene.start('start');
         });
 

@@ -136,6 +136,9 @@ class GameLevel extends Phaser.Scene {
             this.anims.create({ key: 'idle', frames: this.anims.generateFrameNames('player', { prefix: 'idle', start: 1, end: 2, suffix: ".png"}), frameRate: 1.5, repeat: -1});
         }
 
+        this.interactable = false; // for mobile
+        this.hideable = false; // for mobile
+
 
         //creating all animations for the game
 

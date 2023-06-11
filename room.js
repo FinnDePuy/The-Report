@@ -378,6 +378,7 @@ class Start extends GameLevel {
                     }
                     else if (this.touchMode && this.touchButton.alpha === 0){
                         this.touchButton.setAlpha(0.7);
+                        this.hideable = true;
                     }
                     return true;
                 }
@@ -387,20 +388,20 @@ class Start extends GameLevel {
                         object.hSprite.y = object.hidingObject.y;  // return hSprite to starting location
                         this.hTween.stop(); // stop hSprite tween bounce
                     } 
-                    else if (this.touchMode && this.touchButton.alpha !== 0){
+                    else if (this.touchMode && this.touchButton.alpha !== 0 && !this.interactable){
                         this.touchButton.setAlpha(0);
                     }
-                    if (i == this.hideableObjects.length - 1) {
+                    if (i === this.hideableObjects.length - 1) {
                         //fixing the out of hiding bug
-                        if (object.hSprite.alpha === 0){
+                        if (object.hSprite.alpha === 0 || (this.touchMode && this.touchButton.alpha !== 0)) {
                             this.player.setAlpha(1);
                             if (this.hidingFloor) {
                                 this.hidingFloor.destroy();
                                 this.hidingFloor = null;
                             }
-                            //this.cameras.main.setBackgroundColor('#444');
                         }
                     }
+                    this.hideable = false;
                 }
             }
         }
@@ -698,6 +699,7 @@ class Start extends GameLevel {
                 }
                 else if (this.touchMode && this.touchButton.alpha === 0) {
                     this.touchButton.setAlpha(0.7);
+                    this.interactable = true;
                 }
                 return true;
             }
@@ -707,9 +709,10 @@ class Start extends GameLevel {
                     object.eSprite.y = object.fileObject.y;  // return eSprite to starting location
                     this.eTween.stop(); // stop eSprite tween bounce
                 } 
-                else if (this.touchMode && this.touchButton.alpha !== 0) {
+                else if (this.touchMode && this.touchButton.alpha !== 0 && !this.hideable) {
                     this.touchButton.setAlpha(0);
                 }
+                this.interactable = false;
             }
         }
         return false;
@@ -1534,7 +1537,7 @@ class Start extends GameLevel {
                     desk.eSprite.y = desk.deskObject.y;  // return eSprite to starting location
                     this.eTween.stop(); // stop eSprite tween bounce
                 } 
-                else if (this.touchMode && this.touchButton.alpha !== 0) {
+                else if (this.touchMode && this.touchButton.alpha !== 0 && !this.hideable && !this.interactable) {
                     this.touchButton.setAlpha(0);
                 }
             }
@@ -1686,17 +1689,14 @@ class Start extends GameLevel {
 
 }
 
-class info extends Phaser.Scene{
+class Info extends Phaser.Scene {
     constructor(){
         super('info');
     }
-    preload(){
-        this.load.image('cover', 'assets/images/introscene3.png');
-        //this.load.audio('paperPickup', "assets/audio/paperPickup.mp3");
-    }
-    create(){
-        let cover = this.add.image(960 , 540, 'cover');
-        this.add.text(10, 5, "Click anywhere to continue.").setFontSize(20);
+
+    create() {
+        let cover = this.add.image(960, 540, 'cover');
+        this.add.text(975, 1000, "Click to continue.").setOrigin(0.5, 0.5).setFontSize(28);
         cover.setAlpha(0);
         this.sound.play('paperPickup');
 
@@ -1718,7 +1718,7 @@ class info extends Phaser.Scene{
                 ease: 'Linear',
             });
             this.time.delayedCall(1500, () => fadeOut.play);
-            this.time.delayedCall(1500, () => this.scene.start('title'));
+            this.time.delayedCall(1500, () => this.scene.start('options'));
         });
     }
 }
@@ -1944,6 +1944,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Load, info, Title, Options, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
+    scene: [Load, Title, Options, Info, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
     title: "Chase",
 });
