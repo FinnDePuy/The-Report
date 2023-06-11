@@ -21,7 +21,18 @@ class GameLevel extends Phaser.Scene {
         this.tutorial = (this.location.r !== 6 || this.location.c !== 4) ? false : true;
 
         this.touchMode = data.touchMode || false;
-        this.musicOff = data.musicOff || false;
+
+        this.musicOff = false;
+        let soundOff = localStorage.getItem('soundOff');
+
+        if (soundOff === null) {
+            soundOff = false;
+            localStorage.setItem('soundOff', soundOff);
+        } 
+        else {
+            this.musicOff = JSON.parse(soundOff);
+            console.log(this.musicOff);
+        }
         
         this.movingUp = false;
         this.movingDown = false;
@@ -503,3 +514,24 @@ class GameLevel extends Phaser.Scene {
         console.warn('This GameScene did not implement onEnter():', this.constructor.name);
     }
 }
+
+
+
+
+// Now you can use 'soundOff' in your game. When you want to update its value,
+// be sure to also update it in localStorage.
+
+// For example:
+// function toggleSound() {
+//   soundOff = !soundOff;
+
+//   // Update the value in localStorage.
+//   localStorage.setItem('soundOff', soundOff);
+
+//   // Then update the state of sound in your game.
+//   if (soundOff) {
+//     // Turn off the sound.
+//   } else {
+//     // Turn on the sound.
+//   }
+// }
