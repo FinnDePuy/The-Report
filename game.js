@@ -73,7 +73,7 @@ class GameLevel extends Phaser.Scene {
             this.arrowL = this.add.image(centerX - arrowSize - gap, centerY - 100, 'arrowL').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(0.2);
             this.arrowR = this.add.image(centerX + arrowSize + gap, centerY - 100, 'arrowR').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(0.2);
 
-            this.touchButton = this.add.image(100, centerY, 'touchButton').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(1.3);
+            this.touchButton = this.add.image(100, centerY, 'touchButton').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0).setScale(1.3);
 
             this.arrowU.setInteractive().on('pointerdown', () => { 
                 this.movingUp = true; });
@@ -121,7 +121,7 @@ class GameLevel extends Phaser.Scene {
             });
         }
         else{
-            this.touchButton = this.add.image(-500, centerY, 'touchButton').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0.7).setScale(1.3);
+            this.touchButton = this.add.image(-500, centerY, 'touchButton').setOrigin(0.5, 0.5).setDepth(7).setAlpha(0).setScale(1.3);
             this.touchButton.setInteractive().on('pointerdown', () =>{
                 this.buttonPressed = true;
             });
@@ -382,6 +382,13 @@ class GameLevel extends Phaser.Scene {
         this.warningTween.stop();
         this.monsterLocation.r = -5;
         this.monsterLocation.c = -5;
+        if (this.touchMode) {
+            this.arrowD.setAlpha(0.7);
+            this.arrowU.setAlpha(0.7);
+            this.arrowL.setAlpha(0.7);
+            this.arrowR.setAlpha(0.7);
+            this.touchButton.setAlpha(0.7);
+        }
         this.stopWarnings();
     }
 
@@ -395,6 +402,13 @@ class GameLevel extends Phaser.Scene {
                 }
                 else {
                     this.timeSinceCaught = 0;
+                    if (this.touchMode) {
+                        this.arrowD.setAlpha(0);
+                        this.arrowU.setAlpha(0);
+                        this.arrowL.setAlpha(0);
+                        this.arrowR.setAlpha(0);
+                        this.touchButton.setAlpha(0);
+                    }
                 
                     this.blackedOut = this.add.rectangle(0, 0, this.w, this.h)
                         .setOrigin(0,0)

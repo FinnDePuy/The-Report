@@ -770,6 +770,9 @@ class Start extends GameLevel {
                         this.time.delayedCall(5000, () => { this.hideTextBox(); });
                     }
                 }
+                if(this.atDesk(this.deskPhysical) && !this.paused){
+                    this.openDesk();
+                }
             });
         }
     }
@@ -792,6 +795,10 @@ class Start extends GameLevel {
 
     //opens the file cabinet and displays the items to be navigated through
     openFileCabinet() {
+        if (this.touchMode) {
+            this.touchButton.setAlpha(0);
+        }
+        
         this.fileOpenSound.stop();
         this.fileCloseSound.stop();
         this.fileOpenSound.play();
@@ -1608,11 +1615,6 @@ class Start extends GameLevel {
                         if(!this.paused/* && this.inventory.length > 0*/){
                                this.openDesk();
                         }
-                    }
-                });
-                this.touchButton.on('pointerdown', () => {
-                    if(!this.paused){
-                        this.openDesk();
                     }
                 });
             }
