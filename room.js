@@ -18,9 +18,10 @@ class Start extends GameLevel {
         this.initializeDoors();
         this.setCollision();
 
+        this.initializeItemLocations();
         this.initializeCabinet();
 
-        this.initializeItemLocations();
+        //this.initializeItemLocations();
         this.initializeItem();
         this.displayInventory();
 
@@ -424,7 +425,7 @@ class Start extends GameLevel {
 
     hide() {
         if(this.checkHideable() && !this.paused) {
-            if(this.player.alpha == 0) {
+            if(this.player.alpha === 0) {
                 this.player.setAlpha(1);
                 if (this.hidingFloor) {
                     this.hidingFloor.destroy();
@@ -442,7 +443,6 @@ class Start extends GameLevel {
                 else{
                     this.resumeMusic('rushSong');
                 }
-
 
             }
             else {
@@ -471,6 +471,7 @@ class Start extends GameLevel {
         if(this.roomHasItem() === null) {
             this.touchButton.on('pointerdown', () => {
                 this.hide();
+                //console.log("hello i shouldn't be hiding");
             });
         }
         this.input.keyboard.on('keydown-' + 'H', () => {this.hide()});
@@ -575,7 +576,9 @@ class Start extends GameLevel {
                     this.eTween.stop();
                 }
                 else if (this.touchMode && this.touchButton.alpha !== 0) {
-                    this.touchButton.setAlpha(0);
+                    if (!this.hideable) {
+                        this.touchButton.setAlpha(0);
+                    }
                 }
             }
         }
@@ -602,6 +605,7 @@ class Start extends GameLevel {
                 }
                 if(this.map.Levels[this.location.r][this.location.c].Cabinets) {
                     this.hide();
+                    //console.log("h");
                 }
             });
         }
