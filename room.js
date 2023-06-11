@@ -111,7 +111,7 @@ class Start extends GameLevel {
 
             if (this.caught && this.player.alpha === 0) {
                 this.timeSinceCaught += delta;
-                if (this.timeSinceCaught > 10000) { // every 5 seconds of chasing, the monster will get closer
+                if (this.timeSinceCaught > 7000) { // every 5 seconds of chasing, the monster will get closer
                     this.notCaught();
                 }
             }
