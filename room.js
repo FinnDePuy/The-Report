@@ -80,20 +80,31 @@ class Start extends GameLevel {
             .setScale(0.4)
             .setInteractive();
         this.musicButton.on('pointerdown', () => {
-            if (this.musicOff) {
-                this.musicOff = false;
-                localStorage.setItem('soundOff', this.musicOff);
-                this.musicButton.setTexture('volume');
-                if (this.playerChased){
-                    this.resumeMusic('rushSong');
+            if (!this.caught) {
+                if (this.musicOff) {
+                    this.musicOff = false;
+                    this.musicButton.setTexture('volume');
+                    if (this.playerChased){
+                        this.playMusic('rushSong');
+                        this.resumeMusic('rushSong');
+                    }
+                    else{
+                        this.playMusic('introSong');
+                        this.resumeMusic('introSong');
+                    }
+                } 
+                else {
+                    this.musicButton.setTexture('mute');
+                    if (this.playerChased){
+                        this.playMusic('rushSong');
+                        this.pauseMusic('rushSong');
+                    }
+                    else{
+                        this.playMusic('introSong');
+                        this.pauseMusic('introSong');
+                    }
+                    this.musicOff = true;
                 }
-                else{
-                    this.resumeMusic('introSong');
-                }
-            } else {
-                this.musicButton.setTexture('mute');
-                this.pauseMusic(this.currentSong());
-                this.musicOff = true;
                 localStorage.setItem('soundOff', this.musicOff);
             }
         });
@@ -868,7 +879,7 @@ class Start extends GameLevel {
             .setAlpha(0.7)
             .setVisible(true);
 
-        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.02, 'xIcon')
+        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.08, 'xIcon')
             .setOrigin(0, 0)
             .setScale(1)
             .setInteractive()
@@ -1011,7 +1022,7 @@ class Start extends GameLevel {
             .setAlpha(0.7)
             .setVisible(true);
 
-        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.02, 'xIcon')
+        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.08, 'xIcon')
             .setOrigin(0, 0)
             .setScale(1)
             .setInteractive()
@@ -1617,7 +1628,7 @@ class Start extends GameLevel {
             .setAlpha(0.7)
             .setVisible(true);
 
-        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.02, 'xIcon')
+        this.closeWindow = this.add.image(this.w * 0.90, this.h * 0.08, 'xIcon')
             .setOrigin(0, 0)
             .setScale(1)
             .setInteractive()
@@ -1696,7 +1707,6 @@ class Start extends GameLevel {
                 music.resume();    
             }
         }
-
     }
 
 
@@ -1711,17 +1721,6 @@ class Start extends GameLevel {
                 music.play();
             }
         }
-    }
-
-    currentSong() {
-        let keys = this.sound.sounds.map(sound => sound.key);
-        for (let i = 0; i < keys.length; i++) {
-            let music = this.sound.get(keys[i]);
-            if (music && music.isPlaying) {
-                return keys[i]; 
-            }
-        }
-        return null; 
     }
 
 
