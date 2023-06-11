@@ -5,6 +5,7 @@ export default class Title extends Phaser.Scene {
 
     create() {
         this.cameras.main.fadeIn(250, 0, 0, 0);
+        this.cameras.main.setBackgroundColor('#000000')
         this.titleScreen = this.add.image(0, 0, 'titleTable');
         this.titleScreen.setOrigin(0, 0);
         this.titleScreen.displayWidth = this.cameras.main.width;
@@ -28,11 +29,13 @@ export default class Title extends Phaser.Scene {
         this.playText.setInteractive();
         
         this.playText.on('pointerdown', () => {
-            this.titleScreen.destroy();
-            this.playText.destroy();
-            title.destroy();
-            this.scene.start('info');
-            //this.scene.start('start');
+            this.cameras.main.fade(500, 0, 0, 0);
+            this.time.delayedCall(500, () => { 
+                this.titleScreen.destroy();
+                this.playText.destroy();
+                title.destroy();
+                this.scene.start('info'); 
+            });
         });
 
         this.playText.on('pointerover', () => {
