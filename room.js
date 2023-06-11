@@ -467,13 +467,12 @@ class Start extends GameLevel {
                 this.physics.add.collider(this.physics.add.existing(this.hideableObjects[i].hidingObject, true), this.player);
             }
         }
-        // this.touchButton.on('pointerdown', () => {
-        //     this.hide();
-        //     if(this.checkPickup() && !this.paused) {
-        //             this.pickUpItem(this.item);
-        //             this.touchButton.setAlpha(0);
-        //     }});
-        // });
+
+        if(this.roomHasItem() === null) {
+            this.touchButton.on('pointerdown', () => {
+                this.hide();
+            });
+        }
         this.input.keyboard.on('keydown-' + 'H', () => {this.hide()});
     }
 
