@@ -467,7 +467,13 @@ class Start extends GameLevel {
                 this.physics.add.collider(this.physics.add.existing(this.hideableObjects[i].hidingObject, true), this.player);
             }
         }
-        this.touchButton.on('pointerdown', () => {this.hide()});
+        // this.touchButton.on('pointerdown', () => {
+        //     this.hide();
+        //     if(this.checkPickup() && !this.paused) {
+        //             this.pickUpItem(this.item);
+        //             this.touchButton.setAlpha(0);
+        //     }});
+        // });
         this.input.keyboard.on('keydown-' + 'H', () => {this.hide()});
     }
 
@@ -594,7 +600,11 @@ class Start extends GameLevel {
                 if(this.checkPickup() && !this.paused) {
                     this.pickUpItem(this.item);
                     this.touchButton.setAlpha(0);
-            }});
+                }
+                if(this.map.Levels[this.location.r][this.location.c].Cabinets) {
+                    this.hide();
+                }
+            });
         }
     }
 
@@ -1627,30 +1637,35 @@ class Start extends GameLevel {
     // ---------------------------------------
 
     pauseMusic(title){
-        if (this.sound.get(title)) {
-            let music = this.sound.get(title);
-            music.pause();    
+        if (!this.musicOff){
+            if (this.sound.get(title)) {
+                let music = this.sound.get(title);
+                music.pause();    
+            }
         }
-
     }
 
     resumeMusic(title){
-        if (this.sound.get(title)) {
-            let music = this.sound.get(title);
-            music.resume();    
+        if (!this.musicOff){
+            if (this.sound.get(title)) {
+                let music = this.sound.get(title);
+                music.resume();    
+            }
         }
 
     }
 
 
     playMusic(title) {
-        if (!this.sound.get(title)) {
-            let music = this.sound.add(title);
+        if (!this.musicOff){
+            if (!this.sound.get(title)) {
+                let music = this.sound.add(title);
 
-            music.setLoop(true);
-            music.setVolume(0.4);
+                music.setLoop(true);
+                music.setVolume(0.4);
 
-            music.play();
+                music.play();
+            }
         }
     }
 

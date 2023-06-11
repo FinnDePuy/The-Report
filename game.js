@@ -21,6 +21,7 @@ class GameLevel extends Phaser.Scene {
         this.tutorial = (this.location.r !== 6 || this.location.c !== 4) ? false : true;
 
         this.touchMode = data.touchMode || false;
+        this.musicOff = data.musicOff || false;
         
         this.movingUp = false;
         this.movingDown = false;
@@ -197,7 +198,8 @@ class GameLevel extends Phaser.Scene {
                 fileItems: this.fileItems,
                 questions: this.questions,
                 karma: this.karma,
-                touchMode: this.touchMode
+                touchMode: this.touchMode,
+                musicOff: this.musicOff
             });
         });
     }
