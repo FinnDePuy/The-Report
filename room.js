@@ -1,6 +1,7 @@
 import Title from './title.js';
 import Load from './load.js';
 import Options from './options.js';
+import Credits from './credits.js';
 
 class Start extends GameLevel {
     constructor() {
@@ -2015,6 +2016,6 @@ const game = new Phaser.Game({
     },
 
     backgroundColor: 0x212121,
-    scene: [Load, Title, Options, Info, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
+    scene: [Load, Title, Options, Credits, Info, Start, GameOver, NegativeVictory, PositiveVictory, NeutralVictory, Finale, PapersPlease],
     title: "Chase",
 });

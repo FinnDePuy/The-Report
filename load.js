@@ -141,7 +141,9 @@ export default class Load extends Phaser.Scene {
         this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
 
 
-
+        this.load.image('credits', 'assets/images/credit.png');
+        this.load.image('exit', 'assets/images/exit.png');
+        
         this.load.image('xIcon', 'assets/images/x.png');
         this.load.image('rArrow', 'assets/images/rightArrow.png');
         this.load.image('lArrow', 'assets/images/leftArrow.png');
