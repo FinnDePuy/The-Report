@@ -47,7 +47,6 @@ class Start extends GameLevel {
         this.doorCloseSound = this.sound.add('doorClose');
 
         this.fileOpenSound = this.sound.add('fileOpen');
-        this.fileCloseSound = this.sound.add('fileClose');
 
         this.walkSound = this.sound.add('walking');
         this.writingSound = this.sound.add('writing');
@@ -851,7 +850,6 @@ class Start extends GameLevel {
         }
         
         this.fileOpenSound.stop();
-        this.fileCloseSound.stop();
         this.fileOpenSound.play();
 
         this.putInFile();

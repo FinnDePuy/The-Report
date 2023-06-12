@@ -136,7 +136,7 @@ export default class Load extends Phaser.Scene {
         this.load.image('discouragedImage', 'assets/images/notes/Pi_discouragedbyothers.png');
         this.load.image('harassingImage', 'assets/images/notes/Ph_previouslyharassingasuspect.png');
         this.load.image('soundImage', 'assets/images/notes/Ph_soundmentally.png');
-        this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png');//this is a placeholder
+        this.load.image('breakInImage', 'assets/images/notes/Ph_suspectedofabreakin.png'); //this is a placeholder
         this.load.image('waitingImage', 'assets/images/notes/Ph_waitingforherbrotherspartner.png');
         this.load.image('violatingImage', 'assets/images/notes/N_wasviolatingafamilypolicy.png');
 
