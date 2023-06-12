@@ -51,12 +51,11 @@ export default class Load extends Phaser.Scene {
         this.load.image('defaultFloor', 'assets/images/defaultFloor.png');
         this.load.image('defaultWall', 'assets/images/defaultWall.png');
         this.load.image('hiddenImage', 'assets/images/hiddenImage.png');
+
         this.load.image('titleTable', 'assets/images/titleTable.png');
         this.load.image('title', 'assets/images/Title.png');
         this.load.image('start', 'assets/images/start.png');
         this.load.image('restart', 'assets/images/restart.png');
-
-        this.load.image('backpack', 'assets/images/backpack.png');
 
         this.load.image('lRed', 'assets/images/LEFTRED.png');
         this.load.image('rRed', 'assets/images/RIGHTRED.png');
@@ -64,7 +63,6 @@ export default class Load extends Phaser.Scene {
         this.load.image('bRed', 'assets/images/BOTTOMRED.png');
         
         this.load.image('cc', 'assets/images/cc.png');
-
 
         this.load.image('lDoor', 'assets/images/LOCKEDDOOR.png');
         this.load.image('uDoor', 'assets/images/UNLOCKEDDOOR.png');
@@ -157,13 +155,11 @@ export default class Load extends Phaser.Scene {
         this.load.audio('doorOpen', "assets/audio/doorOpen.mp3");
         this.load.audio('doorClose', "assets/audio/doorClose.mp3");
         this.load.audio('fileOpen', "assets/audio/fileOpen.mp3");
-        this.load.audio('fileClose', "assets/audio/fileClose.mp3");
         this.load.audio('heartBeat', "assets/audio/heartBeat.mp3");
         this.load.audio('doorSqueak', "assets/audio/doorSqueak.mp3");
         this.load.audio('writing', "assets/audio/writing.mp3");
         this.load.audio('walking', "assets/audio/walking.mp3");
         this.load.audio('paperPickup', "assets/audio/paperPickup.mp3");
-        this.load.audio('itemPickup', "assets/audio/itemPickup.mp3");
         this.load.audio('voicemail', "assets/audio/Voicemail.mp3");
 
         //songs

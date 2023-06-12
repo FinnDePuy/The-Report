@@ -63,17 +63,7 @@ class GameLevel extends Phaser.Scene {
 
         this.initializePlayer();
 
-        // fullscreen
-        // this.input.keyboard.on('keydown-' + 'F', () => { 
-        //     if (this.scale.isFullscreen) {
-        //         this.scale.stopFullscreen();
-        //     } else {
-        //         this.scale.startFullscreen();
-        //     }
-        // });
-
         // Touch Buttons
-
         let centerX = 1700; 
         let centerY = 1000; 
         let arrowSize = 100; // size of each arrow
@@ -194,7 +184,6 @@ class GameLevel extends Phaser.Scene {
     }
 
     gotoScene(key) {
-        //this.blackedOut.setAlpha(0);
         this.cameras.main.fade(this.transitionDuration, 0, 0, 0);
         this.time.delayedCall(this.transitionDuration, () => {
             this.scene.start(key, {
@@ -287,7 +276,6 @@ class GameLevel extends Phaser.Scene {
         else { // change monsterLocation.c
             this.updateMonsterColumn();
         }
-        //console.log(this.monsterLocation.r + " " + this.monsterLocation.c)
         this.checkMonsterWarning();
     }
 

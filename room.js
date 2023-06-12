@@ -13,7 +13,6 @@ class Start extends GameLevel {
     // ---------------------------------------
 
     onEnter() {  
-        //this.chase();
         this.initializeDesk();
         this.checkSafe();
         this.initializeDoors();
@@ -22,7 +21,6 @@ class Start extends GameLevel {
         this.initializeItemLocations();
         this.initializeCabinet();
 
-        //this.initializeItemLocations();
         this.initializeItem();
         this.displayInventory();
 
@@ -38,15 +36,12 @@ class Start extends GameLevel {
         this.playMusic('introSong');
         if (!this.playerChased){
             this.resumeMusic('introSong');
-            //this.showCC('happy music ♫');
         }
         else{
             this.resumeMusic('rushSong');
             this.pauseMusic('introSong');
-            //this.showCC('chase music ♫');
         }
         
-        //this.backpack = this.add.image(0, 0, 'backpack').setOrigin(0, 0).setDepth(0);
 
         this.doorOpenSound = this.sound.add('doorOpen');
         this.doorCloseSound = this.sound.add('doorClose');
@@ -191,7 +186,7 @@ class Start extends GameLevel {
         this.player.setVelocity(0);
         
         if (!this.paused) {
-            const {keys} = this; // this.keys
+            const {keys} = this;
 
             if (this.playerChased && this.tutorial) {
                 if (this.player.alpha === 0) {
@@ -219,8 +214,7 @@ class Start extends GameLevel {
                 }
             }
             else if (!this.caught) {
-                // checks if interaction is available
-                this.checkHideable();
+                this.checkHideable(); // checks if interaction is available
             }
 
             
@@ -257,18 +251,6 @@ class Start extends GameLevel {
                     this.player.anims.play('idle', true);
                 }
             }
-                  
-            
-            
-            
-    // ---------------------------------------
-    // $Chase
-    // ---------------------------------------
-
-            // lets the player get chased again
-            // if(keys.c.isDown) {
-            //     this.chase('final');
-            // } 
 
             if(this.item != null) {
                 if(this.item.itemImage.alpha == 1) {
@@ -282,23 +264,8 @@ class Start extends GameLevel {
                     this.atDesk(this.deskPhysical);
                 }   
             }
-
-            // if(this.location.r === 0 && this.location.c === 0){
-            //     this.goToEnding();
-            // }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -351,8 +318,7 @@ class Start extends GameLevel {
             }
             this.playerLocation.x = x;
             this.playerLocation.y = y;
-            this.gotoScene('start');//needs to say start
-            //console.log(this.location.r + ", " + this.location.c);
+            this.gotoScene('start');
         }
     }
 
@@ -365,23 +331,19 @@ class Start extends GameLevel {
         this.SDoor;
         this.EscDoor;
         if (room.Doors.N === 1) {
-            //this.ND = this.createDoor(this.w * 0.45, 0, this.w * 0.1, this.h * 0.075, true, -1);
             this.ND = this.createDoor(this.w * 0.5, 0 + 40, 'doorN');
             this.NDoor = this.physics.add.existing(this.ND, true);
         }
         if (room.Doors.S === 1) {
             this.SD = this.createDoor(this.w * 0.5, this.h* 0.925 + 40, 'doorS');
-            // this.SD = this.createDoor(this.w * 0.45, this.h * 0.925, this.w * 0.1, this.h * 0.075, true, 1);
             this.SDoor = this.physics.add.existing(this.SD, true);
         }
         if (room.Doors.E === 1) {
             this.ED = this.createDoor(this.w * 0.9625 + 40, this.h * 0.425 + 100, 'doorE');
-            // this.ED = this.createDoor(this.w * 0.9625, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, 1);
             this.EDoor = this.physics.add.existing(this.ED, true);
         }
         if (room.Doors.W === 1) {
             this.WD = this.createDoor(0 + 40, this.h * 0.425 + 100, 'doorW');
-            // this.WD = this.createDoor(0, this.h * 0.425, this.w * 0.0375, this.h * 0.15, false, -1);
             this.WDoor = this.physics.add.existing(this.WD, true);
         }
         if(this.location.r === 0 && this.location.c === 0){
@@ -391,11 +353,6 @@ class Start extends GameLevel {
                     this.EscDoor = this.physics.add.existing(this.EscD, true);
                     this.physics.add.collider(this.EscDoor, this.player);
                 }
-                // else{
-                //     this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'uDoor');
-                //     this.EscDoor = this.physics.add.existing(this.EscD, true);
-                //     this.physics.add.collider(this.EscDoor, this.player);   
-                // }
             }
         }
     }
@@ -403,11 +360,9 @@ class Start extends GameLevel {
     setDoor(){
         let room = this.map.Levels[0][0];
         if(room.Escape.Locked === 0 && room.Escape.N === 1){
-            //console.log("are we inside?");
             this.EscD = this.createDoor(this.w * 0.5, 0 + 40, 'uDoor');
             this.EscDoor = this.physics.add.existing(this.EscD, true);
             this.physics.add.collider(this.EscDoor, this.player, () => { this.goToFinale(); }, null, this);
-            //this.physics.add.collider(this.player, this.EscDoor, () => {console.log("XXXX"); }, null, this);
         }
     }
 
@@ -439,19 +394,14 @@ class Start extends GameLevel {
         this.add.image(0, 0, 'defaultWall').setOrigin(0, 0).setDisplaySize(this.w, this.h).setDepth(-2);
     }
 
-    // createDoor(x1, y1, x2, y2) {
-    //     let r = this.add.rectangle(x1, y1, x2, y2)
-    //         .setOrigin(0, 0)
-    //         .setFillStyle(0x42280E);
-    //     return r;
-    // }
-
     createDoor(x,y,object){
         return this.add.image(x, y, object);
      }
 
 
 
+
+     
 
 
     
@@ -573,7 +523,6 @@ class Start extends GameLevel {
         if(this.roomHasItem() === null) {
             this.touchButton.on('pointerdown', () => {
                 this.hide();
-                //console.log("hello i shouldn't be hiding");
             });
         }
         this.input.keyboard.on('keydown-' + 'H', () => {this.hide()});
@@ -604,15 +553,9 @@ class Start extends GameLevel {
 
 
 
-
-
     // ---------------------------------------
     // $Items + Inventory
     // ---------------------------------------
-    //list of items
-    //paper, scribbles on ground, photos,
-    //items have the following parameters x, y, name
-    //12 items total
 
 
     //checks if player and item are overlapping
@@ -692,8 +635,6 @@ class Start extends GameLevel {
         this.item = null; // if room doesn't have item, this.item will be null
         if (item != null) {
             this.item = this.createItem(item.name, this.w * 0.5, this.h * 0.5, item.name);
-            //console.log(this.item);
-            //this.physics.add.collider(this.physics.add.existing(this.item.itemImage, true), this.player);
             this.eSpr = this.add.image(this.item.itemImage.x + 150, this.item.itemImage.y, 'eSprite').setAlpha(0);
             this.input.keyboard.on('keydown-' + 'E', () => { 
                 if(this.checkPickup() && !this.paused) {
@@ -707,7 +648,6 @@ class Start extends GameLevel {
                 }
                 if(this.map.Levels[this.location.r][this.location.c].Cabinets) {
                     this.hide();
-                    //console.log("h");
                 }
             });
         }
@@ -725,10 +665,10 @@ class Start extends GameLevel {
     initializeItemLocations() {
         if(this.itemLocations.length == 0) { // if item locations hasn't been initialized yet
             let itemNames = ['note', 'outside', 'phone', 'picture', 'blackmail', 'father', 'discouraged', 'harassing', 'sound', 'breakIn', 'waiting', 'violating'];//extra items go here
-            //r:0 c:1
             
             let existingLocations = [{r:0, c:4}, { r:1, c:0}, {r:1, c:2}, {r:1, c:6}, {r:2, c:2}, {r:2, c:4}, {r:2, c:6}, {r:3, c:0}, {r:3, c:2}, {r:3, c:4}, {r:3, c:6}, {r:4, c:0}, {r:4, c:2}, {r:5, c:0}, {r:5, c:4}, {r:5, c:6}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}]; //add non rooms to this list
             let itemLocation;
+
             // Note will be in the first room outside the safe room
             let note = {
                 name: itemNames[0],
@@ -770,7 +710,6 @@ class Start extends GameLevel {
                     c: itemLocation.c,
                     obtained: false
                 }
-                //console.log(item.name + ' location: ' + item.r + ' ' + item.c);
                 this.itemLocations.push(item);
             }
         }
@@ -778,7 +717,7 @@ class Start extends GameLevel {
 
     createItem(object, x, y, name) {
         let scale = name === 'phone' ? 0.6 : 0.4;
-        let picture = this.add.image(x, y, object).setScale(scale).setDepth(-1); //maybe change scale
+        let picture = this.add.image(x, y, object).setScale(scale).setDepth(-1); 
         let iName = name;
         return { 
             itemImage : picture,
@@ -856,7 +795,6 @@ class Start extends GameLevel {
             let Files = this.map.Levels[this.location.r][this.location.c].File;
             if(Files){
                 for (let i = 0; i <= 1 ; i++){
-                    //let fileCabinetName = i === 1 ? 'fileCabinet1' : 'fileCabinet';
                     this.fileLocations.push(this.createFileCabinet('fileCabinet', 'cabinetZone', 'eSprite', Files[i].x, Files[i].y));
                     this.physics.add.collider(this.physics.add.existing(this.fileLocations[i].fileObject, true), this.player);
                 }
@@ -864,7 +802,6 @@ class Start extends GameLevel {
             this.input.keyboard.on('keydown-' + 'E', () => {
                 if(this.checkInteractable() && !this.paused){
                     if(this.inventory.length > 0) {
-                        //console.log("worked");
                         this.openFileCabinet();
                     }
                     else {
@@ -877,7 +814,6 @@ class Start extends GameLevel {
             this.touchButton.on('pointerdown', () => {
                 if(this.checkInteractable() && !this.paused){
                     if(this.inventory.length > 0) {
-                        //console.log("worked");
                         this.openFileCabinet();
                     }
                     else {
@@ -892,7 +828,7 @@ class Start extends GameLevel {
         }
     }
 
-    // makes the item in backpack alpha .5 to show its in the file cabinet
+    // makes the item in inventory alpha .5 to show its in the file cabinet
     inFileCabinet() {
         let size = this.inventory.length;
         for(let i = 0; i < size; i++){
@@ -1017,8 +953,6 @@ class Start extends GameLevel {
             let temp2 = this.inventoryImages[i];
             if (!temp.inFile) {
                 temp.inFile = true;
-                //console.log(temp.itemName);
-                //console.log(temp2);
                 this.fileItems.push(temp);
                 this.fileImages.push(temp2);
             }
@@ -1039,7 +973,6 @@ class Start extends GameLevel {
     pickUpItem(item) {
         let i = item;
         item.itemImage.setAlpha(0);
-        //item.itemImage.destroy(); // destroys the old note image and collider
         this.inventory.push(i);
         let scale = i.itemName === 'phone' ? 0.3 : 0.2;
         let image = this.add.image(this.w * 0.9 - 100 * this.inventoryImages.length, this.h * 0.9, i.itemName).setScale(scale).setAlpha(0);
@@ -1059,7 +992,6 @@ class Start extends GameLevel {
         this.paused = true;
 
         if (name === 'breakIn'){
-            //this.sound.play('voicemail');
             this.voicemail.play();
         }
         else{
@@ -1145,6 +1077,11 @@ class Start extends GameLevel {
             this.rightArrow.setVisible(true);
         }
     }
+
+
+
+
+    
 
 
 
@@ -1523,9 +1460,6 @@ class Start extends GameLevel {
                 this.choice1 = this.add.image(this.w * 0.5, this.h * 0.195, this.questions[number-1]); 
             }
         }
-        //let room = this.map.Levels[0][0].Escape.Locked = 0;
-        //ADD UNLOCK LOGIC
-
     }
 
     diaryText() {
@@ -1703,10 +1637,6 @@ class Start extends GameLevel {
                     this.showTextBox('I need to escape! What about \n\nthat locked door from before?!', 40, 2, 'icon');
                     this.time.delayedCall(8000, () => { this.hideTextBox(); });
                 }
-                // else if (this.deskPhysical.hasInteracted === false){
-                //     this.showTextBox("      Interesting... I should \n\n      fill this out I guess.     ", 40, 3, 'kayce');
-                //     this.deskPhysical.hasInteracted = true;
-                // }
             });
         
         this.paper = this.add.image(this.w * 0.5, this.h * 0.5,'background').setOrigin(0.5, 0.5).setScale(1);
@@ -1727,14 +1657,13 @@ class Start extends GameLevel {
             if(this.deskPhysical){
                 this.input.keyboard.on('keydown-' + 'E', () => {
                     if(this.atDesk(this.deskPhysical)){
-                        if(!this.paused/* && this.inventory.length > 0*/){
+                        if(!this.paused){
                                this.openDesk();
                         }
                     }
                 });
             }
         }
-        //return this.deskPhysical;
     }
 
     // ---------------------------------------
@@ -1772,6 +1701,8 @@ class Start extends GameLevel {
             }
         }
     }
+
+
 
 
 
@@ -1857,7 +1788,6 @@ class PapersPlease extends GameLevel{
     }
 	
 	create() {
-		//this.cameras.main.setBackgroundColor('#000000');
 
         this.w = this.game.config.width;
         this.h = this.game.config.height;
@@ -1884,7 +1814,6 @@ class Finale extends GameLevel {
     }
 
     preload(){
-
         this.load.image('backgroundLayer', 'assets/images/backgroundLayer.png');
         this.load.image('borderLayer', 'assets/images/borderLayer.png');
         this.load.image('deskLayer', 'assets/images/deskLayer.png');
@@ -1892,8 +1821,6 @@ class Finale extends GameLevel {
         this.load.image('paperLayer', 'assets/images/paperLayer.png');
         this.load.image('spotlightLayer', 'assets/images/spotlightLayer.png');
         this.load.image('takeitLayer', 'assets/images/takeitLayer.png');
-        this.load.audio('paperPickup', "assets/audio/paperPickup.mp3");
-
     }
 	
 	create() {
@@ -1915,15 +1842,10 @@ class Finale extends GameLevel {
             this.goToEnding();
         })
         .setDepth(9);
-        this.sound.play('paperPickup');
-
-        
-        //this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory');
-        
+        this.sound.play('paperPickup');       
 	}
 
     goToEnding(){
-        //console.log("karma = " + this.karma);
         if(this.karma === 0){
             this.gotoScene('neutralvictory');
         } else if(this.karma > 0){
@@ -1951,11 +1873,7 @@ class GameOver extends Phaser.Scene {
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
 
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Game Over', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'gameOver');
-
 
         let reload = this.add.image(this.w * 0.5, this.h * 0.6, 'restart')
         .setInteractive()
@@ -1979,9 +1897,6 @@ class NeutralVictory extends Phaser.Scene {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '=Victory').setDepth(1);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NeutralBackground').setDepth(0);
         let reload = this.add.image(this.w * 0.8, this.h * 0.9, 'restart')
@@ -2007,9 +1922,6 @@ class PositiveVictory extends Phaser.Scene {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
 
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '+Victory').setDepth(1);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'NegativeBackground').setDepth(0);
@@ -2036,9 +1948,6 @@ class NegativeVictory extends Phaser.Scene {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
-		// this.add.text(this.game.config.width * 0.5, this.game.config.height * 0.3, 'Victory', { color: '#ffffff', fontSize: 90 })
-		// .setOrigin(0.5, 0.5)
-		// .setStroke(0x000000, 5);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, '-Victory').setDepth(1);
         this.add.image(this.game.config.width * 0.5, this.game.config.height * 0.5, 'PositiveBackground').setDepth(0);
         let reload = this.add.image(this.w * 0.8, this.h * 0.9, 'restart')
@@ -2061,7 +1970,6 @@ const game = new Phaser.Game({
     },
     physics: {
         default: 'arcade',
-        //arcade: { debug: true }
     },
 
     backgroundColor: 0x212121,
