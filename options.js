@@ -10,11 +10,9 @@ export default class Options extends Phaser.Scene {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
 
-        let closed = false;
+        let closed = true;
 
         this.add.text(this.w * 0.5, this.h * 0.12, "Which device are you playing on?").setFont('bold 60px Arial').setOrigin(0.5, 0.5);
-
-        let sceneChange = false;
 
         this.phone = this.add.image(this.w * 0.3, this.h * 0.5, 'phoneOption')
             .setScale(2)
@@ -69,7 +67,7 @@ export default class Options extends Phaser.Scene {
             }); 
 
         let cc = this.add.image(this.w * 0.48, this.h * 0.85, 'cc')
-            .setAlpha(0.2)
+            .setAlpha(1)
             .setScale(0.8)
             .setInteractive()
             .on('pointerover', () => {
