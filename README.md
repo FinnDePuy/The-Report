@@ -1,11 +1,13 @@
 # The Report
 
-# Members: <br/>
+# Members:  
 Miles Berman  
 Finn DePuy  
 Jackson Nadler-Block  
 Nicholas Schetman  
 
-Iphone does not support fullscreen Android does
+# Notes:  
+Fullscreen supported on Desktop and Android.
+Fullscreen is not supported on iPhones.
   
 [Play Game](https://finndepuy.github.io/The-Report/)
