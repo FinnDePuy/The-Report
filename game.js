@@ -64,13 +64,13 @@ class GameLevel extends Phaser.Scene {
         this.initializePlayer();
 
         // fullscreen
-        this.input.keyboard.on('keydown-' + 'F', () => { 
-            if (this.scale.isFullscreen) {
-                this.scale.stopFullscreen();
-            } else {
-                this.scale.startFullscreen();
-            }
-        });
+        // this.input.keyboard.on('keydown-' + 'F', () => { 
+        //     if (this.scale.isFullscreen) {
+        //         this.scale.stopFullscreen();
+        //     } else {
+        //         this.scale.startFullscreen();
+        //     }
+        // });
 
         // Touch Buttons
 
