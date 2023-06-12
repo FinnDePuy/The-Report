@@ -19,7 +19,7 @@ Nicholas Schetman
 - Nicholas Schetman was our Production Lead  
 - Finn DePuy was our Testing Lead  
 - All audio assets created by Miles Berman. All narrative and visual assets were created by Nicholas Schetman.  
-  **<br/>Source Code**  
+**<br/>Source Code**  
 - Everyone contributed to the code. Jackson Nadler-Block had more commits because our team often worked together via Live Shares hosted by Jackson Nadler-Block.    
 **Mobile**  
 - When the player starts the game, they can select either a computer or phone icon to choose the game version they want to play. The touch control (mobile) version also allows for keyboard input, but the computer version doesn't have touch controls.  
