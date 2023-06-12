@@ -21,6 +21,7 @@ class GameLevel extends Phaser.Scene {
         this.tutorial = (this.location.r !== 6 || this.location.c !== 4) ? false : true;
 
         this.touchMode = data.touchMode || false;
+        this.cc = data.cc || false;
 
         this.musicOff = false;
         let soundOff = localStorage.getItem('soundOff');
@@ -31,7 +32,6 @@ class GameLevel extends Phaser.Scene {
         } 
         else {
             this.musicOff = JSON.parse(soundOff);
-            console.log(this.musicOff);
         }
         
         this.movingUp = false;
@@ -153,7 +153,6 @@ class GameLevel extends Phaser.Scene {
 
 
         //creating all animations for the game
-
         this.onEnter();
     }
  
@@ -178,6 +177,14 @@ class GameLevel extends Phaser.Scene {
             this.text.setAlpha(0);
             this.i.setAlpha(0);
         }
+    }
+
+    showCC(t) { // text, font size, which spritesheet icon to use
+        if (this.t) {
+            this.t.destroy();
+        }
+        this.t = this.add.text(this.w * 0.07, this.h * 0.05, t, { color: '#ffffff', fontSize: 40 })
+            .setStroke(0x000000, 5);
     }
 
     initializePlayer() {
@@ -210,6 +217,7 @@ class GameLevel extends Phaser.Scene {
                 questions: this.questions,
                 karma: this.karma,
                 touchMode: this.touchMode,
+                cc: this.cc,
                 musicOff: this.musicOff
             });
         });

@@ -38,10 +38,12 @@ class Start extends GameLevel {
         this.playMusic('introSong');
         if (!this.playerChased){
             this.resumeMusic('introSong');
+            //this.showCC('happy music ♫');
         }
         else{
             this.resumeMusic('rushSong');
             this.pauseMusic('introSong');
+            //this.showCC('chase music ♫');
         }
         
         //this.backpack = this.add.image(0, 0, 'backpack').setOrigin(0, 0).setDepth(0);
@@ -131,6 +133,7 @@ class Start extends GameLevel {
             this.time.delayedCall(4000, () => { this.hideTextBox(); });
             
         }
+        this.pastCC = '';
     }
 
     update(time, delta) {
@@ -138,7 +141,53 @@ class Start extends GameLevel {
     // ---------------------------------------
     // $Movement + Animation
     // ---------------------------------------
-
+        
+        if (this.cc) {
+            let playing = '';
+            this.sound.sounds.filter(sound => {
+                if (sound.isPlaying){
+                    if (sound.key === 'introSong') {
+                        playing += 'Happy Music ♪';
+                    }
+                    else if (sound.key === 'rushSong') {
+                        playing += 'Chase Music ♪';
+                    }
+                    else if (sound.key === 'heartBeat') {
+                        playing += 'Heart Beating';
+                    }
+                    else if(sound.key === 'paperPickup'){
+                        playing += 'Paper Picked Up';
+                    }
+                    else if (sound.key === 'doorSqueak') {
+                        playing += 'Door Squeaks';
+                    }
+                    else if (sound.key === 'doorOpen') {
+                        playing += 'Door Opens';
+                    }
+                    else if (sound.key === 'doorClose') {
+                        playing += 'Door Closes';
+                    }
+                    else if (sound.key === 'writing') {
+                        playing += 'Pencil Scratches';
+                    }
+                    else if (sound.key === 'fileOpen') {
+                        playing += 'File Cabinet Opens';
+                    }
+                    else if(sound.key === 'voicemail'){
+                        playing += 'Voicemail Playing';
+                    }
+                    
+                    if(sound.key !== 'walking'){
+                        playing += '\n';
+                    }
+                }
+            });
+            if (this.pastCC !== playing) {
+                this.showCC(playing);
+            }
+            this.pastCC = playing;
+        }
+        
         this.player.setVelocity(0);
         
         if (!this.paused) {

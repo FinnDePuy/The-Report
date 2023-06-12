@@ -62,6 +62,8 @@ export default class Load extends Phaser.Scene {
         this.load.image('rRed', 'assets/images/RIGHTRED.png');
         this.load.image('tRed', 'assets/images/TOPRED.png');
         this.load.image('bRed', 'assets/images/BOTTOMRED.png');
+        
+        this.load.image('cc', 'assets/images/cc.png');
 
 
         this.load.image('lDoor', 'assets/images/LOCKEDDOOR.png');
